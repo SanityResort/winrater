@@ -21,11 +21,11 @@ describe("coach lookup service", () => {
     mock.mockImplementationOnce((url: string) => {
       let response: { id: number }[] = [];
       if (url.endsWith("/name")) {
-        response = initialResponse;
+        response = [{ id: 3 }, { id: 2 }];
       } else if (url.endsWith("/name/2")) {
-        response = intermediateResponse;
+        response = [{ id: 2 }, { id: 1 }, { id: 0 }];
       } else if (url.endsWith("/name/0")) {
-        response = finalResponse;
+        response = [{ id: 0 }];
       }
 
       return new Response(JSON.stringify(response));
@@ -33,18 +33,14 @@ describe("coach lookup service", () => {
 
     const response: { id: number }[] = await load("name");
 
-    expect(window.fetch).toBeCalledTimes(3);
+    expect(window.fetch).toHaveBeenCalledTimes(3);
 
-    expect(window.fetch).toBeCalledWith("https://fumbbl.com/api/match/list/name");
-    expect(window.fetch).toBeCalledWith("https://fumbbl.com/api/match/list/name/2");
-    expect(window.fetch).toBeCalledWith("https://fumbbl.com/api/match/list/name/0");
+    expect(window.fetch).toHaveBeenCalledWith("https://fumbbl.com/api/match/list/name");
+    expect(window.fetch).toHaveBeenCalledWith("https://fumbbl.com/api/match/list/name/2");
+    expect(window.fetch).toHaveBeenCalledWith("https://fumbbl.com/api/match/list/name/0");
 
     const expected: { id: number }[] = [ {id: 3 }, { id: 2 }, { id: 1 }, { id: 0 }];
 
     expect(response).toEqual(expected);
   });
 });
-
-const initialResponse = [{ id: 3 }, { id: 2 }];
-const intermediateResponse = [{ id: 2 }, { id: 1 }, { id: 0 }];
-const finalResponse = [{ id: 0 }];
