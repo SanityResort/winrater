@@ -18,7 +18,7 @@ describe("coach lookup service", () => {
 
   it("calls fumbbl api", async () => {
 
-    mock.mockImplementationOnce((url: string) => {
+    mock.mockImplementation((url: string) => {
       let response: { id: number }[] = [];
       if (url.endsWith("/name")) {
         response = [{ id: 3 }, { id: 2 }];
