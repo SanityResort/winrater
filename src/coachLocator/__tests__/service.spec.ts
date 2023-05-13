@@ -86,8 +86,10 @@ describe("coach lookup service", () => {
     expect(errorCallback).toHaveBeenCalledWith("Unknown coach 'foo'");
   });
 
-  it.each([{ input: null as unknown as string, name: "null" }, { input: " ", name: "empty" }])
-  ("aborts for $name coach", async (param) => {
+  it.each([
+    { input: null as unknown as string, name: "null" },
+    { input: " ", name: "empty" }]
+  )("aborts for $name coach", async (param) => {
 
     await load(param.input, countCallback, matchesCallback, errorCallback);
 
