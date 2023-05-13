@@ -5,6 +5,24 @@ import { ref } from "vue";
 const matchData = ref([]);
 const matchCount = ref(0);
 
+function split(data: FumbblMatch[]): string[] {
+
+
+  return data.map(value => {
+    const parts = ["Division: " + value.division];
+
+    if (value.scheduler != "None") {
+      parts.push("Scheduler: " + value.scheduler);
+    }
+    return parts.join(" ");
+
+  }).filter((value, index, array) => {
+    return array.indexOf(value) == index;
+  }).sort();
+
+
+}
+
 </script>
 
 <template>
@@ -16,9 +34,13 @@ const matchCount = ref(0);
   <main>
     <CoachLookup @matches="((matches) => { matchData = matches})" @count="((count) => { matchCount = count })" />
 
-    {{ matchData.length }}
+    <div v-for="(data, index) in split(matchData)" :key="index">
+      {{ data }}
+    </div>
 
     {{ matchCount }}
+
+
   </main>
 </template>
 
