@@ -1,24 +1,49 @@
-const BASE_URL = "https://fumbbl.com/api/match/list/";
+const BASE_URL = "https://fumbbl.com/api/";
 
-export async function load(coachName: string, emit: (count: number) => void): Promise<{ id: number }[]> {
+const MATCH_API = BASE_URL + "match/list/";
 
-  let lastResponse: { id: number }[] = await (await window.fetch(BASE_URL + coachName)).json();
+const COACH_SEARCH_API = BASE_URL + "coach/search/";
+
+export async function load(
+  coachName: string, countCallback: (count: number) => void,
+  matchesCallback: (data: { id: number }[]) => void, errorCallback: (msg: string) => void
+): Promise<void> {
+
+  matchesCallback([]);
+  countCallback(0);
+  errorCallback("");
+
+  if (coachName == null || coachName.trim().length == 0) {
+    errorCallback("No coach name given");
+    return;
+  }
+
+  const searchResponse = await fetch(COACH_SEARCH_API + coachName);
+
+  const searchResult: { name: string }[] = await searchResponse.json();
+
+  if (searchResult.filter(value => value.name.toLowerCase() === coachName.toLowerCase()).length != 1) {
+    errorCallback("Unknown coach '" + coachName + "'");
+    return;
+  }
+
+  let lastResponse: { id: number }[] = await (await window.fetch(MATCH_API + coachName)).json();
 
   const response: { id: number }[] = lastResponse;
 
   let lastId: number = response[response.length - 1].id;
 
   while (lastResponse.length > 1) {
-    lastResponse = (await (await window.fetch(BASE_URL + coachName + "/" + lastId)).json());
+    lastResponse = (await (await window.fetch(MATCH_API + coachName + "/" + lastId)).json());
     for (const element of lastResponse) {
       if (element.id != lastId) {
-        response.push(element)
-        lastId = element.id
-        emit(response.length)
+        response.push(element);
+        lastId = element.id;
+        countCallback(response.length);
       }
     }
   }
 
 
-  return Promise.resolve(response);
+  matchesCallback(response);
 }
