@@ -18,7 +18,7 @@ describe("coach lookup service", () => {
     countCallback = vi.fn();
     matchesCallback = vi.fn();
     errorCallback = vi.fn();
-  })
+  });
 
   beforeEach(() => {
 
@@ -86,26 +86,10 @@ describe("coach lookup service", () => {
     expect(errorCallback).toHaveBeenCalledWith("Unknown coach 'foo'");
   });
 
-  it("aborts for null coach", async () => {
+  it.each([{ input: null as unknown as string, name: "null" }, { input: " ", name: "empty" }])
+  ("aborts for $name coach", async (param) => {
 
-    await load(null as unknown as string, countCallback, matchesCallback, errorCallback);
-
-    expect(fetchMock).toHaveBeenCalledTimes(0);
-
-    expect(countCallback).toHaveBeenCalledTimes(1);
-    expect(countCallback).toHaveBeenCalledWith(0);
-
-    expect(matchesCallback).toHaveBeenCalledTimes(1);
-    expect(matchesCallback).toHaveBeenCalledWith([]);
-
-    expect(errorCallback).toHaveBeenCalledTimes(2);
-    expect(errorCallback).toHaveBeenCalledWith("");
-    expect(errorCallback).toHaveBeenCalledWith("No coach name given");
-  });
-
-  it("aborts for empty coach", async () => {
-
-    await load(" ", countCallback, matchesCallback, errorCallback);
+    await load(param.input, countCallback, matchesCallback, errorCallback);
 
     expect(fetchMock).toHaveBeenCalledTimes(0);
 
@@ -119,4 +103,5 @@ describe("coach lookup service", () => {
     expect(errorCallback).toHaveBeenCalledWith("");
     expect(errorCallback).toHaveBeenCalledWith("No coach name given");
   });
+
 });
