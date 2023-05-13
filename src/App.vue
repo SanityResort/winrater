@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import CoachLookup from "./coachLocator/Component.vue";
-import { ref } from 'vue'
-const matchData = ref([])
+import { ref } from "vue";
+
+const matchData = ref([]);
+const matchCount = ref(0);
 
 </script>
 
@@ -12,31 +14,32 @@ const matchData = ref([])
   </header>
 
   <main>
-    <CoachLookup @matches='((matches) => { matchData = matches})'/>
+    <CoachLookup @matches="((matches) => { matchData = matches})" @count="((count) => { matchCount = count })" />
 
-    {{matchData}}
+    {{ matchData.length }}
+
+    {{ matchCount }}
   </main>
 </template>
 
 <style scoped>
 header {
-  line-height: 1.5;
+    line-height: 1.5;
 }
 
 
-
 @media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+    header {
+        display: flex;
+        place-items: center;
+        padding-right: calc(var(--section-gap) / 2);
+    }
 
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+    header .wrapper {
+        display: flex;
+        place-items: flex-start;
+        flex-wrap: wrap;
+    }
 }
 </style>

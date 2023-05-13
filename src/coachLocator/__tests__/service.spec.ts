@@ -31,13 +31,19 @@ describe("coach lookup service", () => {
       return new Response(JSON.stringify(response));
     });
 
-    const response: { id: number }[] = await load("name");
+    const emitMock = vi.fn((_: number) => {})
+
+    const response: { id: number }[] = await load("name", emitMock);
 
     expect(window.fetch).toHaveBeenCalledTimes(3);
 
     expect(window.fetch).toHaveBeenCalledWith("https://fumbbl.com/api/match/list/name");
     expect(window.fetch).toHaveBeenCalledWith("https://fumbbl.com/api/match/list/name/2");
     expect(window.fetch).toHaveBeenCalledWith("https://fumbbl.com/api/match/list/name/0");
+
+    expect(emitMock).toHaveBeenCalledTimes(2)
+    expect(emitMock).toHaveBeenCalledWith(3)
+    expect(emitMock).toHaveBeenCalledWith(4)
 
     const expected: { id: number }[] = [ {id: 3 }, { id: 2 }, { id: 1 }, { id: 0 }];
 

@@ -1,6 +1,6 @@
 const BASE_URL = "https://fumbbl.com/api/match/list/";
 
-export async function load(coachName: string): Promise<{ id: number }[]> {
+export async function load(coachName: string, emit: (count: number) => void): Promise<{ id: number }[]> {
 
   let lastResponse: { id: number }[] = await (await window.fetch(BASE_URL + coachName)).json();
 
@@ -14,6 +14,7 @@ export async function load(coachName: string): Promise<{ id: number }[]> {
       if (element.id != lastId) {
         response.push(element)
         lastId = element.id
+        emit(response.length)
       }
     }
   }
