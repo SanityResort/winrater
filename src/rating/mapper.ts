@@ -1,4 +1,4 @@
-import { Category, Score } from "./match";
+import { Category, Match, Score } from "./match";
 
 export function category(input: FumbblMatch): Category {
   switch (input.division) {
@@ -50,4 +50,8 @@ export function score(input: FumbblMatch, coachName: string): Score {
   }
 
   return Score.Loss;
+}
+
+export function match(input: FumbblMatch, coachName: string): Match {
+
 }
