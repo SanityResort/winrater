@@ -12,14 +12,19 @@ enum Score {
 }
 
 enum Category {
-  Blackbox = "Competitive_Blackbox",
-  Competitive = "Competitive_Gamefinder",
+  Blackbox = "Blackbox",
+  Competitive = "Competitive",
   League = "League",
   Ranked = "Ranked",
-  Legacy_Blackbox = "Blackbox",
-  Open = "Open",
+  Unranked = "Unranked",
+  Legacy_Blackbox = "Blackbox 2016",
+  Academy = "Academy",
   Faction = "Faction",
   Stunty_Leeg = "Stunty Leeg",
   DivX = "DivX",
-  Test = "Test"
+  FFB_Test = "FFB Test",
+  Fantasy_Football = "Legacy Test",
+  LRB4 = "LRB4",
+  Transfer = "Transfer Division",
+  Transfer2 = "Transfer Division 2"
 }
