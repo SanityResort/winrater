@@ -1,3 +1,5 @@
+import { Category } from "./match";
+
 export function category(input: FumbblMatch): Category {
     switch (input.division) {
         case "Competitive" :

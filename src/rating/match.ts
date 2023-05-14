@@ -1,17 +1,17 @@
-interface Match {
+export interface Match {
   score: Score;
   id: number;
   time: Date;
   category: Category
 }
 
-enum Score {
+export enum Score {
   Win = 1,
   Draw = 0.5,
   Loss = 0
 }
 
-enum Category {
+export enum Category {
   Blackbox = "Blackbox",
   Competitive = "Competitive",
   League = "League",
@@ -20,12 +20,13 @@ enum Category {
   Legacy_Blackbox = "Blackbox 2016",
   Academy = "Academy",
   Faction = "Faction",
-  Stunty_Leeg = "Stunty Leeg",
+  StuntyLeeg = "Stunty Leeg",
   DivX = "DivX",
   FFB_Test = "FFB Test",
   Fantasy_Football = "Legacy Test",
   LRB4 = "LRB4",
   Transfer = "Transfer Division",
   Transfer2 = "Transfer Division 2",
+  Ladder = "Ladder",
   Unknown = "Unknown"
 }
