@@ -51,7 +51,8 @@ describe("Rating Mapper", () => {
           }
 
         } as FumbblMatch, score: Score.Draw,
-        description: "1:1 as home"
+        description: "1:1 as home",
+        resultString: "Draw"
       },
       {
         match: {
@@ -65,7 +66,8 @@ describe("Rating Mapper", () => {
           }
 
         } as FumbblMatch, score: Score.Draw,
-        description: "2:2 as away"
+        description: "2:2 as away",
+        resultString: "Draw"
       },
       {
         match: {
@@ -79,7 +81,8 @@ describe("Rating Mapper", () => {
           }
 
         } as FumbblMatch, score: Score.Loss,
-        description: "2:1 as away"
+        description: "2:1 as away",
+        resultString: "Loss"
       },
       {
         match: {
@@ -93,7 +96,8 @@ describe("Rating Mapper", () => {
           }
 
         } as FumbblMatch, score: Score.Loss,
-        description: "0:3 as home"
+        description: "0:3 as home",
+        resultString: "Loss"
       },
       {
         match: {
@@ -107,7 +111,8 @@ describe("Rating Mapper", () => {
           }
 
         } as FumbblMatch, score: Score.Win,
-        description: "0:2 as away"
+        description: "0:2 as away",
+        resultString: "Win"
       },
       {
         match: {
@@ -121,10 +126,11 @@ describe("Rating Mapper", () => {
           }
 
         } as FumbblMatch, score: Score.Win,
-        description: "3:1 as home"
+        description: "3:1 as home",
+        resultString: "Win"
       }
 
-    ])("maps $description to $score", (param) => {
+    ])("maps $description to $resultString", (param) => {
       expect(score(param.match, coachName)).toBe(param.score)
     });
   });
