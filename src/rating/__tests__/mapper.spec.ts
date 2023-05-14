@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { category, score } from "../mapper";
+import * as mapper from "../mapper";
 import { Category, Score } from "../match";
 
 describe("Rating Mapper", () => {
@@ -30,7 +30,7 @@ describe("Rating Mapper", () => {
       { match: { division: "Ladder", scheduler: "None" } as FumbblMatch, category: Category.Ladder },
       { match: { division: "Unknown", scheduler: "None" } as FumbblMatch, category: Category.Unknown }
     ])("maps $match.division and $match.scheduler to $category", (param) => {
-      expect(category(param.match)).toBe(param.category);
+      expect(mapper.category(param.match)).toBe(param.category);
     });
   });
 
@@ -131,7 +131,36 @@ describe("Rating Mapper", () => {
       }
 
     ])("maps $description to $resultString", (param) => {
-      expect(score(param.match, coachName)).toBe(param.score)
+      expect(mapper.score(param.match, coachName)).toBe(param.score);
+    });
+  });
+
+  describe("match", () => {
+    it("maps fumbbl match properly", () => {
+      const input: FumbblMatch = {
+        id: 123, division: "div", scheduler: "schedule",
+        team1: { coach: { name: "coach1" }, score: 1 },
+        team2: { coach: { name: "coach2" }, score: 2 }
+      };
+
+      const scoreSpy = vi.spyOn(mapper, "score");
+      scoreSpy.mockImplementationOnce((match, name) => {
+        if (match.id === 123 && name === "coach1") {
+          return Score.Draw;
+        }
+        return Score.Win;
+      });
+
+      const categorySpy = vi.spyOn(mapper, "category");
+      categorySpy.mockImplementationOnce((match) => {
+        if (match.id === 123) {
+          return Category.Blackbox;
+        }
+        return Category.Ranked;
+      });
+
+      expect(mapper.match(input, "coach1")).toBe({ id: 123, score: Score.Draw, category: Category.Blackbox });
+
     });
   });
 });
