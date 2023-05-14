@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 
-import { category } from "../mapper";
-import { Category } from "../match";
+import { category, score } from "../mapper";
+import { Category, Score } from "../match";
 
 describe("Rating Mapper", () => {
   describe("category", () => {
@@ -20,7 +20,10 @@ describe("Rating Mapper", () => {
       { match: { division: "Academy", scheduler: "None" } as FumbblMatch, category: Category.Academy },
       { match: { division: "Faction", scheduler: "None" } as FumbblMatch, category: Category.Faction },
       { match: { division: "FFB Test", scheduler: "None" } as FumbblMatch, category: Category.FFB_Test },
-      { match: { division: "Fantasy Football", scheduler: "None" } as FumbblMatch, category: Category.Fantasy_Football },
+      {
+        match: { division: "Fantasy Football", scheduler: "None" } as FumbblMatch,
+        category: Category.Fantasy_Football
+      },
       { match: { division: "LRB4", scheduler: "None" } as FumbblMatch, category: Category.LRB4 },
       { match: { division: "Transfer Division", scheduler: "None" } as FumbblMatch, category: Category.Transfer },
       { match: { division: "Transfer Division 2", scheduler: "None" } as FumbblMatch, category: Category.Transfer2 },
@@ -28,6 +31,101 @@ describe("Rating Mapper", () => {
       { match: { division: "Unknown", scheduler: "None" } as FumbblMatch, category: Category.Unknown }
     ])("maps $match.division and $match.scheduler to $category", (param) => {
       expect(category(param.match)).toBe(param.category);
+    });
+  });
+
+  describe("score", () => {
+    const coachName = "coach";
+    const opponentName = "opponent";
+
+    it.each([
+      {
+        match: {
+          team1: {
+            coach: { name: coachName },
+            score: 1
+          },
+          team2: {
+            coach: { name: opponentName },
+            score: 1
+          }
+
+        } as FumbblMatch, score: Score.Draw,
+        description: "1:1 as home"
+      },
+      {
+        match: {
+          team1: {
+            coach: { name: opponentName },
+            score: 2
+          },
+          team2: {
+            coach: { name: coachName },
+            score: 2
+          }
+
+        } as FumbblMatch, score: Score.Draw,
+        description: "2:2 as away"
+      },
+      {
+        match: {
+          team1: {
+            coach: { name: opponentName },
+            score: 2
+          },
+          team2: {
+            coach: { name: coachName },
+            score: 1
+          }
+
+        } as FumbblMatch, score: Score.Loss,
+        description: "2:1 as away"
+      },
+      {
+        match: {
+          team1: {
+            coach: { name: coachName },
+            score: 0
+          },
+          team2: {
+            coach: { name: opponentName },
+            score: 3
+          }
+
+        } as FumbblMatch, score: Score.Loss,
+        description: "0:3 as home"
+      },
+      {
+        match: {
+          team1: {
+            coach: { name: opponentName },
+            score: 0
+          },
+          team2: {
+            coach: { name: coachName },
+            score: 2
+          }
+
+        } as FumbblMatch, score: Score.Win,
+        description: "0:2 as away"
+      },
+      {
+        match: {
+          team1: {
+            coach: { name: coachName },
+            score: 3
+          },
+          team2: {
+            coach: { name: opponentName },
+            score: 1
+          }
+
+        } as FumbblMatch, score: Score.Win,
+        description: "3:1 as home"
+      }
+
+    ])("maps $description to $score", (param) => {
+      expect(score(param.match, coachName)).toBe(param.score)
     });
   });
 });
