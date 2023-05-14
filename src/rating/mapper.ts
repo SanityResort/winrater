@@ -1,4 +1,5 @@
-import { Category, Match, Score } from "./match";
+import { Category, Score } from "./match";
+import type { Match } from './match'
 
 export function category(input: FumbblMatch): Category {
   switch (input.division) {
@@ -53,5 +54,5 @@ export function score(input: FumbblMatch, coachName: string): Score {
 }
 
 export function match(input: FumbblMatch, coachName: string): Match {
-
+  return {id: input.id, score: exports.score(input, coachName), category: exports.category(input)}
 }

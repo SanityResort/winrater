@@ -159,7 +159,7 @@ describe("Rating Mapper", () => {
         return Category.Ranked;
       });
 
-      expect(mapper.match(input, "coach1")).toBe({ id: 123, score: Score.Draw, category: Category.Blackbox });
+      expect(mapper.match(input, "coach1")).toStrictEqual({ id: 123, score: Score.Draw, category: Category.Blackbox });
 
     });
   });
