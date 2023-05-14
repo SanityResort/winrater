@@ -26,5 +26,6 @@ enum Category {
   Fantasy_Football = "Legacy Test",
   LRB4 = "LRB4",
   Transfer = "Transfer Division",
-  Transfer2 = "Transfer Division 2"
+  Transfer2 = "Transfer Division 2",
+  Unknown = "Unknown"
 }
