@@ -20,7 +20,7 @@ export enum Category {
   Legacy_Blackbox = "Blackbox 2016",
   Academy = "Academy",
   Faction = "Faction",
-  StuntyLeeg = "Stunty Leeg",
+  Stunty_Leeg = "Stunty Leeg",
   DivX = "DivX",
   FFB_Test = "FFB Test",
   Fantasy_Football = "Legacy Test",

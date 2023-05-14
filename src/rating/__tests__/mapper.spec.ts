@@ -15,7 +15,7 @@ describe("Rating Mapper", () => {
       { match: { division: "Ranked", scheduler: "Gamefinder" } as FumbblMatch, category: Category.Ranked },
       { match: { division: "Ranked", scheduler: "None" } as FumbblMatch, category: Category.Ranked },
       { match: { division: "Unranked", scheduler: "None" } as FumbblMatch, category: Category.Unranked },
-      { match: { division: "Stunty Leeg", scheduler: "None" } as FumbblMatch, category: Category.StuntyLeeg },
+      { match: { division: "Stunty Leeg", scheduler: "None" } as FumbblMatch, category: Category.Stunty_Leeg },
       { match: { division: "DivX Legacy", scheduler: "None" } as FumbblMatch, category: Category.DivX },
       { match: { division: "Academy", scheduler: "None" } as FumbblMatch, category: Category.Academy },
       { match: { division: "Faction", scheduler: "None" } as FumbblMatch, category: Category.Faction },
