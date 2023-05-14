@@ -1,7 +1,6 @@
 export interface Match {
   score: Score;
   id: number;
-  time: Date;
   category: Category
 }
 
