@@ -33,6 +33,8 @@ function split(data: FumbblMatch[]): string[] {
 
 }
 
+// .map(fumbblMatch => match(fumbblMatch, this.coachName))
+
 </script>
 
 <template>
