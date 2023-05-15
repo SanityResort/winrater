@@ -8,7 +8,7 @@ export class Store {
 
   private matches: Match[];
 
-  private configs: GraphConfig[] = [new GraphConfig(Color.rgb({r: 0, g: 0, b: 0 }), [])];
+  configs: GraphConfig[] = [new GraphConfig(Color.rgb({r: 0, g: 0, b: 0 }), [])];
 
   constructor(coachName: string, matches: Match[]) {
     this.coachName = coachName;
@@ -22,7 +22,7 @@ export class Store {
   }
 }
 
-class GraphConfig {
+export class GraphConfig {
   private categories: Category[];
   private color: Color;
 
