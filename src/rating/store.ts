@@ -1,14 +1,14 @@
 import type { Match } from "@/rating/match";
-import { Category, Score } from "@/rating/match";
+import { Category } from "@/rating/match";
 import Color from "color";
 
 export class Store {
 
   private coachName: string;
 
-  private matches: Match[];
+  private readonly matches: Match[];
 
-  configs: GraphConfig[] = [new GraphConfig(Color.rgb({r: 0, g: 0, b: 0 }), [])];
+  configs: GraphConfig[] = [new GraphConfig(Color.rgb({ r: 0, g: 0, b: 0 }), [])];
 
   constructor(coachName: string, matches: Match[]) {
     this.coachName = coachName;
@@ -18,13 +18,25 @@ export class Store {
   }
 
   graphs(): Graph[] {
-    return [];
+    return this.configs.map(config =>
+      new Graph(config.color, this.accumulated(this.matches))
+    );
+  }
+
+  private accumulated(matches: Match[]): DataPoint[] {
+
+    let accumulatedScore: number = 0;
+
+    return matches.map((match, index) => {
+      accumulatedScore += match.score;
+      return { index: index, ratio: Math.round ((accumulatedScore / (index + 1)) * 10000) / 100 };
+    });
   }
 }
 
 export class GraphConfig {
-  private categories: Category[];
-  private color: Color;
+  categories: Category[];
+  color: Color;
 
   constructor(color: Color, categories: Category[]) {
     this.color = color;
