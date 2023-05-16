@@ -9,7 +9,6 @@ export async function load(
   matchesCallback: (data: FumbblMatch[]) => void, errorCallback: (msg: string) => void,
   coachCallback: (msg: string) => void): Promise<void> {
 
-  matchesCallback([]);
   countCallback(0);
   errorCallback("");
 

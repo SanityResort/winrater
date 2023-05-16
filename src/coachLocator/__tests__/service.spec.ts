@@ -62,8 +62,7 @@ describe("coach lookup service", () => {
     expect(countCallback).toHaveBeenCalledWith(3);
     expect(countCallback).toHaveBeenCalledWith(4);
 
-    expect(matchesCallback).toHaveBeenCalledTimes(2);
-    expect(matchesCallback).toHaveBeenCalledWith([]);
+    expect(matchesCallback).toHaveBeenCalledTimes(1);
     expect(matchesCallback).toHaveBeenCalledWith(expected);
 
     expect(errorCallback).toHaveBeenCalledTimes(1);
@@ -83,8 +82,7 @@ describe("coach lookup service", () => {
     expect(countCallback).toHaveBeenCalledTimes(1);
     expect(countCallback).toHaveBeenCalledWith(0);
 
-    expect(matchesCallback).toHaveBeenCalledTimes(1);
-    expect(matchesCallback).toHaveBeenCalledWith([]);
+    expect(matchesCallback).toHaveBeenCalledTimes(0);
 
     expect(errorCallback).toHaveBeenCalledTimes(2);
     expect(errorCallback).toHaveBeenCalledWith("");
@@ -106,8 +104,7 @@ describe("coach lookup service", () => {
     expect(countCallback).toHaveBeenCalledTimes(1);
     expect(countCallback).toHaveBeenCalledWith(0);
 
-    expect(matchesCallback).toHaveBeenCalledTimes(1);
-    expect(matchesCallback).toHaveBeenCalledWith([]);
+    expect(matchesCallback).toHaveBeenCalledTimes(0);
 
     expect(errorCallback).toHaveBeenCalledTimes(2);
     expect(errorCallback).toHaveBeenCalledWith("");
