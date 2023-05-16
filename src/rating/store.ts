@@ -4,9 +4,9 @@ import Color from "color";
 
 export class Store {
 
-  private coachName: string;
+  public coachName: string;
 
-  private readonly matches: Match[];
+  public readonly matches: Match[];
 
   configs: GraphConfig[] = [new GraphConfig(Color.rgb({ r: 0, g: 0, b: 0 }), [])];
 

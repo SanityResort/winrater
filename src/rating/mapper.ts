@@ -1,5 +1,5 @@
+import type { Match } from "./match";
 import { Category, Score } from "./match";
-import type { Match } from './match'
 
 export function category(input: FumbblMatch): Category {
   switch (input.division) {
