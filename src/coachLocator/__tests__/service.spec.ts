@@ -8,6 +8,7 @@ describe("coach lookup service", () => {
   let countCallback: Mock;
   let matchesCallback: Mock;
   let errorCallback: Mock;
+  let coachCallback: Mock;
 
   const existingCoach = "name";
 
@@ -18,6 +19,7 @@ describe("coach lookup service", () => {
     countCallback = vi.fn();
     matchesCallback = vi.fn();
     errorCallback = vi.fn();
+    coachCallback = vi.fn();
   });
 
   beforeEach(() => {
@@ -45,7 +47,7 @@ describe("coach lookup service", () => {
 
   it("calls fumbbl api", async () => {
 
-    await load(existingCoach, countCallback, matchesCallback, errorCallback);
+    await load(existingCoach, countCallback, matchesCallback, errorCallback, coachCallback);
 
     const expected: { id: number }[] = [{ id: 3 }, { id: 2 }, { id: 1 }, { id: 0 }];
 
@@ -66,11 +68,14 @@ describe("coach lookup service", () => {
 
     expect(errorCallback).toHaveBeenCalledTimes(1);
     expect(errorCallback).toHaveBeenCalledWith("");
+
+    expect(coachCallback).toHaveBeenCalledTimes(1);
+    expect(coachCallback).toHaveBeenCalledWith(existingCoach);
   });
 
   it("aborts for unknown coach", async () => {
 
-    await load("foo", countCallback, matchesCallback, errorCallback);
+    await load("foo", countCallback, matchesCallback, errorCallback, coachCallback);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith("https://fumbbl.com/api/coach/search/foo");
@@ -84,6 +89,9 @@ describe("coach lookup service", () => {
     expect(errorCallback).toHaveBeenCalledTimes(2);
     expect(errorCallback).toHaveBeenCalledWith("");
     expect(errorCallback).toHaveBeenCalledWith("Unknown coach 'foo'");
+
+    expect(coachCallback).toHaveBeenCalledTimes(0);
+
   });
 
   it.each([
@@ -91,7 +99,7 @@ describe("coach lookup service", () => {
     { input: " ", name: "empty" }]
   )("aborts for $name coach", async (param) => {
 
-    await load(param.input, countCallback, matchesCallback, errorCallback);
+    await load(param.input, countCallback, matchesCallback, errorCallback, coachCallback);
 
     expect(fetchMock).toHaveBeenCalledTimes(0);
 
@@ -104,6 +112,8 @@ describe("coach lookup service", () => {
     expect(errorCallback).toHaveBeenCalledTimes(2);
     expect(errorCallback).toHaveBeenCalledWith("");
     expect(errorCallback).toHaveBeenCalledWith("No coach name given");
+
+    expect(coachCallback).toHaveBeenCalledTimes(0);
   });
 
 });

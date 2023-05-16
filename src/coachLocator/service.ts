@@ -6,8 +6,8 @@ const COACH_SEARCH_API = BASE_URL + "coach/search/";
 
 export async function load(
   coachName: string, countCallback: (count: number) => void,
-  matchesCallback: (data: FumbblMatch[]) => void, errorCallback: (msg: string) => void
-): Promise<void> {
+  matchesCallback: (data: FumbblMatch[]) => void, errorCallback: (msg: string) => void,
+  coachCallback: (msg: string) => void): Promise<void> {
 
   matchesCallback([]);
   countCallback(0);
@@ -27,6 +27,8 @@ export async function load(
     return;
   }
 
+  coachCallback(coachName);
+
   let lastResponse: FumbblMatch[] = await (await window.fetch(MATCH_API + coachName)).json();
 
   const response: FumbblMatch[] = lastResponse;
@@ -42,7 +44,6 @@ export async function load(
         countCallback(response.length);
       }
     }
-    matchesCallback(response);
   }
 
 
