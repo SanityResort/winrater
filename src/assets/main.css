@@ -21,14 +21,13 @@ a,
   }
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-rows: 1fr 4fr;
-  }
+body {
+  display: flex;
+  place-items: center;
 }
+
+#app {
+  display: grid;
+  grid-template-rows: 1fr 4fr;
+}
+
