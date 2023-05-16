@@ -52,11 +52,11 @@ describe("Rating Store", () => {
       const graphs = store.graphs();
       expect(graphs.length).toBe(1);
       expect(graphs[0]).toStrictEqual(new Graph(color, [
-        { index: 0, score: 1 },
-        { index: 1, score: 0.5 },
-        { index: 2, score: 2 / 3 },
-        { index: 3, score: 2.5 / 4 },
-        { index: 4, score: 3 / 5 }
+        { index: 0, ratio: 100.00 },
+        { index: 1, ratio: 50.00 },
+        { index: 2, ratio: 66.67 },
+        { index: 3, ratio: 62.50 },
+        { index: 4, ratio: 60.00 }
       ]));
     });
   });

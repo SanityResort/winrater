@@ -43,5 +43,5 @@ export class Graph {
 }
 
 export type DataPoint = {
-  index: number, score: Score
+  index: number, ratio: number
 }
