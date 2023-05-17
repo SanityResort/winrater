@@ -1,116 +1,108 @@
-import type { Mock } from "vitest";
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { load } from "../service";
+import type { Mock } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { load } from '../service'
 
-describe("coach lookup service", () => {
+describe('coach lookup service', () => {
+  let fetchMock: Mock
+  let countCallback: Mock
+  let matchesCallback: Mock
+  let errorCallback: Mock
+  let coachCallback: Mock
 
-  let fetchMock: Mock;
-  let countCallback: Mock;
-  let matchesCallback: Mock;
-  let errorCallback: Mock;
-  let coachCallback: Mock;
-
-  const existingCoach = "name";
+  const existingCoach = 'name'
 
   beforeAll(() => {
-    fetchMock = vi.fn().mockImplementation(window.fetch);
-    window.fetch = fetchMock;
+    fetchMock = vi.fn().mockImplementation(window.fetch)
+    window.fetch = fetchMock
 
-    countCallback = vi.fn();
-    matchesCallback = vi.fn();
-    errorCallback = vi.fn();
-    coachCallback = vi.fn();
-  });
+    countCallback = vi.fn()
+    matchesCallback = vi.fn()
+    errorCallback = vi.fn()
+    coachCallback = vi.fn()
+  })
 
   beforeEach(() => {
-
     fetchMock.mockImplementation((url: string) => {
-      let response: { id: number, name?: string }[] = [];
-      if (url.indexOf("search") > -1) {
-        response = [{ id: 1, name: existingCoach }];
-      } else if (url.endsWith("/" + existingCoach)) {
-        response = [{ id: 3 }, { id: 2 }];
-      } else if (url.endsWith("/" + existingCoach + "/2")) {
-        response = [{ id: 2 }, { id: 1 }, { id: 0 }];
-      } else if (url.endsWith("/" + existingCoach + "/0")) {
-        response = [{ id: 0 }];
+      let response: { id: number; name?: string }[] = []
+      if (url.indexOf('search') > -1) {
+        response = [{ id: 1, name: existingCoach }]
+      } else if (url.endsWith('/' + existingCoach)) {
+        response = [{ id: 3 }, { id: 2 }]
+      } else if (url.endsWith('/' + existingCoach + '/2')) {
+        response = [{ id: 2 }, { id: 1 }, { id: 0 }]
+      } else if (url.endsWith('/' + existingCoach + '/0')) {
+        response = [{ id: 0 }]
       }
 
-      return new Response(JSON.stringify(response));
-    });
-
-  });
+      return new Response(JSON.stringify(response))
+    })
+  })
 
   afterEach(() => {
-    vi.restoreAllMocks();
-  });
+    vi.restoreAllMocks()
+  })
 
-  it("calls fumbbl api", async () => {
+  it('calls fumbbl api', async () => {
+    await load(existingCoach, countCallback, matchesCallback, errorCallback, coachCallback)
 
-    await load(existingCoach, countCallback, matchesCallback, errorCallback, coachCallback);
+    const expected: { id: number }[] = [{ id: 3 }, { id: 2 }, { id: 1 }, { id: 0 }]
 
-    const expected: { id: number }[] = [{ id: 3 }, { id: 2 }, { id: 1 }, { id: 0 }];
+    expect(fetchMock).toHaveBeenCalledTimes(4)
+    expect(fetchMock).toHaveBeenCalledWith('https://fumbbl.com/api/coach/search/name')
+    expect(fetchMock).toHaveBeenCalledWith('https://fumbbl.com/api/match/list/name')
+    expect(fetchMock).toHaveBeenCalledWith('https://fumbbl.com/api/match/list/name/2')
+    expect(fetchMock).toHaveBeenCalledWith('https://fumbbl.com/api/match/list/name/0')
 
-    expect(fetchMock).toHaveBeenCalledTimes(4);
-    expect(fetchMock).toHaveBeenCalledWith("https://fumbbl.com/api/coach/search/name");
-    expect(fetchMock).toHaveBeenCalledWith("https://fumbbl.com/api/match/list/name");
-    expect(fetchMock).toHaveBeenCalledWith("https://fumbbl.com/api/match/list/name/2");
-    expect(fetchMock).toHaveBeenCalledWith("https://fumbbl.com/api/match/list/name/0");
+    expect(countCallback).toHaveBeenCalledTimes(3)
+    expect(countCallback).toHaveBeenCalledWith(0)
+    expect(countCallback).toHaveBeenCalledWith(3)
+    expect(countCallback).toHaveBeenCalledWith(4)
 
-    expect(countCallback).toHaveBeenCalledTimes(3);
-    expect(countCallback).toHaveBeenCalledWith(0);
-    expect(countCallback).toHaveBeenCalledWith(3);
-    expect(countCallback).toHaveBeenCalledWith(4);
+    expect(matchesCallback).toHaveBeenCalledTimes(1)
+    expect(matchesCallback).toHaveBeenCalledWith(expected)
 
-    expect(matchesCallback).toHaveBeenCalledTimes(1);
-    expect(matchesCallback).toHaveBeenCalledWith(expected);
+    expect(errorCallback).toHaveBeenCalledTimes(1)
+    expect(errorCallback).toHaveBeenCalledWith('')
 
-    expect(errorCallback).toHaveBeenCalledTimes(1);
-    expect(errorCallback).toHaveBeenCalledWith("");
+    expect(coachCallback).toHaveBeenCalledTimes(1)
+    expect(coachCallback).toHaveBeenCalledWith(existingCoach)
+  })
 
-    expect(coachCallback).toHaveBeenCalledTimes(1);
-    expect(coachCallback).toHaveBeenCalledWith(existingCoach);
-  });
+  it('aborts for unknown coach', async () => {
+    await load('foo', countCallback, matchesCallback, errorCallback, coachCallback)
 
-  it("aborts for unknown coach", async () => {
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(fetchMock).toHaveBeenCalledWith('https://fumbbl.com/api/coach/search/foo')
 
-    await load("foo", countCallback, matchesCallback, errorCallback, coachCallback);
+    expect(countCallback).toHaveBeenCalledTimes(1)
+    expect(countCallback).toHaveBeenCalledWith(0)
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith("https://fumbbl.com/api/coach/search/foo");
+    expect(matchesCallback).toHaveBeenCalledTimes(0)
 
-    expect(countCallback).toHaveBeenCalledTimes(1);
-    expect(countCallback).toHaveBeenCalledWith(0);
+    expect(errorCallback).toHaveBeenCalledTimes(2)
+    expect(errorCallback).toHaveBeenCalledWith('')
+    expect(errorCallback).toHaveBeenCalledWith("Unknown coach 'foo'")
 
-    expect(matchesCallback).toHaveBeenCalledTimes(0);
-
-    expect(errorCallback).toHaveBeenCalledTimes(2);
-    expect(errorCallback).toHaveBeenCalledWith("");
-    expect(errorCallback).toHaveBeenCalledWith("Unknown coach 'foo'");
-
-    expect(coachCallback).toHaveBeenCalledTimes(0);
-
-  });
+    expect(coachCallback).toHaveBeenCalledTimes(0)
+  })
 
   it.each([
-    { input: null as unknown as string, name: "null" },
-    { input: " ", name: "empty" }]
-  )("aborts for $name coach", async (param) => {
+    { input: null as unknown as string, name: 'null' },
+    { input: ' ', name: 'empty' }
+  ])('aborts for $name coach', async (param) => {
+    await load(param.input, countCallback, matchesCallback, errorCallback, coachCallback)
 
-    await load(param.input, countCallback, matchesCallback, errorCallback, coachCallback);
+    expect(fetchMock).toHaveBeenCalledTimes(0)
 
-    expect(fetchMock).toHaveBeenCalledTimes(0);
+    expect(countCallback).toHaveBeenCalledTimes(1)
+    expect(countCallback).toHaveBeenCalledWith(0)
 
-    expect(countCallback).toHaveBeenCalledTimes(1);
-    expect(countCallback).toHaveBeenCalledWith(0);
+    expect(matchesCallback).toHaveBeenCalledTimes(0)
 
-    expect(matchesCallback).toHaveBeenCalledTimes(0);
+    expect(errorCallback).toHaveBeenCalledTimes(2)
+    expect(errorCallback).toHaveBeenCalledWith('')
+    expect(errorCallback).toHaveBeenCalledWith('No coach name given')
 
-    expect(errorCallback).toHaveBeenCalledTimes(2);
-    expect(errorCallback).toHaveBeenCalledWith("");
-    expect(errorCallback).toHaveBeenCalledWith("No coach name given");
-
-    expect(coachCallback).toHaveBeenCalledTimes(0);
-  });
-
-});
+    expect(coachCallback).toHaveBeenCalledTimes(0)
+  })
+})

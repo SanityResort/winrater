@@ -1,6 +1,6 @@
 export interface Match {
-  score: Score;
-  id: number;
+  score: Score
+  id: number
   category: Category
 }
 
@@ -11,21 +11,21 @@ export enum Score {
 }
 
 export enum Category {
-  Blackbox = "Blackbox",
-  Competitive = "Competitive",
-  League = "League",
-  Ranked = "Ranked",
-  Unranked = "Unranked",
-  Legacy_Blackbox = "Blackbox 2016",
-  Academy = "Academy",
-  Faction = "Faction",
-  Stunty_Leeg = "Stunty Leeg",
-  DivX = "DivX",
-  FFB_Test = "FFB Test",
-  Fantasy_Football = "Legacy Test",
-  LRB4 = "LRB4",
-  Transfer = "Transfer Division",
-  Transfer2 = "Transfer Division 2",
-  Ladder = "Ladder",
-  Unknown = "Unknown"
+  Blackbox = 'Blackbox',
+  Competitive = 'Competitive',
+  League = 'League',
+  Ranked = 'Ranked',
+  Unranked = 'Unranked',
+  Legacy_Blackbox = 'Blackbox 2016',
+  Academy = 'Academy',
+  Faction = 'Faction',
+  Stunty_Leeg = 'Stunty Leeg',
+  DivX = 'DivX',
+  FFB_Test = 'FFB Test',
+  Fantasy_Football = 'Legacy Test',
+  LRB4 = 'LRB4',
+  Transfer = 'Transfer Division',
+  Transfer2 = 'Transfer Division 2',
+  Ladder = 'Ladder',
+  Unknown = 'Unknown'
 }

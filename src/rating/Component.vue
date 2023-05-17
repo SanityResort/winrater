@@ -1,19 +1,13 @@
 <template>
-  <div> {{ props.store.coachName }}: {{ props.store.matches.length }} </div>
-
+  <div>{{ props.store.coachName }}: {{ props.store.matches.length }}</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
+import { Store } from '@/rating/store'
 
-import { Store } from "@/rating/store";
-
-const props = defineProps( {
+const props = defineProps({
   store: Store
 })
-
-
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
