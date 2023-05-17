@@ -54,5 +54,5 @@ export function score(input: FumbblMatch, coachName: string): Score {
 }
 
 export function match(input: FumbblMatch, coachName: string): Match {
-  return {id: input.id, score: exports.score(input, coachName), category: exports.category(input)}
+  return { id: input.id, score: score(input, coachName), category: category(input) };
 }

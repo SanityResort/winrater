@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import * as mapper from "../mapper";
 import { Category, Score } from "../match";
@@ -138,26 +138,10 @@ describe("Rating Mapper", () => {
   describe("match", () => {
     it("maps fumbbl match properly", () => {
       const input: FumbblMatch = {
-        id: 123, division: "div", scheduler: "schedule",
+        id: 123, division: "Competitive", scheduler: "Blackbox",
         team1: { coach: { name: "coach1" }, score: 1 },
-        team2: { coach: { name: "coach2" }, score: 2 }
+        team2: { coach: { name: "coach2" }, score: 1 }
       };
-
-      const scoreSpy = vi.spyOn(mapper, "score");
-      scoreSpy.mockImplementationOnce((match, name) => {
-        if (match.id === 123 && name === "coach1") {
-          return Score.Draw;
-        }
-        return Score.Win;
-      });
-
-      const categorySpy = vi.spyOn(mapper, "category");
-      categorySpy.mockImplementationOnce((match) => {
-        if (match.id === 123) {
-          return Category.Blackbox;
-        }
-        return Category.Ranked;
-      });
 
       expect(mapper.match(input, "coach1")).toStrictEqual({ id: 123, score: Score.Draw, category: Category.Blackbox });
 
