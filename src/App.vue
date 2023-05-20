@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import CoachLookup from './coachLocator/Component.vue'
 import Rating from './rating/Component.vue'
-import { ref } from 'vue'
 import { Store } from '@/rating/store'
 import { match } from '@/rating/mapper'
+import { useMatchStore } from '@/pinia/store'
+import { storeToRefs } from 'pinia'
 
-const matchCount = ref(0)
-const coachName = ref('')
-const stores = ref([])
+const matchStore = useMatchStore()
+const { coachName, matchCount, stores } = storeToRefs(matchStore)
 
 function processMatches(matches: FumbblMatch[]) {
   stores.value.push(
@@ -22,16 +22,6 @@ function processMatches(matches: FumbblMatch[]) {
 <template>
   <header>
     <CoachLookup
-      @coach="
-        (coach) => {
-          coachName = coach
-        }
-      "
-      @count="
-        (count) => {
-          matchCount = count
-        }
-      "
       @matches="
         (matches) => {
           processMatches(matches)
