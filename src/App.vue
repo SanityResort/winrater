@@ -1,36 +1,18 @@
 <script lang="ts" setup>
 import CoachLookup from './coachLocator/Component.vue'
 import Rating from './rating/Component.vue'
-import { Store } from '@/rating/store'
-import { match } from '@/rating/mapper'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
 
 const matchStore = useMatchStore()
-const { coachName, matchCount, stores } = storeToRefs(matchStore)
-
-function processMatches(matches: FumbblMatch[]) {
-  stores.value.push(
-    new Store(
-      coachName.value,
-      matches.map((fumbblMatch) => match(fumbblMatch, coachName.value))
-    )
-  )
-}
+const { stores } = storeToRefs(matchStore)
 </script>
 
 <template>
   <header>
-    <CoachLookup
-      @matches="
-        (matches) => {
-          processMatches(matches)
-        }
-      "
-    />
-    {{ matchCount }}
+    <CoachLookup />
 
-    <Rating v-for="store in stores" :key="store.coachName" :store="store" />
+    <Rating v-for="storeKey in stores.keys()" :key="storeKey" :store="stores.get(storeKey)" />
   </header>
 
   <main></main>

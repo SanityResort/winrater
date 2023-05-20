@@ -14,26 +14,29 @@ import { Ref, ref } from 'vue'
 import { load } from './service'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
-
-const emit = defineEmits(['matches'])
+import { Store } from '@/rating/store'
 
 const matchStore = useMatchStore()
-const { coachName, matchCount } = storeToRefs(matchStore)
+const { coachName, stores } = storeToRefs(matchStore)
 const loading = ref(false)
 const errorMessage: Ref<string> = ref('')
 
-const matchesCallback = (data: []) => emit('matches', data)
-const errorCallback = (msg: string) => (errorMessage.value = msg)
-const countCallback = (count: number) => (matchCount.value = count)
-const coachCallback = (msg: string) => (coachName.value = msg)
-
 async function loadData() {
   loading.value = true
-
-  await load(coachName.value, countCallback, matchesCallback, errorCallback, coachCallback)
+  if (stores.value.has(coachName.value)) {
+    loading.value = false
+    return
+  }
+  const finalCoachName = coachName.value
 
   coachName.value = ''
+
+  const store = new Store(finalCoachName)
+  stores.value.set(finalCoachName, store)
+
   loading.value = false
+
+  await load(finalCoachName, store, errorMessage)
 }
 </script>
 

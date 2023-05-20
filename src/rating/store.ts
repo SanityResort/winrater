@@ -1,19 +1,30 @@
 import type { Match } from '@/rating/match'
 import { Category } from '@/rating/match'
 import Color from 'color'
+import type { Ref } from 'vue'
+import { ref } from 'vue'
+import { match } from './mapper'
 
 export class Store {
   public coachName: string
 
-  public readonly matches: Match[]
+  public fumbblMatches: Ref<FumbblMatch[]>
+
+  public matches: Match[] = []
 
   configs: GraphConfig[] = [new GraphConfig(Color.rgb({ r: 0, g: 0, b: 0 }), [])]
 
-  constructor(coachName: string, matches: Match[]) {
+  constructor(coachName: string) {
     this.coachName = coachName
-    this.matches = matches.sort((a: Match, b: Match) => {
-      return a.id - b.id
-    })
+    this.fumbblMatches = ref([])
+  }
+
+  init() {
+    this.matches = this.fumbblMatches.value
+      .map((fumbblMatch) => match(fumbblMatch, this.coachName))
+      .sort((a: Match, b: Match) => {
+        return a.id - b.id
+      })
   }
 
   graphs(): Graph[] {
