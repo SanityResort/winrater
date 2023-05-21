@@ -5,7 +5,10 @@ import type { Ref } from 'vue'
 import { ref } from 'vue'
 import { Store } from '../../rating/store'
 
-describe('coach lookup service', () => {
+describe.each([
+  { errorMessage: '', suffix: 'when no error message is present' },
+  { errorMessage: 'some error', suffix: 'and resets error messages' }
+])('coach lookup service', (parentContext) => {
   let fetchMock: Mock
   let initMock: Mock
 
@@ -20,7 +23,7 @@ describe('coach lookup service', () => {
   })
 
   beforeEach(() => {
-    errorRef = ref('')
+    errorRef = ref(parentContext.errorMessage)
     store = new Store(coachName)
     store.init = initMock
 
@@ -44,7 +47,7 @@ describe('coach lookup service', () => {
     vi.restoreAllMocks()
   })
 
-  it('calls fumbbl api', async () => {
+  it.each([{ suffix: parentContext.suffix }])('calls fumbbl api $suffix', async () => {
     await load(store, errorRef)
 
     const expected: { id: number }[] = [{ id: 3 }, { id: 2 }, { id: 1 }, { id: 0 }]
@@ -61,7 +64,7 @@ describe('coach lookup service', () => {
     expect(errorRef.value).toBe('')
   })
 
-  it('aborts for unknown coach', async () => {
+  it.each([{ suffix: parentContext.suffix }])('aborts for unknown coach $suffix', async () => {
     store.coachName = 'foo'
     await load(store, errorRef)
 
@@ -76,9 +79,9 @@ describe('coach lookup service', () => {
   })
 
   it.each([
-    { input: null as unknown as string, name: 'null' },
-    { input: ' ', name: 'empty' }
-  ])('aborts for $name coach', async (param) => {
+    { input: null as unknown as string, name: 'null', suffix: parentContext.suffix },
+    { input: ' ', name: 'empty', suffix: parentContext.suffix }
+  ])('aborts for $name coach $suffix', async (param) => {
     store.coachName = param.input
 
     await load(store, errorRef)
