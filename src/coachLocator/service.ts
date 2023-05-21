@@ -30,21 +30,21 @@ export async function load(store: Store, errorMessage: Ref<string>): Promise<voi
 
   let lastResponse: FumbblMatch[]
 
-  let lastId: number = 0
+  let lastId: number = -1
 
   do {
     let url: string = MATCH_API + coachName
-    if (lastId != 0) {
+    if (lastId != -1) {
       url = url + '/' + lastId
     }
     lastResponse = await (await window.fetch(url)).json()
-    lastId = lastResponse[lastResponse.length - 1].id
     for (const element of lastResponse) {
       if (element.id != lastId) {
         store.fumbblMatches.value.push(element)
         lastId = element.id
       }
     }
+    lastId = lastResponse[lastResponse.length - 1].id
   } while (lastResponse.length > 1)
 
   store.init()

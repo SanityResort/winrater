@@ -1,36 +1,38 @@
 import type { Mock } from 'vitest'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { load } from '../service'
+import type { Ref } from 'vue'
+import { ref } from 'vue'
+import { Store } from '../../rating/store'
 
 describe('coach lookup service', () => {
   let fetchMock: Mock
-  let countCallback: Mock
-  let matchesCallback: Mock
-  let errorCallback: Mock
-  let coachCallback: Mock
+  let initMock: Mock
 
-  const existingCoach = 'name'
+  let errorRef: Ref<string>
+  const coachName = 'name'
+  let store: Store
 
   beforeAll(() => {
     fetchMock = vi.fn().mockImplementation(window.fetch)
     window.fetch = fetchMock
-
-    countCallback = vi.fn()
-    matchesCallback = vi.fn()
-    errorCallback = vi.fn()
-    coachCallback = vi.fn()
+    initMock = vi.fn()
   })
 
   beforeEach(() => {
+    errorRef = ref('')
+    store = new Store(coachName)
+    store.init = initMock
+
     fetchMock.mockImplementation((url: string) => {
       let response: { id: number; name?: string }[] = []
       if (url.indexOf('search') > -1) {
-        response = [{ id: 1, name: existingCoach }]
-      } else if (url.endsWith('/' + existingCoach)) {
+        response = [{ id: 1, name: coachName }]
+      } else if (url.endsWith('/' + coachName)) {
         response = [{ id: 3 }, { id: 2 }]
-      } else if (url.endsWith('/' + existingCoach + '/2')) {
+      } else if (url.endsWith('/' + coachName + '/2')) {
         response = [{ id: 2 }, { id: 1 }, { id: 0 }]
-      } else if (url.endsWith('/' + existingCoach + '/0')) {
+      } else if (url.endsWith('/' + coachName + '/0')) {
         response = [{ id: 0 }]
       }
 
@@ -43,7 +45,7 @@ describe('coach lookup service', () => {
   })
 
   it('calls fumbbl api', async () => {
-    await load(existingCoach, countCallback, matchesCallback, errorCallback, coachCallback)
+    await load(store, errorRef)
 
     const expected: { id: number }[] = [{ id: 3 }, { id: 2 }, { id: 1 }, { id: 0 }]
 
@@ -53,56 +55,40 @@ describe('coach lookup service', () => {
     expect(fetchMock).toHaveBeenCalledWith('https://fumbbl.com/api/match/list/name/2')
     expect(fetchMock).toHaveBeenCalledWith('https://fumbbl.com/api/match/list/name/0')
 
-    expect(countCallback).toHaveBeenCalledTimes(3)
-    expect(countCallback).toHaveBeenCalledWith(0)
-    expect(countCallback).toHaveBeenCalledWith(3)
-    expect(countCallback).toHaveBeenCalledWith(4)
+    expect(initMock).toHaveBeenCalledTimes(1)
 
-    expect(matchesCallback).toHaveBeenCalledTimes(1)
-    expect(matchesCallback).toHaveBeenCalledWith(expected)
-
-    expect(errorCallback).toHaveBeenCalledTimes(1)
-    expect(errorCallback).toHaveBeenCalledWith('')
-
-    expect(coachCallback).toHaveBeenCalledTimes(1)
-    expect(coachCallback).toHaveBeenCalledWith(existingCoach)
+    expect(store.fumbblMatches.value).toStrictEqual(expected)
+    expect(errorRef.value).toBe('')
   })
 
   it('aborts for unknown coach', async () => {
-    await load('foo', countCallback, matchesCallback, errorCallback, coachCallback)
+    store.coachName = 'foo'
+    await load(store, errorRef)
 
     expect(fetchMock).toHaveBeenCalledTimes(1)
     expect(fetchMock).toHaveBeenCalledWith('https://fumbbl.com/api/coach/search/foo')
 
-    expect(countCallback).toHaveBeenCalledTimes(1)
-    expect(countCallback).toHaveBeenCalledWith(0)
+    expect(initMock).toHaveBeenCalledTimes(0)
 
-    expect(matchesCallback).toHaveBeenCalledTimes(0)
+    expect(store.matches).toStrictEqual([])
 
-    expect(errorCallback).toHaveBeenCalledTimes(2)
-    expect(errorCallback).toHaveBeenCalledWith('')
-    expect(errorCallback).toHaveBeenCalledWith("Unknown coach 'foo'")
-
-    expect(coachCallback).toHaveBeenCalledTimes(0)
+    expect(errorRef.value).toBe("Unknown coach 'foo'")
   })
 
   it.each([
     { input: null as unknown as string, name: 'null' },
     { input: ' ', name: 'empty' }
   ])('aborts for $name coach', async (param) => {
-    await load(param.input, countCallback, matchesCallback, errorCallback, coachCallback)
+    store.coachName = param.input
+
+    await load(store, errorRef)
 
     expect(fetchMock).toHaveBeenCalledTimes(0)
 
-    expect(countCallback).toHaveBeenCalledTimes(1)
-    expect(countCallback).toHaveBeenCalledWith(0)
+    expect(initMock).toHaveBeenCalledTimes(0)
 
-    expect(matchesCallback).toHaveBeenCalledTimes(0)
+    expect(store.matches).toStrictEqual([])
 
-    expect(errorCallback).toHaveBeenCalledTimes(2)
-    expect(errorCallback).toHaveBeenCalledWith('')
-    expect(errorCallback).toHaveBeenCalledWith('No coach name given')
-
-    expect(coachCallback).toHaveBeenCalledTimes(0)
+    expect(errorRef.value).toBe('No coach name given')
   })
 })
