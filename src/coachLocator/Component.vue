@@ -1,6 +1,6 @@
 <template>
   <form>
-    <input v-model="coachName" :disabled="loading" placeholder="coach name" type="text" />
+    <input v-model="currentCoachName" :disabled="loading" placeholder="coach name" type="text" />
     <button id="addButton" :disabled="loading" @click.prevent="loadData">Add</button>
   </form>
 
@@ -17,19 +17,19 @@ import { storeToRefs } from 'pinia'
 import { Store } from '@/rating/store'
 
 const matchStore = useMatchStore()
-const { coachName, stores } = storeToRefs(matchStore)
+const { currentCoachName, stores } = storeToRefs(matchStore)
 const loading = ref(false)
 const errorMessage: Ref<string> = ref('')
 
 async function loadData() {
   loading.value = true
-  if (stores.value.has(coachName.value)) {
+  if (stores.value.has(currentCoachName.value)) {
     loading.value = false
     return
   }
-  const finalCoachName = coachName.value
+  const finalCoachName = currentCoachName.value
 
-  coachName.value = ''
+  currentCoachName.value = ''
 
   const store = new Store(finalCoachName)
   stores.value.set(finalCoachName, store)

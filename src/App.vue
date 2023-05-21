@@ -12,7 +12,7 @@ const { stores } = storeToRefs(matchStore)
   <header>
     <CoachLookup />
 
-    <Rating v-for="storeKey in stores.keys()" :key="storeKey" :store="stores.get(storeKey)" />
+    <Rating v-for="storeKey in stores.keys()" :key="storeKey" :coach-name="storeKey" />
   </header>
 
   <main></main>

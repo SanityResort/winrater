@@ -1,16 +1,22 @@
 <template>
-  <div v-if="props.store?.fumbblMatches.value">
-    {{ props.store.coachName }}: {{ props.store.fumbblMatches.value.length }}
-  </div>
-  <div v-else>{{ props.store.coachName }}: no value yet</div>
+  <div>{{ coachName }}: {{ fumbblMatches.length }}</div>
 </template>
 
 <script lang="ts" setup>
 import { Store } from '@/rating/store'
+import { useMatchStore } from '@/pinia/store'
+import { storeToRefs } from 'pinia'
 
 const props = defineProps({
-  store: Store
+  coachName: String
 })
+
+const matchStore = useMatchStore()
+const { stores } = storeToRefs(matchStore)
+
+const key: string = props.coachName?.toString()
+const store: Store = stores.value.get(key)
+const fumbblMatches = store.fumbblMatches
 </script>
 
 <style scoped></style>
