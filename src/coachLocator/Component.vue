@@ -36,7 +36,7 @@ async function loadData() {
 
   loading.value = false
 
-  await load(finalCoachName, store, errorMessage)
+  await load(store, errorMessage)
 }
 </script>
 

@@ -7,11 +7,9 @@ const MATCH_API = BASE_URL + 'match/list/'
 
 const COACH_SEARCH_API = BASE_URL + 'coach/search/'
 
-export async function load(
-  coachName: string,
-  store: Store,
-  errorMessage: Ref<string>
-): Promise<void> {
+export async function load(store: Store, errorMessage: Ref<string>): Promise<void> {
+  const coachName = store.coachName
+
   errorMessage.value = ''
 
   if (coachName == null || coachName.trim().length == 0) {
