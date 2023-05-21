@@ -27,16 +27,18 @@ async function loadData() {
     loading.value = false
     return
   }
-  const finalCoachName = currentCoachName.value
+  const coachName = currentCoachName.value
 
   currentCoachName.value = ''
 
-  const store = new Store(finalCoachName)
-  stores.value.set(finalCoachName, store)
+  const store = new Store(coachName)
+  stores.value.set(coachName, store)
 
   loading.value = false
 
-  await load(store, errorMessage)
+  if (!(await load(store, errorMessage))) {
+    stores.value.delete(coachName)
+  }
 }
 </script>
 
