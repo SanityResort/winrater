@@ -1,7 +1,3 @@
-<template>
-  <div>{{ coachName }}: {{ fumbblMatches.length }}</div>
-</template>
-
 <script lang="ts" setup>
 import { Store } from '@/rating/store'
 import { useMatchStore } from '@/pinia/store'
@@ -20,3 +16,7 @@ const fumbblMatches = store.fumbblMatches
 </script>
 
 <style scoped></style>
+
+<template>
+  <div class="store">{{ coachName }}: {{ fumbblMatches.length }}</div>
+</template>

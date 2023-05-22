@@ -1,20 +1,3 @@
-<template>
-  <form>
-    <input
-      id="coachName"
-      v-model="currentCoachName"
-      :disabled="loading"
-      placeholder="coach name"
-      type="text"
-    />
-    <button id="addButton" :disabled="loading" @click.prevent="loadData">Add</button>
-  </form>
-
-  <div class="error">
-    {{ errorMessage }}
-  </div>
-</template>
-
 <script lang="ts" setup>
 import { Ref, ref } from 'vue'
 import { load } from './service'
@@ -53,3 +36,20 @@ async function loadData() {
   color: red;
 }
 </style>
+
+<template>
+  <form id="coachForm">
+    <input
+      id="coachName"
+      v-model="currentCoachName"
+      :disabled="loading"
+      placeholder="coach name"
+      type="text"
+    />
+    <button id="addButton" :disabled="loading" @click.prevent="loadData">Add</button>
+  </form>
+
+  <div class="error">
+    {{ errorMessage }}
+  </div>
+</template>
