@@ -1,6 +1,12 @@
 <template>
   <form>
-    <input v-model="currentCoachName" :disabled="loading" placeholder="coach name" type="text" />
+    <input
+      id="coachName"
+      v-model="currentCoachName"
+      :disabled="loading"
+      placeholder="coach name"
+      type="text"
+    />
     <button id="addButton" :disabled="loading" @click.prevent="loadData">Add</button>
   </form>
 
