@@ -1,4 +1,5 @@
 import { mount, VueWrapper } from '@vue/test-utils'
+// @ts-ignore
 import Component from '../Component.vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createTestingPinia } from '@pinia/testing'
