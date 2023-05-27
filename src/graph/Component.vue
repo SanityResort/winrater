@@ -1,56 +1,60 @@
 <script lang="ts" setup>
 import * as Plot from '@observablehq/plot'
-import { Line } from '@observablehq/plot'
 import PlotFigure from './PlotFigure.vue'
 import { computed, ref } from 'vue'
+import { InternSet } from 'd3'
 
-const data = ref([])
-data.value.push(newData(1))
+const allData = ref([])
+allData.value.push(newData(1))
 
 const size = computed(() => {
-  const length = data.value.flatMap((dataElem) => dataElem).length
-  console.log('Size: ' + length)
-  return length
+  return allData.value.flatMap((dataElem) => dataElem).length
 })
 
 function newData(base): { x: number; y: number; z: number }[] {
   let x = base
   const newData = []
   for (let index = 0; index < 5; index++) {
-    newData.push(newElem(x++, data.value.length))
+    newData.push(newElem(x++, allData.value.length))
   }
 
   return newData
 }
 
 function newElem(x: number, z: number) {
-  return { x: x, y: Math.round(Math.random() * 10), z: z }
+  return { x: x, y: Math.round(Math.random() * 100) / 100, z: z }
 }
 
 function addDataElem() {
-  const size = data.value.length
+  const size = allData.value.length
   const index: number = Math.round(Math.random() * (size - 1))
-  const dataAtIndex = data.value[index]
-  console.log('Data: ' + data.value)
-  console.log('Index: ' + index)
-  console.log('DataAtIndex: ' + dataAtIndex)
+  const dataAtIndex = allData.value[index]
   dataAtIndex.push(newElem(dataAtIndex.length + 1, index))
 }
 
 function addData() {
-  data.value.push(newData(data.value.length + 1))
+  allData.value.push(newData(allData.value.length + 1))
 }
 
-function dataMarks(): Line[] {
-  return data.value.map((dataELem) => {
-    console.log('Generating marks for: ' + JSON.stringify(dataELem))
-    return Plot.line(dataELem, {
+const dataMarks = computed(() => {
+  return allData.value.map((singleData) => {
+    return Plot.line(singleData, {
       x: 'x',
       y: 'y',
       z: 'z'
     })
   })
-}
+})
+
+const ticks = computed(() => {
+  return new InternSet(
+    allData.value.flatMap((singleData) => {
+      return singleData.map((dataElem) => {
+        return dataElem.x
+      })
+    })
+  ).size
+})
 </script>
 
 <style scoped></style>
@@ -62,7 +66,19 @@ function dataMarks(): Line[] {
   <PlotFigure
     :key="size"
     :options="{
-      marks: dataMarks()
+      marks: [...dataMarks, Plot.ruleY([0]), Plot.ruleX([0], { x: 1, y1: 0, y2: 1 })],
+      y: {
+        percent: true,
+        grid: true,
+        label: '',
+        labelArrow: 'none',
+        ticks: 20
+      },
+      x: {
+        label: '',
+        labelArrow: 'none',
+        ticks
+      }
     }"
   />
 </template>

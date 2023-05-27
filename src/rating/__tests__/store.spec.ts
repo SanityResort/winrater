@@ -135,11 +135,11 @@ describe('Rating Store', () => {
       expect(graphs.length).toBe(1)
       expect(graphs[0]).toStrictEqual(
         new Graph(color, [
-          { index: 0, ratio: 100.0 },
-          { index: 1, ratio: 50.0 },
-          { index: 2, ratio: 66.67 },
-          { index: 3, ratio: 62.5 },
-          { index: 4, ratio: 60.0 }
+          { index: 0, ratio: 1 },
+          { index: 1, ratio: 0.5 },
+          { index: 2, ratio: 0.6667 },
+          { index: 3, ratio: 0.625 },
+          { index: 4, ratio: 0.6 }
         ])
       )
     })
