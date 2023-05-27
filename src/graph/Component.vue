@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as Plot from '@observablehq/plot'
 import { Line } from '@observablehq/plot'
-import PlotFigure from './PlotFigureClient.js'
+import PlotFigure from './PlotFigure.vue'
 import { computed, ref } from 'vue'
 
 const data = ref([])
