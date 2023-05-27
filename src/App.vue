@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import CoachLookup from './coachLocator/Component.vue'
 import Rating from './rating/Component.vue'
+import Graph from './graph/Component.vue'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
 
@@ -15,7 +16,7 @@ const { stores } = storeToRefs(matchStore)
     <Rating v-for="storeKey in stores.keys()" :key="storeKey" :coach-name="storeKey" />
   </header>
 
-  <main></main>
+  <main><Graph /></main>
 </template>
 
 <style scoped>
