@@ -1,20 +1,22 @@
 <script lang="ts" setup>
 import * as Plot from '@observablehq/plot'
 import PlotFigure from './PlotFigure.vue'
-import { computed, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { InternSet } from 'd3'
 
 const allData = ref([])
 allData.value.push(newData(1))
 
-const size = computed(() => {
-  return allData.value.flatMap((dataElem) => dataElem).length
+const key = computed(() => {
+  return allData.value.flatMap((dataElem) => dataElem).length + resizeCounter.value
 })
+
+const resizeCounter = ref(0)
 
 function newData(base): { x: number; y: number; z: number }[] {
   let x = base
   const newData = []
-  for (let index = 0; index < 5; index++) {
+  for (let index = 0; index < 50; index++) {
     newData.push(newElem(x++, allData.value.length))
   }
 
@@ -33,7 +35,7 @@ function addDataElem() {
 }
 
 function addData() {
-  allData.value.push(newData(allData.value.length + 1))
+  allData.value.push(newData(allData.value.length * 30))
 }
 
 const dataMarks = computed(() => {
@@ -47,14 +49,33 @@ const dataMarks = computed(() => {
 })
 
 const ticks = computed(() => {
-  return new InternSet(
-    allData.value.flatMap((singleData) => {
-      return singleData.map((dataElem) => {
-        return dataElem.x
+  return Math.min(
+    new InternSet(
+      allData.value.flatMap((singleData) => {
+        return singleData.map((dataElem) => {
+          return dataElem.x
+        })
       })
-    })
-  ).size
+    ).size,
+    parentWidth() / 50
+  )
 })
+
+function parentWidth() {
+  return window.innerWidth
+}
+
+onMounted(() => {
+  window.addEventListener('resize', resizeCallback)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', resizeCallback)
+})
+
+function resizeCallback() {
+  resizeCounter.value += 1
+}
 </script>
 
 <style scoped></style>
@@ -63,22 +84,25 @@ const ticks = computed(() => {
   <button @click.prevent="addDataElem">Element Button</button>
   <button @click.prevent="addData">Data Button</button>
 
-  <PlotFigure
-    :key="size"
-    :options="{
-      marks: [...dataMarks, Plot.ruleY([0]), Plot.ruleX([0], { x: 1, y1: 0, y2: 1 })],
-      y: {
-        percent: true,
-        grid: true,
-        label: '',
-        labelArrow: 'none',
-        ticks: 20
-      },
-      x: {
-        label: '',
-        labelArrow: 'none',
-        ticks
-      }
-    }"
-  />
+  <div id="plot">
+    <PlotFigure
+      :key="key"
+      :options="{
+        width: parentWidth(),
+        marks: [...dataMarks, Plot.ruleY([0]), Plot.ruleX([0], { x: 1, y1: 0, y2: 1 })],
+        y: {
+          percent: true,
+          grid: true,
+          label: '',
+          labelArrow: 'none',
+          ticks: 20
+        },
+        x: {
+          label: '',
+          labelArrow: 'none',
+          ticks: ticks
+        }
+      }"
+    />
+  </div>
 </template>
