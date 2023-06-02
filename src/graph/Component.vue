@@ -5,7 +5,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { InternSet } from 'd3'
 
 const allData = ref([])
-allData.value.push(newData(1))
+//allData.value.push(newData(1))
 
 const key = computed(() => {
   return allData.value.flatMap((dataElem) => dataElem).length + resizeCounter.value
@@ -89,7 +89,7 @@ function resizeCallback() {
       :key="key"
       :options="{
         width: parentWidth(),
-        marks: [...dataMarks, Plot.ruleY([0]), Plot.ruleX([0], { x: 1, y1: 0, y2: 1 })],
+        marks: [...dataMarks, Plot.ruleY([0]), Plot.ruleX([0], { x: 0, y1: 0, y2: 1 })],
         y: {
           percent: true,
           grid: true,
