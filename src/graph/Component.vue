@@ -62,6 +62,7 @@ const resizeCallback = () => {
 <template>
   <div id="plot">
     <PlotFigure
+      v-if="stores.size > 0 && modificationCounter > 0"
       :key="modificationCounter"
       :options="{
         width: parentWidth(),
