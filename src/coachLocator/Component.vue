@@ -7,6 +7,7 @@ import { Store } from '@/rating/store'
 
 const matchStore = useMatchStore()
 const { currentCoachName, stores } = storeToRefs(matchStore)
+const { setStore, deleteStore } = matchStore
 const loading = ref(false)
 const errorMessage: Ref<string> = ref('')
 
@@ -21,12 +22,12 @@ async function loadData() {
   currentCoachName.value = ''
 
   const store = new Store(coachName)
-  stores.value.set(coachName, store)
+  setStore(coachName, store)
 
   loading.value = false
 
   if (!(await load(store, errorMessage))) {
-    stores.value.delete(coachName)
+    deleteStore(coachName)
   }
 }
 </script>

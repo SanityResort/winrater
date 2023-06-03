@@ -4,10 +4,17 @@ import type { Match } from '../match'
 import { Category, Score } from '../match'
 import Color from 'color'
 import { match } from '../mapper'
+import { createTestingPinia } from '@pinia/testing'
+import { useMatchStore } from '../../pinia/store'
+import { storeToRefs } from 'pinia'
 
 vi.mock('../mapper')
 
 describe('Rating Store', () => {
+  beforeEach(() => {
+    createTestingPinia({ createSpy: vi.fn })
+  })
+
   const coachName = 'coach'
   const color = Color.rgb({ r: 0, g: 0, b: 0 })
 
@@ -110,13 +117,6 @@ describe('Rating Store', () => {
     store.fumbblMatches.value = fumbblMatches
   })
 
-  describe('configs', () => {
-    it('is initialized with default config', () => {
-      expect(store.configs.length).toBe(1)
-      expect(store.configs[0]).toStrictEqual(new GraphConfig(color, []))
-    })
-  })
-
   describe('init', () => {
     it('creates and maps matches', () => {
       vi.mocked(match).mockImplementation((fumbblMatch: FumbblMatch): Match => {
@@ -125,12 +125,19 @@ describe('Rating Store', () => {
       store.fumbblMatches.value = fumbblMatches
       store.init()
       expect(store.matches).toStrictEqual(matches)
+      expect(store.configs.length).toBe(1)
+      expect(store.configs[0]).toStrictEqual(new GraphConfig(color, []))
+
+      const matchStore = useMatchStore()
+      const { modificationCounter } = storeToRefs(matchStore)
+      expect(modificationCounter.value).toBe(1)
     })
   })
 
   describe('graphs', () => {
     it('returns data points for all matches for default config', () => {
       store.matches = matches
+      store.init()
       const graphs = store.graphs()
       expect(graphs.length).toBe(1)
       expect(graphs[0]).toStrictEqual(

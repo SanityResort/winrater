@@ -4,6 +4,7 @@ import { load } from '../service'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
 import { Store } from '../../rating/store'
+import { createTestingPinia } from '@pinia/testing'
 
 describe.each([
   { errorMessage: '', suffix: 'when no error message is present' },
@@ -23,6 +24,8 @@ describe.each([
   })
 
   beforeEach(() => {
+    createTestingPinia({ createSpy: vi.fn })
+
     errorRef = ref(parentContext.errorMessage)
     store = new Store(coachName)
     store.init = initMock

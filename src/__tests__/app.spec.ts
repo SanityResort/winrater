@@ -11,6 +11,7 @@ import StoreComponent from '../rating/Component.vue'
 
 describe('Coach locator component', () => {
   it('renders proper amount of child components', async () => {
+    createTestingPinia({ createSpy: vi.fn })
     const wrapper = mount(App, {
       global: {
         plugins: [

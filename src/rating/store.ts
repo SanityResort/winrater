@@ -4,6 +4,8 @@ import Color from 'color'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
 import { match } from './mapper'
+import { useMatchStore } from '@/pinia/store'
+import { storeToRefs } from 'pinia'
 
 export class Store {
   public coachName: string
@@ -12,11 +14,14 @@ export class Store {
 
   public matches: Match[] = []
 
-  configs: GraphConfig[] = [new GraphConfig(Color.rgb({ r: 0, g: 0, b: 0 }), [])]
+  configs: GraphConfig[] = []
+
+  private readonly matchStore
 
   constructor(coachName: string) {
     this.coachName = coachName
     this.fumbblMatches = ref([])
+    this.matchStore = useMatchStore()
   }
 
   init() {
@@ -25,6 +30,13 @@ export class Store {
       .sort((a: Match, b: Match) => {
         return a.id - b.id
       })
+    this.addConfig(new GraphConfig(Color.rgb({ r: 0, g: 0, b: 0 }), []))
+  }
+
+  addConfig(config: GraphConfig) {
+    this.configs.push(config)
+    const { modificationCounter } = storeToRefs(this.matchStore)
+    modificationCounter.value += 1
   }
 
   graphs(): Graph[] {

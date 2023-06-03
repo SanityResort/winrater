@@ -24,7 +24,9 @@ describe('Coach locator component', () => {
   })
 
   it('shows error if coach data could not be loaded', async () => {
-    const { stores } = storeToRefs(useMatchStore())
+    const matchStore = useMatchStore()
+    const { stores } = storeToRefs(matchStore)
+    const { setStore, deleteStore } = matchStore
 
     const mockedErrorMessage = 'mocked error message'
     vi.mocked(load).mockImplementation(
@@ -40,10 +42,13 @@ describe('Coach locator component', () => {
     expect(wrapper.find('.error').text()).toBe(mockedErrorMessage)
     expect(textField.text()).toBe('')
     expect(stores.value.size).toBe(0)
+    expect(setStore).toHaveBeenCalledOnce()
+    expect(deleteStore).toHaveBeenCalledOnce()
   })
 
   it('adds new store for coach data', async () => {
-    const { stores } = storeToRefs(useMatchStore())
+    const matchStore = useMatchStore()
+    const { setStore } = matchStore
     const coachName = 'givenCoachName'
 
     vi.mocked(load).mockImplementation((): Promise<boolean> => {
@@ -56,9 +61,7 @@ describe('Coach locator component', () => {
 
     expect(wrapper.find('.error').text()).toBe('')
     expect(textField.text()).toBe('')
-    expect(stores.value.size).toBe(1)
-    expect(stores.value.has(coachName))
-    expect(stores.value.get(coachName)?.coachName).toBe(coachName)
+    expect(setStore).toHaveBeenCalledOnce()
   })
 
   it('aborts for duplicate coach', async () => {
