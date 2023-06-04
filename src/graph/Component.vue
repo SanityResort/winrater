@@ -55,6 +55,29 @@ onUnmounted(() => {
 const resizeCallback = () => {
   modificationCounter.value += 1
 }
+
+const callbacks: Map<string, (MouseEvent) => void> = new Map([
+  [
+    'pointerenter',
+    (event: MouseEvent) => {
+      console.log('Entering')
+    }
+  ],
+  [
+    'pointermove',
+    (event: MouseEvent) => {
+      console.log('Moving')
+    }
+  ],
+  [
+    'pointerleave',
+    (event: MouseEvent) => {
+      console.log('Leaving')
+    }
+  ]
+])
+
+console.log('Defined Callbacks: ' + callbacks.get('pointerenter'))
 </script>
 
 <style scoped></style>
@@ -64,6 +87,7 @@ const resizeCallback = () => {
     <PlotFigure
       v-if="stores.size > 0 && modificationCounter > 0"
       :key="modificationCounter"
+      :callbacks="callbacks"
       :options="{
         width: parentWidth(),
         marks: [...dataMarks(), Plot.ruleY([0]), Plot.ruleX([0], { x: 0, y1: 0, y2: 1 })],
