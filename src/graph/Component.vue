@@ -90,7 +90,7 @@ console.log('Defined Callbacks: ' + callbacks.get('pointerenter'))
       :callbacks="callbacks"
       :options="{
         width: parentWidth(),
-        marks: [...dataMarks(), Plot.ruleY([0]), Plot.ruleX([0], { x: 0, y1: 0, y2: 1 })],
+        marks: [...dataMarks(), Plot.ruleY([0]), Plot.ruleX([0], { x: 1, y1: 0, y2: 1 })],
         y: {
           percent: true,
           grid: true,

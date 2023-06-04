@@ -48,7 +48,10 @@ export class Store {
 
     return matches.map((match, index) => {
       accumulatedScore += match.score
-      return { index: index, ratio: Math.round((accumulatedScore / (index + 1)) * 10000) / 10000 }
+      return {
+        index: index + 1,
+        ratio: Math.round((accumulatedScore / (index + 1)) * 10000) / 10000
+      }
     })
   }
 }
