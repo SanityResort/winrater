@@ -40,17 +40,20 @@ export class Store {
   }
 
   graphs(): Graph[] {
-    return this.configs.map((config) => new Graph(config.color, this.accumulated(this.matches)))
+    return this.configs.map(
+      (config, configIndex) => new Graph(config.color, this.accumulated(this.matches, configIndex))
+    )
   }
 
-  private accumulated(matches: Match[]): DataPoint[] {
+  private accumulated(matches: Match[], configIndex: number): DataPoint[] {
     let accumulatedScore: number = 0
 
     return matches.map((match, index) => {
       accumulatedScore += match.score
       return {
         index: index + 1,
-        ratio: Math.round((accumulatedScore / (index + 1)) * 10000) / 10000
+        ratio: Math.round((accumulatedScore / (index + 1)) * 10000) / 10000,
+        title: this.coachName + '_' + configIndex
       }
     })
   }
@@ -79,4 +82,5 @@ export class Graph {
 export type DataPoint = {
   index: number
   ratio: number
+  title: string
 }

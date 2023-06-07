@@ -2,8 +2,11 @@
 import * as Plot from '@observablehq/plot'
 import { h, withDirectives } from 'vue'
 import * as d3 from 'd3'
+import type { BaseType } from 'd3'
 
-const props = defineProps(['options', 'callbacks'])
+const props = defineProps(['options'])
+
+const lines = new Map<string, BaseType>()
 
 // this allows to create the plot using the render tag in template
 // noinspection JSUnusedGlobalSymbols
@@ -15,13 +18,16 @@ const render = () => {
           const plot = Plot.plot(props.options)
           el.append(plot)
 
-          const callbacks: Map<string, (event: MouseEvent) => void> = props.callbacks
           const plotDom = d3.select(plot)
-          for (let callback of callbacks) {
-            plotDom.on(callback[0], callback[1])
-          }
           const dot = plotDom.append('g').attr('display', 'none')
           dot.append('circle').attr('r', 2)
+
+          plotDom
+            .selectAll('title')
+            .nodes()
+            .forEach((node) =>
+              lines.set(d3.select(node).text(), d3.select(node).nodes()[0].parentNode.parentNode)
+            )
 
           plotDom.on('pointerenter', () => {
             dot.attr('display', null)
@@ -45,7 +51,7 @@ const render = () => {
                     return {
                       x: x,
                       y: y,
-                      z: mark.z,
+                      title: data.title,
                       stroke: mark.stroke,
                       distance: Math.hypot(x - ex, y - ey)
                     }
@@ -58,6 +64,10 @@ const render = () => {
               .attr('stroke', closest.stroke)
               .attr('fill', closest.stroke)
               .attr('display', null)
+
+            lines.forEach((line, title) => {
+              d3.select(line).attr('stroke', title === closest.title ? 'red' : ' green')
+            })
           })
         }
       }

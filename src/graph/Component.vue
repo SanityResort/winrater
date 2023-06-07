@@ -13,13 +13,14 @@ const { stores, modificationCounter } = storeToRefs(matchStore)
 function dataMarks() {
   const lines = []
   for (const value of stores.value.values()) {
-    let counter = 0
+    let counter = 1
     value.graphs().forEach((graph) => {
       lines.push(
         Plot.line(graph.dataPoints, {
           x: 'index',
           y: 'ratio',
-          z: value.coachName + '_' + counter++
+          z: counter++,
+          title: 'title'
         })
       )
     })
@@ -55,29 +56,6 @@ onUnmounted(() => {
 const resizeCallback = () => {
   modificationCounter.value += 1
 }
-
-const callbacks: Map<string, (MouseEvent) => void> = new Map([
-  [
-    'pointerenter',
-    (event: MouseEvent) => {
-      console.log('Entering')
-    }
-  ],
-  [
-    'pointermove',
-    (event: MouseEvent) => {
-      console.log('Moving')
-    }
-  ],
-  [
-    'pointerleave',
-    (event: MouseEvent) => {
-      console.log('Leaving')
-    }
-  ]
-])
-
-console.log('Defined Callbacks: ' + callbacks.get('pointerenter'))
 </script>
 
 <style scoped></style>
@@ -87,7 +65,6 @@ console.log('Defined Callbacks: ' + callbacks.get('pointerenter'))
     <PlotFigure
       v-if="stores.size > 0 && modificationCounter > 0"
       :key="modificationCounter"
-      :callbacks="callbacks"
       :options="{
         width: parentWidth(),
         marks: [...dataMarks(), Plot.ruleY([0]), Plot.ruleX([0], { x: 1, y1: 0, y2: 1 })],
@@ -102,7 +79,8 @@ console.log('Defined Callbacks: ' + callbacks.get('pointerenter'))
           label: '',
           labelArrow: 'none',
           ticks: ticks()
-        }
+        },
+        className: 'plotClass'
       }"
     />
   </div>
