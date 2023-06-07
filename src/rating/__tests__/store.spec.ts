@@ -136,17 +136,20 @@ describe('Rating Store', () => {
 
   describe('graphs', () => {
     it('returns data points for all matches for default config', () => {
+      vi.mocked(match).mockImplementation((fumbblMatch: FumbblMatch): Match => {
+        return unsortedMatches[fumbblMatches.findIndex((match) => match.id === fumbblMatch.id)]
+      })
       store.matches = matches
       store.init()
       const graphs = store.graphs()
       expect(graphs.length).toBe(1)
       expect(graphs[0]).toStrictEqual(
         new Graph(color, [
-          { index: 1, ratio: 1 },
-          { index: 2, ratio: 0.5 },
-          { index: 3, ratio: 0.6667 },
-          { index: 4, ratio: 0.625 },
-          { index: 5, ratio: 0.6 }
+          { index: 1, ratio: 1, title: 'coach_0' },
+          { index: 2, ratio: 0.5, title: 'coach_0' },
+          { index: 3, ratio: 0.6667, title: 'coach_0' },
+          { index: 4, ratio: 0.625, title: 'coach_0' },
+          { index: 5, ratio: 0.6, title: 'coach_0' }
         ])
       )
     })
