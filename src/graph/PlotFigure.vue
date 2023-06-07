@@ -28,6 +28,7 @@ const render = () => {
             .forEach((node) => {
               const d3Node = d3.select(node).nodes()[0]
               if ('parentNode' in d3Node && 'parentNode' in d3Node.parentNode) {
+                // noinspection TypeScriptValidateTypes
                 lines.set(d3.select(node).text(), d3Node.parentNode.parentNode)
               }
             })
