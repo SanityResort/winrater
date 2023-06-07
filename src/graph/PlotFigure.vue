@@ -56,7 +56,6 @@ const render = () => {
                       x: x,
                       y: y,
                       title: data.title,
-                      stroke: mark.stroke,
                       distance: Math.hypot(x - ex, y - ey)
                     }
                   })
@@ -71,9 +70,9 @@ const render = () => {
 
             lines.forEach((line, title) => {
               if (title === closest.title) {
-                d3.select(line).attr('stroke', 'red').raise()
+                d3.select(line).attr('stroke-opacity', '1').raise()
               } else {
-                d3.select(line).attr('stroke', 'green')
+                d3.select(line).attr('stroke-opacity', '0.2')
               }
             })
           })
