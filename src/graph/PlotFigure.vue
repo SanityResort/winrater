@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import * as Plot from '@observablehq/plot'
 import { h, withDirectives } from 'vue'
-import * as d3 from 'd3'
 import type { BaseType } from 'd3'
+import * as d3 from 'd3'
 
 const props = defineProps(['options'])
 
@@ -25,9 +25,12 @@ const render = () => {
           plotDom
             .selectAll('title')
             .nodes()
-            .forEach((node) =>
-              lines.set(d3.select(node).text(), d3.select(node).nodes()[0].parentNode.parentNode)
-            )
+            .forEach((node) => {
+              const d3Node = d3.select(node).nodes()[0]
+              if ('parentNode' in d3Node && 'parentNode' in d3Node.parentNode) {
+                lines.set(d3.select(node).text(), d3Node.parentNode.parentNode)
+              }
+            })
 
           plotDom.on('pointerenter', () => {
             dot.attr('display', null)
