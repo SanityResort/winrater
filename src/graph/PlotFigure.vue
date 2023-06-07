@@ -69,7 +69,11 @@ const render = () => {
               .attr('display', null)
 
             lines.forEach((line, title) => {
-              d3.select(line).attr('stroke', title === closest.title ? 'red' : ' green')
+              if (title === closest.title) {
+                d3.select(line).attr('stroke', 'red').raise()
+              } else {
+                d3.select(line).attr('stroke', 'green')
+              }
             })
           })
         }
