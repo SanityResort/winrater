@@ -3,6 +3,7 @@ import * as Plot from '@observablehq/plot'
 import { h, withDirectives } from 'vue'
 import type { BaseType } from 'd3'
 import * as d3 from 'd3'
+import Color from 'color'
 
 const props = defineProps(['options'])
 
@@ -20,7 +21,7 @@ const render = () => {
 
           const plotDom = d3.select(plot)
           const dot = plotDom.append('g').attr('display', 'none')
-          dot.append('circle').attr('r', 2)
+          dot.append('circle').attr('r', '0.25em').attr('stroke-width', '0.15em')
 
           plotDom
             .selectAll('title')
@@ -39,6 +40,9 @@ const render = () => {
 
           plotDom.on('pointerleave', () => {
             dot.attr('display', 'none')
+            lines.forEach((line) => {
+              d3.select(line).attr('stroke-opacity', '1')
+            })
           })
 
           plotDom.on('pointermove', (event: MouseEvent) => {
@@ -55,6 +59,7 @@ const render = () => {
                     return {
                       x: x,
                       y: y,
+                      stroke: d3.select(lines.get(data.title)).selectChild('path').attr('stroke'),
                       title: data.title,
                       distance: Math.hypot(x - ex, y - ey)
                     }
@@ -62,11 +67,6 @@ const render = () => {
                 }),
               (point) => point.distance
             )
-            dot
-              .attr('transform', `translate(${closest.x},${closest.y})`)
-              .attr('stroke', closest.stroke)
-              .attr('fill', closest.stroke)
-              .attr('display', null)
 
             lines.forEach((line, title) => {
               if (title === closest.title) {
@@ -75,6 +75,13 @@ const render = () => {
                 d3.select(line).attr('stroke-opacity', '0.2')
               }
             })
+
+            dot
+              .attr('transform', `translate(${closest.x},${closest.y})`)
+              .attr('stroke', closest.stroke)
+              .attr('fill', Color(closest.stroke).lightness(50).rgb().string())
+              .attr('display', null)
+              .raise()
           })
         }
       }

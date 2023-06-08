@@ -20,7 +20,8 @@ function dataMarks() {
           x: 'index',
           y: 'ratio',
           z: counter++,
-          title: 'title'
+          title: 'title',
+          stroke: graph.color.rgbNumber()
         })
       )
     })

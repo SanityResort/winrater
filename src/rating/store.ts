@@ -30,7 +30,12 @@ export class Store {
       .sort((a: Match, b: Match) => {
         return a.id - b.id
       })
-    this.addConfig(new GraphConfig(Color.rgb({ r: 0, g: 0, b: 0 }), []))
+    this.addConfig(
+      new GraphConfig(
+        Color.rgb({ r: Math.random() * 255, g: Math.random() * 255, b: Math.random() * 255 }),
+        []
+      )
+    )
   }
 
   addConfig(config: GraphConfig) {
