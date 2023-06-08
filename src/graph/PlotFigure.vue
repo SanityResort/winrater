@@ -4,6 +4,7 @@ import { h, withDirectives } from 'vue'
 import type { BaseType } from 'd3'
 import * as d3 from 'd3'
 import Color from 'color'
+import tippy, { Instance } from 'tippy.js'
 
 const props = defineProps(['options'])
 
@@ -23,6 +24,8 @@ const render = () => {
           const dot = plotDom.append('g').attr('display', 'none')
           dot.append('circle').attr('r', '0.25em').attr('stroke-width', '0.15em')
 
+          const tooltip: Instance = tippy(dot.node())
+
           plotDom
             .selectAll('title')
             .nodes()
@@ -36,6 +39,7 @@ const render = () => {
 
           plotDom.on('pointerenter', () => {
             dot.attr('display', null)
+            tooltip.show()
           })
 
           plotDom.on('pointerleave', () => {
@@ -43,6 +47,7 @@ const render = () => {
             lines.forEach((line) => {
               d3.select(line).attr('stroke-opacity', '1')
             })
+            tooltip.hide()
           })
 
           plotDom.on('pointermove', (event: MouseEvent) => {
@@ -61,7 +66,9 @@ const render = () => {
                       y: y,
                       stroke: d3.select(lines.get(data.title)).selectChild('path').attr('stroke'),
                       title: data.title,
-                      distance: Math.hypot(x - ex, y - ey)
+                      distance: Math.hypot(x - ex, y - ey),
+                      index: data.index,
+                      ratio: data.ratio
                     }
                   })
                 }),
@@ -82,6 +89,8 @@ const render = () => {
               .attr('fill', Color(closest.stroke).lightness(50).rgb().string())
               .attr('display', null)
               .raise()
+
+            tooltip.setProps({ content: closest.title })
           })
         }
       }
