@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import * as Plot from '@observablehq/plot'
-import { h, withDirectives } from 'vue'
-import type { BaseType } from 'd3'
+import {h, withDirectives} from 'vue'
+import type {BaseType} from 'd3'
 import * as d3 from 'd3'
 import Color from 'color'
-import tippy, { Instance } from 'tippy.js'
+import tippy, {Instance} from 'tippy.js'
 
 const props = defineProps(['options'])
 
@@ -45,15 +45,15 @@ const render = () => {
           const tooltip: Instance = tippy(dot.node())
 
           plotDom
-            .selectAll('title')
-            .nodes()
-            .forEach((node) => {
-              const d3Node = d3.select(node).nodes()[0]
-              if ('parentNode' in d3Node && 'parentNode' in d3Node.parentNode) {
-                // noinspection TypeScriptValidateTypes
-                lines.set(d3.select(node).text(), d3Node.parentNode.parentNode)
-              }
-            })
+              .selectAll('title')
+              .nodes()
+              .forEach((node) => {
+                const d3Node = d3.select(node).nodes()[0]
+                if ('parentNode' in d3Node && 'parentNode' in d3Node.parentNode) {
+                  // noinspection TypeScriptValidateTypes
+                  lines.set(d3.select(node).text(), d3Node.parentNode.parentNode)
+                }
+              })
 
           plotDom.on('pointerenter', () => {
             dot.attr('display', null)
@@ -83,13 +83,13 @@ const render = () => {
             })
 
             dot
-              .attr('transform', `translate(${closest.x},${closest.y})`)
-              .attr('stroke', stroke)
-              .attr('fill', Color(stroke).lightness(50).rgb().string())
-              .attr('display', null)
-              .raise()
+                .attr('transform', `translate(${closest.x},${closest.y})`)
+                .attr('stroke', stroke)
+                .attr('fill', Color(stroke).lightness(50).rgb().string())
+                .attr('display', null)
+                .raise()
 
-            tooltip.setProps({ content: closest.title })
+            tooltip.setProps({content: closest.title})
           })
         }
       }
@@ -99,5 +99,5 @@ const render = () => {
 </script>
 <template>
   <!--suppress HtmlUnknownTag -->
-  <render />
+  <render/>
 </template>
