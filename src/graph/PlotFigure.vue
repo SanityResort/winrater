@@ -24,6 +24,24 @@ const render = () => {
           const dot = plotDom.append('g').attr('display', 'none')
           dot.append('circle').attr('r', '0.25em').attr('stroke-width', '0.15em')
 
+          const xPx = plot.scale('x')?.apply
+          const yPx = plot.scale('y')?.apply
+          const dataPx = props.options.marks
+              .filter((mark) => mark.z)
+              .flatMap((mark) => {
+                return mark.data.map((data) => {
+                  const x = xPx ? xPx(data.index) : 0
+                  const y = yPx ? yPx(data.ratio * 100) : 0
+                  return {
+                    x: x,
+                    y: y,
+                    title: data.title,
+                    index: data.index,
+                    ratio: data.ratio
+                  }
+                })
+              })
+
           const tooltip: Instance = tippy(dot.node())
 
           plotDom
@@ -51,29 +69,10 @@ const render = () => {
           })
 
           plotDom.on('pointermove', (event: MouseEvent) => {
-            const xPx = plot.scale('x')?.apply
-            const yPx = plot.scale('y')?.apply
             const [ex, ey] = d3.pointer(event)
-            const closest = d3.least(
-              props.options.marks
-                .filter((mark) => mark.z)
-                .flatMap((mark) => {
-                  return mark.data.map((data) => {
-                    const x = xPx ? xPx(data.index) : 0
-                    const y = yPx ? yPx(data.ratio * 100) : 0
-                    return {
-                      x: x,
-                      y: y,
-                      stroke: d3.select(lines.get(data.title)).selectChild('path').attr('stroke'),
-                      title: data.title,
-                      distance: Math.hypot(x - ex, y - ey),
-                      index: data.index,
-                      ratio: data.ratio
-                    }
-                  })
-                }),
-              (point) => point.distance
-            )
+            const closest = d3.least(dataPx, (dataPoint) => Math.hypot(dataPoint.x - ex, dataPoint.y - ey))
+
+            const stroke = d3.select(lines.get(closest.title)).selectChild('path').attr('stroke');
 
             lines.forEach((line, title) => {
               if (title === closest.title) {
@@ -85,8 +84,8 @@ const render = () => {
 
             dot
               .attr('transform', `translate(${closest.x},${closest.y})`)
-              .attr('stroke', closest.stroke)
-              .attr('fill', Color(closest.stroke).lightness(50).rgb().string())
+              .attr('stroke', stroke)
+              .attr('fill', Color(stroke).lightness(50).rgb().string())
               .attr('display', null)
               .raise()
 
