@@ -1,5 +1,6 @@
 import type { Match } from './match'
 import { Category, Score } from './match'
+import Color from 'color'
 
 export function category(input: FumbblMatch): Category {
   switch (input.division) {
@@ -55,4 +56,8 @@ export function score(input: FumbblMatch, coachName: string): Score {
 
 export function match(input: FumbblMatch, coachName: string): Match {
   return { id: input.id, score: score(input, coachName), category: category(input) }
+}
+
+export function randomColor(): Color {
+  return Color.rgb({ r: Math.random() * 255, g: Math.random() * 255, b: Math.random() * 255 })
 }

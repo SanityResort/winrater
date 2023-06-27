@@ -3,7 +3,7 @@ import { Category } from '@/rating/match'
 import Color from 'color'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { match } from './mapper'
+import { match, randomColor } from './mapper'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
 
@@ -30,12 +30,7 @@ export class Store {
       .sort((a: Match, b: Match) => {
         return a.id - b.id
       })
-    this.addConfig(
-      new GraphConfig(
-        Color.rgb({ r: Math.random() * 255, g: Math.random() * 255, b: Math.random() * 255 }),
-        []
-      )
-    )
+    this.addConfig(new GraphConfig(randomColor(), []))
   }
 
   addConfig(config: GraphConfig) {

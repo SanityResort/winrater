@@ -1,9 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { Graph, GraphConfig, Store } from '../store'
 import type { Match } from '../match'
 import { Category, Score } from '../match'
 import Color from 'color'
-import { match } from '../mapper'
+import { match, randomColor } from '../mapper'
 import { createTestingPinia } from '@pinia/testing'
 import { useMatchStore } from '../../pinia/store'
 import { storeToRefs } from 'pinia'
@@ -112,6 +112,15 @@ describe('Rating Store', () => {
 
   let store: Store
 
+  beforeAll(() => {
+    vi.mocked(randomColor).mockImplementation((): Color => {
+      return color
+    })
+    vi.mocked(match).mockImplementation((fumbblMatch: FumbblMatch): Match => {
+      return unsortedMatches[fumbblMatches.findIndex((match) => match.id === fumbblMatch.id)]
+    })
+  })
+
   beforeEach(() => {
     store = new Store(coachName)
     store.fumbblMatches.value = fumbblMatches
@@ -119,9 +128,6 @@ describe('Rating Store', () => {
 
   describe('init', () => {
     it('creates and maps matches', () => {
-      vi.mocked(match).mockImplementation((fumbblMatch: FumbblMatch): Match => {
-        return unsortedMatches[fumbblMatches.findIndex((match) => match.id === fumbblMatch.id)]
-      })
       store.fumbblMatches.value = fumbblMatches
       store.init()
       expect(store.matches).toStrictEqual(matches)
@@ -136,9 +142,6 @@ describe('Rating Store', () => {
 
   describe('graphs', () => {
     it('returns data points for all matches for default config', () => {
-      vi.mocked(match).mockImplementation((fumbblMatch: FumbblMatch): Match => {
-        return unsortedMatches[fumbblMatches.findIndex((match) => match.id === fumbblMatch.id)]
-      })
       store.matches = matches
       store.init()
       const graphs = store.graphs()
