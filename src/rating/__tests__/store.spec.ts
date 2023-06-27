@@ -95,9 +95,9 @@ describe('Rating Store', () => {
 
   describe('init', () => {
     it('sorts matches and creates basic config', () => {
-      store.matchesRef.value = unsortedMatches
+      store.matches = unsortedMatches
       store.init()
-      expect(store.matchesRef.value).toStrictEqual(matches)
+      expect(store.matches).toStrictEqual(matches)
       expect(store.configs.length).toBe(1)
       expect(store.configs[0]).toStrictEqual(new GraphConfig(color, []))
 
@@ -130,13 +130,13 @@ describe('Rating Store', () => {
 
       store.addMatch(fumbblMatch)
 
-      expect(store.matchesRef.value).toStrictEqual(unsortedMatches.slice(0, 1))
+      expect(store.matches).toStrictEqual(unsortedMatches.slice(0, 1))
     })
   })
 
   describe('graphs', () => {
     it('returns data points for all matches for default config', () => {
-      store.matchesRef.value = matches
+      store.matches = matches
       store.init()
       const graphs = store.graphs()
       expect(graphs.length).toBe(1)

@@ -12,7 +12,7 @@ const { stores } = storeToRefs(matchStore)
 
 const key: string = props.coachName?.toString()
 const store: Store = stores.value.get(key)
-const matches = store.matchesRef
+const matches = store.matches
 </script>
 
 <style scoped></style>

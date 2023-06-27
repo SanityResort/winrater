@@ -1,8 +1,8 @@
 import type { Match } from '@/rating/match'
 import { Category } from '@/rating/match'
 import Color from 'color'
-import type { Ref } from 'vue'
-import { ref } from 'vue'
+import type { Ref, UnwrapNestedRefs } from 'vue'
+import { reactive, ref } from 'vue'
 import { match, randomColor } from './mapper'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
@@ -10,9 +10,7 @@ import { storeToRefs } from 'pinia'
 export class Store {
   public coachName: string
 
-  public matchesRef: Ref<Match[]>
-
-  private matches: Match[] = []
+  public matches: UnwrapNestedRefs<any[]>
 
   configs: GraphConfig[] = []
 
@@ -20,15 +18,14 @@ export class Store {
 
   constructor(coachName: string) {
     this.coachName = coachName
-    this.matchesRef = ref([])
+    this.matches = reactive([])
     this.matchStore = useMatchStore()
   }
 
   init() {
-    this.matchesRef.value = this.matchesRef.value.sort((a: Match, b: Match) => {
+    this.matches = this.matches.sort((a: Match, b: Match) => {
       return a.id - b.id
     })
-    this.matches = this.matchesRef.value
     this.addConfig(new GraphConfig(randomColor(), []))
   }
 
@@ -45,7 +42,7 @@ export class Store {
   }
 
   addMatch(fumbblMatch: FumbblMatch) {
-    this.matchesRef.value.push(match(fumbblMatch, this.coachName))
+    this.matches.push(match(fumbblMatch, this.coachName))
   }
 
   private accumulated(matches: Match[], configIndex: number): DataPoint[] {
