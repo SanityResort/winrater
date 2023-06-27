@@ -10,9 +10,9 @@ import { storeToRefs } from 'pinia'
 export class Store {
   public coachName: string
 
-  public fumbblMatches: Ref<FumbblMatch[]>
+  public matchesRef: Ref<Match[]>
 
-  public matches: Match[] = []
+  private matches: Match[] = []
 
   configs: GraphConfig[] = []
 
@@ -20,16 +20,15 @@ export class Store {
 
   constructor(coachName: string) {
     this.coachName = coachName
-    this.fumbblMatches = ref([])
+    this.matchesRef = ref([])
     this.matchStore = useMatchStore()
   }
 
   init() {
-    this.matches = this.fumbblMatches.value
-      .map((fumbblMatch) => match(fumbblMatch, this.coachName))
-      .sort((a: Match, b: Match) => {
-        return a.id - b.id
-      })
+    this.matchesRef.value = this.matchesRef.value.sort((a: Match, b: Match) => {
+      return a.id - b.id
+    })
+    this.matches = this.matchesRef.value
     this.addConfig(new GraphConfig(randomColor(), []))
   }
 
@@ -43,6 +42,10 @@ export class Store {
     return this.configs.map(
       (config, configIndex) => new Graph(config.color, this.accumulated(this.matches, configIndex))
     )
+  }
+
+  addMatch(fumbblMatch: FumbblMatch) {
+    this.matchesRef.value.push(match(fumbblMatch, this.coachName))
   }
 
   private accumulated(matches: Match[], configIndex: number): DataPoint[] {

@@ -18,43 +18,14 @@ describe('Rating Store', () => {
   const coachName = 'coach'
   const color = Color.rgb({ r: 0, g: 0, b: 0 })
 
-  const fumbblMatches: FumbblMatch[] = [
-    {
-      id: 51,
-      division: '',
-      scheduler: '',
-      team1: { coach: { name: '' }, score: 0 },
-      team2: { coach: { name: '' }, score: 0 }
-    },
-    {
-      id: 4,
-      division: '',
-      scheduler: '',
-      team1: { coach: { name: '' }, score: 0 },
-      team2: { coach: { name: '' }, score: 0 }
-    },
-    {
-      id: 12,
-      division: '',
-      scheduler: '',
-      team1: { coach: { name: '' }, score: 0 },
-      team2: { coach: { name: '' }, score: 0 }
-    },
-    {
-      id: 30,
-      division: '',
-      scheduler: '',
-      team1: { coach: { name: '' }, score: 0 },
-      team2: { coach: { name: '' }, score: 0 }
-    },
-    {
-      id: 23,
-      division: '',
-      scheduler: '',
-      team1: { coach: { name: '' }, score: 0 },
-      team2: { coach: { name: '' }, score: 0 }
-    }
-  ]
+  const fumbblMatch: FumbblMatch = {
+    id: 51,
+    division: '',
+    scheduler: '',
+    team1: { coach: { name: '' }, score: 0 },
+    team2: { coach: { name: '' }, score: 0 }
+  }
+
   const unsortedMatches: Match[] = [
     {
       id: 51,
@@ -116,21 +87,17 @@ describe('Rating Store', () => {
     vi.mocked(randomColor).mockImplementation((): Color => {
       return color
     })
-    vi.mocked(match).mockImplementation((fumbblMatch: FumbblMatch): Match => {
-      return unsortedMatches[fumbblMatches.findIndex((match) => match.id === fumbblMatch.id)]
-    })
   })
 
   beforeEach(() => {
     store = new Store(coachName)
-    store.fumbblMatches.value = fumbblMatches
   })
 
   describe('init', () => {
-    it('creates and maps matches', () => {
-      store.fumbblMatches.value = fumbblMatches
+    it('sorts matches and creates basic config', () => {
+      store.matchesRef.value = unsortedMatches
       store.init()
-      expect(store.matches).toStrictEqual(matches)
+      expect(store.matchesRef.value).toStrictEqual(matches)
       expect(store.configs.length).toBe(1)
       expect(store.configs[0]).toStrictEqual(new GraphConfig(color, []))
 
@@ -140,9 +107,36 @@ describe('Rating Store', () => {
     })
   })
 
+  describe('addConfig', () => {
+    it('adds to config array', () => {
+      const config: GraphConfig = new GraphConfig(color, [])
+
+      store.addConfig(config)
+
+      const matchStore = useMatchStore()
+      const { modificationCounter } = storeToRefs(matchStore)
+      expect(modificationCounter.value).toBe(1)
+
+      expect(store.configs).toStrictEqual([config])
+    })
+  })
+
+  describe('addMatch', () => {
+    it('converts match', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      vi.mocked(match).mockImplementation((ignored: FumbblMatch): Match => {
+        return unsortedMatches[0]
+      })
+
+      store.addMatch(fumbblMatch)
+
+      expect(store.matchesRef.value).toStrictEqual(unsortedMatches.slice(0, 1))
+    })
+  })
+
   describe('graphs', () => {
     it('returns data points for all matches for default config', () => {
-      store.matches = matches
+      store.matchesRef.value = matches
       store.init()
       const graphs = store.graphs()
       expect(graphs.length).toBe(1)

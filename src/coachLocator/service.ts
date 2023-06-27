@@ -40,7 +40,7 @@ export async function load(store: Store, errorMessage: Ref<string>): Promise<boo
     lastResponse = await (await window.fetch(url)).json()
     for (const element of lastResponse) {
       if (element.id != lastId) {
-        store.fumbblMatches.value.push(element)
+        store.addMatch(element)
         lastId = element.id
       }
     }

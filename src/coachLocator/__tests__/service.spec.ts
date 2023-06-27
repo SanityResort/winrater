@@ -12,6 +12,7 @@ describe.each([
 ])('coach lookup service', (parentContext) => {
   let fetchMock: Mock
   let initMock: Mock
+  let addMock: Mock
 
   let errorRef: Ref<string>
   const coachName = 'name'
@@ -21,6 +22,7 @@ describe.each([
     fetchMock = vi.fn().mockImplementation(window.fetch)
     window.fetch = fetchMock
     initMock = vi.fn()
+    addMock = vi.fn()
   })
 
   beforeEach(() => {
@@ -29,6 +31,7 @@ describe.each([
     errorRef = ref(parentContext.errorMessage)
     store = new Store(coachName)
     store.init = initMock
+    store.addMatch = addMock
 
     fetchMock.mockImplementation((url: string) => {
       let response: { id: number; name?: string }[] = []
@@ -53,8 +56,6 @@ describe.each([
   it.each([{ suffix: parentContext.suffix }])('calls fumbbl api $suffix', async () => {
     const result: boolean = await load(store, errorRef)
 
-    const expected: { id: number }[] = [{ id: 3 }, { id: 2 }, { id: 1 }, { id: 0 }]
-
     expect(fetchMock).toHaveBeenCalledTimes(4)
     expect(fetchMock).toHaveBeenCalledWith('https://fumbbl.com/api/coach/search/name')
     expect(fetchMock).toHaveBeenCalledWith('https://fumbbl.com/api/match/list/name')
@@ -63,7 +64,11 @@ describe.each([
 
     expect(initMock).toHaveBeenCalledTimes(1)
 
-    expect(store.fumbblMatches.value).toStrictEqual(expected)
+    expect(store.addMatch).toHaveBeenCalledTimes(4)
+    expect(store.addMatch).toHaveBeenCalledWith({ id: 3 })
+    expect(store.addMatch).toHaveBeenCalledWith({ id: 2 })
+    expect(store.addMatch).toHaveBeenCalledWith({ id: 1 })
+    expect(store.addMatch).toHaveBeenCalledWith({ id: 0 })
     expect(errorRef.value).toBe('')
 
     expect(result).toBeTruthy()
@@ -78,7 +83,7 @@ describe.each([
 
     expect(initMock).toHaveBeenCalledTimes(0)
 
-    expect(store.matches).toStrictEqual([])
+    expect(store.addMatch).toHaveBeenCalledTimes(0)
     expect(errorRef.value).toBe("Unknown coach 'foo'")
 
     expect(result).toBeFalsy()
@@ -95,7 +100,7 @@ describe.each([
     expect(fetchMock).toHaveBeenCalledTimes(0)
     expect(initMock).toHaveBeenCalledTimes(0)
 
-    expect(store.matches).toStrictEqual([])
+    expect(store.addMatch).toHaveBeenCalledTimes(0)
     expect(errorRef.value).toBe('No coach name given')
 
     expect(result).toBeFalsy()

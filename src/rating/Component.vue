@@ -12,11 +12,11 @@ const { stores } = storeToRefs(matchStore)
 
 const key: string = props.coachName?.toString()
 const store: Store = stores.value.get(key)
-const fumbblMatches = store.fumbblMatches
+const matches = store.matchesRef
 </script>
 
 <style scoped></style>
 
 <template>
-  <div class="store">{{ coachName }}: {{ fumbblMatches.length }}</div>
+  <div class="store">{{ coachName }}: {{ matches.length }}</div>
 </template>
