@@ -21,7 +21,7 @@ function dataMarks() {
           y: 'ratio',
           z: counter++,
           title: 'title',
-          stroke: graph.color.rgbNumber()
+          stroke: graph.color.rgb().string()
         })
       )
     })

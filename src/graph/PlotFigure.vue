@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import * as Plot from '@observablehq/plot'
-import {h, withDirectives} from 'vue'
-import type {BaseType} from 'd3'
+import { h, withDirectives } from 'vue'
+import type { BaseType } from 'd3'
 import * as d3 from 'd3'
 import Color from 'color'
-import tippy, {Instance} from 'tippy.js'
+import tippy, { Instance } from 'tippy.js'
 
 const props = defineProps(['options'])
 
@@ -27,33 +27,33 @@ const render = () => {
           const xPx = plot.scale('x')?.apply
           const yPx = plot.scale('y')?.apply
           const dataPx = props.options.marks
-              .filter((mark) => mark.z)
-              .flatMap((mark) => {
-                return mark.data.map((data) => {
-                  const x = xPx ? xPx(data.index) : 0
-                  const y = yPx ? yPx(data.ratio * 100) : 0
-                  return {
-                    x: x,
-                    y: y,
-                    title: data.title,
-                    index: data.index,
-                    ratio: data.ratio
-                  }
-                })
+            .filter((mark) => mark.z)
+            .flatMap((mark) => {
+              return mark.data.map((data) => {
+                const x = xPx ? xPx(data.index) : 0
+                const y = yPx ? yPx(data.ratio * 100) : 0
+                return {
+                  x: x,
+                  y: y,
+                  title: data.title,
+                  index: data.index,
+                  ratio: data.ratio
+                }
               })
+            })
 
           const tooltip: Instance = tippy(dot.node())
 
           plotDom
-              .selectAll('title')
-              .nodes()
-              .forEach((node) => {
-                const d3Node = d3.select(node).nodes()[0]
-                if ('parentNode' in d3Node && 'parentNode' in d3Node.parentNode) {
-                  // noinspection TypeScriptValidateTypes
-                  lines.set(d3.select(node).text(), d3Node.parentNode.parentNode)
-                }
-              })
+            .selectAll('title')
+            .nodes()
+            .forEach((node) => {
+              const d3Node = d3.select(node).nodes()[0]
+              if ('parentNode' in d3Node && 'parentNode' in d3Node.parentNode) {
+                // noinspection TypeScriptValidateTypes
+                lines.set(d3.select(node).text(), d3Node.parentNode.parentNode)
+              }
+            })
 
           plotDom.on('pointerenter', () => {
             dot.attr('display', null)
@@ -70,9 +70,11 @@ const render = () => {
 
           plotDom.on('pointermove', (event: MouseEvent) => {
             const [ex, ey] = d3.pointer(event)
-            const closest = d3.least(dataPx, (dataPoint) => Math.hypot(dataPoint.x - ex, dataPoint.y - ey))
+            const closest = d3.least(dataPx, (dataPoint) =>
+              Math.hypot(dataPoint.x - ex, dataPoint.y - ey)
+            )
 
-            const stroke = d3.select(lines.get(closest.title)).selectChild('path').attr('stroke');
+            const stroke = d3.select(lines.get(closest.title)).attr('stroke')
 
             lines.forEach((line, title) => {
               if (title === closest.title) {
@@ -83,13 +85,13 @@ const render = () => {
             })
 
             dot
-                .attr('transform', `translate(${closest.x},${closest.y})`)
-                .attr('stroke', stroke)
-                .attr('fill', Color(stroke).lightness(50).rgb().string())
-                .attr('display', null)
-                .raise()
+              .attr('transform', `translate(${closest.x},${closest.y})`)
+              .attr('stroke', stroke)
+              .attr('fill', Color(stroke).lightness(50).rgb().string())
+              .attr('display', null)
+              .raise()
 
-            tooltip.setProps({content: closest.title})
+            tooltip.setProps({ content: closest.title })
           })
         }
       }
@@ -99,5 +101,5 @@ const render = () => {
 </script>
 <template>
   <!--suppress HtmlUnknownTag -->
-  <render/>
+  <render />
 </template>
