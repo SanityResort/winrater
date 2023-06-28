@@ -18,7 +18,7 @@ describe('Rating Store', () => {
   const coachName = 'coach'
   const color = Color.rgb({ r: 0, g: 0, b: 0 })
 
-  const fumbblMatch: FumbblMatch = {
+  const fumbblMatch1: FumbblMatch = {
     id: 51,
     division: '',
     scheduler: '',
@@ -26,33 +26,53 @@ describe('Rating Store', () => {
     team2: { coach: { name: '' }, score: 0 }
   }
 
-  const unsortedMatches: Match[] = [
-    {
-      id: 51,
-      category: Category.Blackbox,
-      score: Score.Draw
-    },
-    {
-      id: 4,
-      category: Category.Competitive,
-      score: Score.Win
-    },
-    {
-      id: 12,
-      category: Category.League,
-      score: Score.Loss
-    },
-    {
-      id: 30,
-      category: Category.Blackbox,
-      score: Score.Draw
-    },
-    {
-      id: 23,
-      category: Category.League,
-      score: Score.Win
-    }
-  ]
+  const fumbblMatch2: FumbblMatch = {
+    id: 4,
+    division: '',
+    scheduler: '',
+    team1: { coach: { name: '' }, score: 0 },
+    team2: { coach: { name: '' }, score: 0 }
+  }
+
+  const fumbblMatch3: FumbblMatch = {
+    id: 30,
+    division: '',
+    scheduler: '',
+    team1: { coach: { name: '' }, score: 0 },
+    team2: { coach: { name: '' }, score: 0 }
+  }
+
+  let unsortedMatches: Match[]
+  function createUnsortedMatches() {
+    return [
+      {
+        id: 51,
+        category: Category.Blackbox,
+        score: Score.Draw
+      },
+      {
+        id: 4,
+        category: Category.Competitive,
+        score: Score.Win
+      },
+      {
+        id: 30,
+        category: Category.Blackbox,
+        score: Score.Draw
+      },
+      {
+        id: 12,
+        category: Category.League,
+        score: Score.Loss
+      },
+      {
+        id: 23,
+        category: Category.League,
+        score: Score.Win
+      }
+    ]
+  }
+
   const matches: Match[] = [
     {
       id: 4,
@@ -91,6 +111,7 @@ describe('Rating Store', () => {
 
   beforeEach(() => {
     store = new Store(coachName)
+    unsortedMatches = createUnsortedMatches()
   })
 
   describe('init', () => {
@@ -122,15 +143,24 @@ describe('Rating Store', () => {
   })
 
   describe('addMatch', () => {
-    it('converts match', () => {
+    it('converts matches', () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      vi.mocked(match).mockImplementation((ignored: FumbblMatch): Match => {
-        return unsortedMatches[0]
+      vi.mocked(match).mockImplementation((fumbblMatch: FumbblMatch): Match => {
+        if (fumbblMatch.id === fumbblMatch1.id) {
+          return unsortedMatches[0]
+        }
+        if (fumbblMatch.id === fumbblMatch2.id) {
+          return unsortedMatches[1]
+        }
+        return unsortedMatches[2]
       })
 
-      store.addMatch(fumbblMatch)
+      store.addMatch(fumbblMatch1)
+      store.addMatch(fumbblMatch2)
+      store.addMatch(fumbblMatch3)
 
-      expect(store.matches).toStrictEqual(unsortedMatches.slice(0, 1))
+      expect(store.matches).toStrictEqual(unsortedMatches.slice(0, 3))
+      expect(store.categories).toStrictEqual([Category.Blackbox, Category.Competitive])
     })
   })
 
