@@ -1,87 +1,106 @@
 import { describe, expect, it } from 'vitest'
 
 import * as mapper from '../mapper'
-import { Category, Score } from '../match'
+import {
+  Academy,
+  Blackbox,
+  Competitive,
+  DivX,
+  Faction,
+  Fantasy_Football,
+  FFB_Test,
+  Ladder,
+  League,
+  Legacy_Blackbox,
+  LRB4,
+  Ranked,
+  Score,
+  Stunty_Leeg,
+  Transfer,
+  Transfer2,
+  Unknown,
+  Unranked
+} from '../match'
 
 describe('Rating Mapper', () => {
   describe('category', () => {
     it.each([
       {
         match: { division: 'Competitive', scheduler: 'Blackbox' } as FumbblMatch,
-        category: Category.Blackbox
+        category: Blackbox
       },
       {
         match: { division: 'Competitive', scheduler: 'None' } as FumbblMatch,
-        category: Category.Competitive
+        category: Competitive
       },
       {
         match: { division: 'Competitive', scheduler: 'Gamefinder' } as FumbblMatch,
-        category: Category.Competitive
+        category: Competitive
       },
       {
         match: { division: 'Blackbox', scheduler: 'None' } as FumbblMatch,
-        category: Category.Legacy_Blackbox
+        category: Legacy_Blackbox
       },
       {
         match: { division: 'Blackbox', scheduler: 'Gamefinder' } as FumbblMatch,
-        category: Category.Legacy_Blackbox
+        category: Legacy_Blackbox
       },
       {
         match: { division: 'League', scheduler: 'None' } as FumbblMatch,
-        category: Category.League
+        category: League
       },
       {
         match: { division: 'Ranked', scheduler: 'Gamefinder' } as FumbblMatch,
-        category: Category.Ranked
+        category: Ranked
       },
       {
         match: { division: 'Ranked', scheduler: 'None' } as FumbblMatch,
-        category: Category.Ranked
+        category: Ranked
       },
       {
         match: { division: 'Unranked', scheduler: 'None' } as FumbblMatch,
-        category: Category.Unranked
+        category: Unranked
       },
       {
         match: { division: 'Stunty Leeg', scheduler: 'None' } as FumbblMatch,
-        category: Category.Stunty_Leeg
+        category: Stunty_Leeg
       },
       {
         match: { division: 'DivX Legacy', scheduler: 'None' } as FumbblMatch,
-        category: Category.DivX
+        category: DivX
       },
       {
         match: { division: 'Academy', scheduler: 'None' } as FumbblMatch,
-        category: Category.Academy
+        category: Academy
       },
       {
         match: { division: 'Faction', scheduler: 'None' } as FumbblMatch,
-        category: Category.Faction
+        category: Faction
       },
       {
         match: { division: 'FFB Test', scheduler: 'None' } as FumbblMatch,
-        category: Category.FFB_Test
+        category: FFB_Test
       },
       {
         match: { division: 'Fantasy Football', scheduler: 'None' } as FumbblMatch,
-        category: Category.Fantasy_Football
+        category: Fantasy_Football
       },
-      { match: { division: 'LRB4', scheduler: 'None' } as FumbblMatch, category: Category.LRB4 },
+      { match: { division: 'LRB4', scheduler: 'None' } as FumbblMatch, category: LRB4 },
       {
         match: { division: 'Transfer Division', scheduler: 'None' } as FumbblMatch,
-        category: Category.Transfer
+        category: Transfer
       },
       {
         match: { division: 'Transfer Division 2', scheduler: 'None' } as FumbblMatch,
-        category: Category.Transfer2
+        category: Transfer2
       },
       {
         match: { division: 'Ladder', scheduler: 'None' } as FumbblMatch,
-        category: Category.Ladder
+        category: Ladder
       },
       {
         match: { division: 'Unknown', scheduler: 'None' } as FumbblMatch,
-        category: Category.Unknown
+        category: Unknown
       }
     ])('maps $match.division and $match.scheduler to $category', (param) => {
       expect(mapper.category(param.match)).toBe(param.category)
@@ -201,7 +220,7 @@ describe('Rating Mapper', () => {
       expect(mapper.match(input, 'coach1')).toStrictEqual({
         id: 123,
         score: Score.Draw,
-        category: Category.Blackbox
+        category: Blackbox
       })
     })
   })

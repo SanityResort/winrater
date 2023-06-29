@@ -1,5 +1,4 @@
-import type { Match } from '@/rating/match'
-import { Category } from '@/rating/match'
+import type { Category, Match } from '@/rating/match'
 import Color from 'color'
 import type { UnwrapNestedRefs } from 'vue'
 import { reactive } from 'vue'

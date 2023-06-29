@@ -1,7 +1,7 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { Graph, GraphConfig, Store } from '../store'
 import type { Match } from '../match'
-import { Category, Score } from '../match'
+import { Blackbox, Competitive, League, Score } from '../match'
 import Color from 'color'
 import { match, randomColor } from '../mapper'
 import { createTestingPinia } from '@pinia/testing'
@@ -47,27 +47,27 @@ describe('Rating Store', () => {
     return [
       {
         id: 51,
-        category: Category.Blackbox,
+        category: Blackbox,
         score: Score.Draw
       },
       {
         id: 4,
-        category: Category.Competitive,
+        category: Competitive,
         score: Score.Win
       },
       {
         id: 30,
-        category: Category.Blackbox,
+        category: Blackbox,
         score: Score.Draw
       },
       {
         id: 12,
-        category: Category.League,
+        category: League,
         score: Score.Loss
       },
       {
         id: 23,
-        category: Category.League,
+        category: League,
         score: Score.Win
       }
     ]
@@ -76,27 +76,27 @@ describe('Rating Store', () => {
   const matches: Match[] = [
     {
       id: 4,
-      category: Category.Competitive,
+      category: Competitive,
       score: Score.Win
     },
     {
       id: 12,
-      category: Category.League,
+      category: League,
       score: Score.Loss
     },
     {
       id: 23,
-      category: Category.League,
+      category: League,
       score: Score.Win
     },
     {
       id: 30,
-      category: Category.Blackbox,
+      category: Blackbox,
       score: Score.Draw
     },
     {
       id: 51,
-      category: Category.Blackbox,
+      category: Blackbox,
       score: Score.Draw
     }
   ]
@@ -160,7 +160,7 @@ describe('Rating Store', () => {
       store.addMatch(fumbblMatch3)
 
       expect(store.matches).toStrictEqual(unsortedMatches.slice(0, 3))
-      expect(store.categories).toStrictEqual([Category.Blackbox, Category.Competitive])
+      expect(store.categories).toStrictEqual([Blackbox, Competitive])
     })
   })
 

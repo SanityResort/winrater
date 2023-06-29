@@ -1,44 +1,63 @@
-import type { Match } from './match'
-import { Category, Score } from './match'
+import type { Category, Match } from './match'
+import {
+  Academy,
+  Blackbox,
+  Competitive,
+  DivX,
+  Faction,
+  Fantasy_Football,
+  FFB_Test,
+  Ladder,
+  League,
+  Legacy_Blackbox,
+  LRB4,
+  Ranked,
+  Score,
+  Stunty_Leeg,
+  Transfer,
+  Transfer2,
+  Unknown,
+  Unranked
+} from './match'
 import Color from 'color'
 
 export function category(input: FumbblMatch): Category {
   switch (input.division) {
     case 'Competitive':
       if (input.scheduler === 'Blackbox') {
-        return Category.Blackbox
+        return Blackbox
       }
-      return Category.Competitive
+      return Competitive
     case 'Blackbox':
-      return Category.Legacy_Blackbox
+      return Legacy_Blackbox
     case 'League':
-      return Category.League
+      return League
     case 'Ranked':
-      return Category.Ranked
+      return Ranked
     case 'Unranked':
-      return Category.Unranked
+      return Unranked
     case 'Stunty Leeg':
-      return Category.Stunty_Leeg
+      return Stunty_Leeg
     case 'DivX Legacy':
-      return Category.DivX
+      return DivX
     case 'Academy':
-      return Category.Academy
+      return Academy
     case 'Faction':
-      return Category.Faction
+      return Faction
     case 'FFB Test':
-      return Category.FFB_Test
+      return FFB_Test
     case 'Fantasy Football':
-      return Category.Fantasy_Football
+      return Fantasy_Football
     case 'LRB4':
-      return Category.LRB4
+      return LRB4
     case 'Transfer Division':
-      return Category.Transfer
+      return Transfer
     case 'Transfer Division 2':
-      return Category.Transfer2
+      return Transfer2
     case 'Ladder':
-      return Category.Ladder
+      return Ladder
     default:
-      return Category.Unknown
+      return Unknown
   }
 }
 
