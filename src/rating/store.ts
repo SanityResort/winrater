@@ -27,7 +27,12 @@ export class Store {
     this.matches.sort((a: Match, b: Match) => {
       return a.id - b.id
     })
-    this.addConfig(new GraphConfig(randomColor(), []))
+    this.addConfig(
+      new GraphConfig(
+        randomColor(),
+        this.categories.filter((cat) => cat.valid)
+      )
+    )
   }
 
   addConfig(config: GraphConfig) {

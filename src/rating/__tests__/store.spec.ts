@@ -1,7 +1,7 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { Graph, GraphConfig, Store } from '../store'
 import type { Match } from '../match'
-import { Blackbox, Competitive, League, Score } from '../match'
+import { Blackbox, Competitive, FFB_Test, League, Score } from '../match'
 import Color from 'color'
 import { match, randomColor } from '../mapper'
 import { createTestingPinia } from '@pinia/testing'
@@ -117,10 +117,13 @@ describe('Rating Store', () => {
   describe('init', () => {
     it('sorts matches and creates basic config', () => {
       store.matches = unsortedMatches
+      store.categories = [Blackbox, Competitive, FFB_Test, League]
       store.init()
       expect(store.matches).toStrictEqual(matches)
       expect(store.configs.length).toBe(1)
-      expect(store.configs[0]).toStrictEqual(new GraphConfig(color, []))
+      expect(store.configs[0]).toStrictEqual(
+        new GraphConfig(color, [Blackbox, Competitive, League])
+      )
 
       const matchStore = useMatchStore()
       const { modificationCounter } = storeToRefs(matchStore)
