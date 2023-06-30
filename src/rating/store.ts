@@ -43,7 +43,14 @@ export class Store {
 
   graphs(): Graph[] {
     return this.configs.map(
-      (config, configIndex) => new Graph(config.color, this.accumulated(this.matches, configIndex))
+      (config, configIndex) =>
+        new Graph(
+          config.color,
+          this.accumulated(
+            this.matches.filter((match) => config.categories.indexOf(match.category) > -1),
+            configIndex
+          )
+        )
     )
   }
 

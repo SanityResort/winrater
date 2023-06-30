@@ -170,6 +170,7 @@ describe('Rating Store', () => {
   describe('graphs', () => {
     it('returns data points for all matches for default config', () => {
       store.matches = matches
+      store.categories = [Blackbox, Competitive, FFB_Test, League]
       store.init()
       const graphs = store.graphs()
       expect(graphs.length).toBe(1)
@@ -180,6 +181,20 @@ describe('Rating Store', () => {
           { index: 3, ratio: 0.6667, title: 'coach_0' },
           { index: 4, ratio: 0.625, title: 'coach_0' },
           { index: 5, ratio: 0.6, title: 'coach_0' }
+        ])
+      )
+    })
+
+    it('returns data points for blackbox matches for blackbox config', () => {
+      store.matches = matches
+      store.categories = [Blackbox]
+      store.init()
+      const graphs = store.graphs()
+      expect(graphs.length).toBe(1)
+      expect(graphs[0]).toStrictEqual(
+        new Graph(color, [
+          { index: 1, ratio: 0.5, title: 'coach_0' },
+          { index: 2, ratio: 0.5, title: 'coach_0' }
         ])
       )
     })
