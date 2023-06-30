@@ -16,9 +16,14 @@ const matches = store.matches
 const categories = store.categories
 </script>
 
-<style scoped></style>
+<style scoped>
+.category {
+  display: block;
+  background: blue;
+}
+</style>
 
 <template>
   <div class="store">{{ coachName }}: {{ matches.length }}</div>
-  <div>{{ categories }}</div>
+  <div v-for="category in categories" :key="category" class="category">{{ category.name }}</div>
 </template>
