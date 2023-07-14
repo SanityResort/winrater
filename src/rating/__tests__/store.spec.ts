@@ -47,7 +47,7 @@ describe('Rating Store', () => {
     return [
       {
         id: 51,
-        category: Blackbox,
+        category: Competitive,
         score: Score.Draw
       },
       {
@@ -96,7 +96,7 @@ describe('Rating Store', () => {
     },
     {
       id: 51,
-      category: Blackbox,
+      category: Competitive,
       score: Score.Draw
     }
   ]
@@ -185,16 +185,16 @@ describe('Rating Store', () => {
       )
     })
 
-    it('returns data points for blackbox matches for blackbox config', () => {
+    it('returns data points for competitive matches for blackbox config', () => {
       store.matches = matches
-      store.categories = [Blackbox]
+      store.categories = [Competitive]
       store.init()
       const graphs = store.graphs()
       expect(graphs.length).toBe(1)
       expect(graphs[0]).toStrictEqual(
         new Graph(color, [
-          { index: 1, ratio: 0.5, title: 'coach_0' },
-          { index: 2, ratio: 0.5, title: 'coach_0' }
+          { index: 1, ratio: 1.0, title: 'coach_0' },
+          { index: 2, ratio: 0.75, title: 'coach_0' }
         ])
       )
     })

@@ -60,7 +60,9 @@ export class Store {
 
     if (this.categories.indexOf(newMatch.category) < 0) {
       this.categories.push(newMatch.category)
-      this.categories.sort((a: Category, b: Category) => a.toString().localeCompare(b.toString()))
+      this.categories.sort((a: Category, b: Category) =>
+        a.name.toString().localeCompare(b.name.toString())
+      )
     }
   }
 
