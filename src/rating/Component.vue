@@ -17,15 +17,22 @@ const matches = store.matches
 const categories = store.categories
 </script>
 
-<style scoped></style>
+<style scoped>
+.labels {
+  display: flex;
+  flex-flow: row wrap;
+}
+</style>
 
 <template>
   <div class="store">{{ coachName }}: {{ matches.length }}</div>
-  <CategoryLabel
-    v-for="category in categories"
-    :key="category"
-    :background="category.background"
-    :foreground="category.foreground"
-    :name="category.name"
-  />
+  <div class="labels">
+    <CategoryLabel
+      v-for="category in categories"
+      :key="category"
+      :background="category.background"
+      :foreground="category.foreground"
+      :name="category.name"
+    />
+  </div>
 </template>
