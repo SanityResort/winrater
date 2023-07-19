@@ -31,8 +31,8 @@ const categories = store.categories
     <CategoryLabel
       v-for="category in categories"
       :key="category"
-      :background="category.background"
-      :foreground="category.foreground"
+      :definedBackground="category.background"
+      :definedForeground="category.foreground"
       :name="category.name"
     />
   </div>

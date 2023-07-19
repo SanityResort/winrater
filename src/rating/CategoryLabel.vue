@@ -7,11 +7,19 @@
 <script setup lang="ts">
 import Color from 'color'
 
-defineProps({
-  background: Color,
-  foreground: Color,
-  name: String
+const props = defineProps({
+  definedBackground: Color,
+  definedForeground: Color,
+  name: String,
+  active: Boolean
 })
+
+const foreground = props.active
+  ? props.definedForeground
+  : (props.definedForeground as Color).alpha(0.75)
+const background = props.active
+  ? props.definedBackground
+  : (props.definedBackground as Color).alpha(0.25)
 </script>
 
 <style scoped>
