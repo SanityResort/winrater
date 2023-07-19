@@ -21,6 +21,7 @@ const categories = store.categories
 .labels {
   display: flex;
   flex-flow: row wrap;
+  font-size: 0.75em;
 }
 </style>
 

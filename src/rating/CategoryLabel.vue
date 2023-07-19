@@ -1,5 +1,5 @@
 <template>
-  <div class="category" :style="{ background: background, color: foreground }">
+  <div class="category">
     {{ name }}
   </div>
 </template>
@@ -16,6 +16,12 @@ defineProps({
 
 <style scoped>
 .category {
-  display: block;
+  background: v-bind(background);
+  border-color: lightgray;
+  border-radius: 1em;
+  border-style: ridge;
+  color: v-bind(foreground);
+  margin: 0 0.25em;
+  padding: 0 0.5em;
 }
 </style>
