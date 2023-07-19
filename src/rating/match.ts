@@ -115,3 +115,23 @@ export const Unknown = {
   foreground: Color.rgb({ r: 255, g: 255, b: 255 }),
   background: Color.rgb({ r: 255, g: 0, b: 0 })
 } as const satisfies Category
+
+export const allCategories: Category[] = [
+  Blackbox,
+  Competitive,
+  League,
+  Legacy_Blackbox,
+  Faction,
+  Fantasy_Football,
+  Ranked,
+  Unranked,
+  Academy,
+  Unranked,
+  Ladder,
+  Transfer,
+  Transfer2,
+  LRB4,
+  Stunty_Leeg,
+  FFB_Test,
+  DivX
+]

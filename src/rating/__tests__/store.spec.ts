@@ -163,7 +163,7 @@ describe('Rating Store', () => {
       store.addMatch(fumbblMatch3)
 
       expect(store.matches).toStrictEqual(unsortedMatches.slice(0, 3))
-      expect(store.categories).toStrictEqual([Blackbox, Competitive])
+      expect(store.selectedCategories).toStrictEqual([Blackbox, Competitive])
     })
   })
 
