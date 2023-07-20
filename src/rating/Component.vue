@@ -10,7 +10,8 @@ const props = defineProps({
 })
 
 const matchStore = useMatchStore()
-const { stores, modificationCounter } = storeToRefs(matchStore)
+const { stores } = storeToRefs(matchStore)
+let { modificationCounter } = storeToRefs(matchStore)
 
 const key: string = props.coachName.toString()
 const store: Store = stores.value.get(key)
@@ -20,6 +21,9 @@ const configs = store.configs
 
 function removeStore() {
   stores.value.delete(key)
+  if (stores.value.size == 0) {
+    modificationCounter.value = 0
+  }
 }
 
 function addConfig() {
@@ -60,7 +64,8 @@ function addConfig() {
   <div class="rating">
     <div class="coachData">
       <div class="store">
-        {{ coachName }}: {{ matches.length }} <button @click="addConfig()">Add config</button>
+        {{ coachName }}: {{ matches.length }}
+        <button @click="addConfig()">Add config</button>
         <button @click="removeStore()">Remove</button>
       </div>
       <div class="labels">

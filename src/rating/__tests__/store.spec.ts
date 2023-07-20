@@ -155,6 +155,10 @@ describe('Rating Store', () => {
 
       store.removeConfig(configToRemove)
 
+      const matchStore = useMatchStore()
+      const { modificationCounter } = storeToRefs(matchStore)
+      expect(modificationCounter.value).toBe(1)
+
       expect(store.configs).toStrictEqual([configToKeep])
     })
 

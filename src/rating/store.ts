@@ -46,6 +46,8 @@ export class Store {
     if (index >= 0) {
       this.configs.splice(index, 1)
     }
+    const { modificationCounter } = storeToRefs(this.matchStore)
+    modificationCounter.value += 1
   }
 
   graphs(): Graph[] {
