@@ -29,6 +29,7 @@ const background = props.active
   border-radius: 1em;
   border-style: ridge;
   color: v-bind(foreground);
+  font-weight: bold;
   margin: 0 0.25em;
   padding: 0 0.5em;
 }

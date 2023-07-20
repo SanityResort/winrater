@@ -24,5 +24,6 @@ header {
   line-height: 1.5;
   display: flex;
   place-items: flex-start;
+  flex-flow: row wrap;
 }
 </style>

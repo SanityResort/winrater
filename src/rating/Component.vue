@@ -25,26 +25,53 @@ const configs = store.configs
   flex-flow: row wrap;
   font-size: 0.75em;
 }
+
+.coachData {
+  width: 100%;
+}
+
+.config {
+  width: 50%;
+}
+
+.configs > :last-child {
+  width: 100%;
+}
+
+.configs {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.rating {
+  max-width: 30em;
+}
 </style>
 
 <template>
-  <div class="store">{{ coachName }}: {{ matches.length }}</div>
-  <div class="labels">
-    <CategoryLabel
-      v-for="category in categories"
-      :key="category"
-      :definedBackground="category.background"
-      :definedForeground="category.foreground"
-      :name="category.name"
-      :active="true"
-    />
-  </div>
-  <div :key="modificationCounter">
-    <GraphConfig
-      v-for="config in configs"
-      :key="config"
-      :config="config"
-      :store-categories="categories"
-    />
+  <div class="rating">
+    <div class="coachData">
+      <div class="store">{{ coachName }}: {{ matches.length }}</div>
+      <div class="labels">
+        <CategoryLabel
+          v-for="category in categories"
+          :key="category"
+          :definedBackground="category.background"
+          :definedForeground="category.foreground"
+          :name="category.name"
+          :active="true"
+        />
+      </div>
+    </div>
+    <div class="configs">
+      <div class="config" :key="modificationCounter">
+        <GraphConfig
+          v-for="config in configs"
+          :key="config"
+          :config="config"
+          :store-categories="categories"
+        />
+      </div>
+    </div>
   </div>
 </template>
