@@ -17,6 +17,14 @@ const store: Store = stores.value.get(key)
 const matches = store.matches
 const categories = store.categories
 const configs = store.configs
+
+function removeStore() {
+  stores.value.delete(key)
+}
+
+function addConfig() {
+  store.addConfig()
+}
 </script>
 
 <style scoped>
@@ -51,7 +59,10 @@ const configs = store.configs
 <template>
   <div class="rating">
     <div class="coachData">
-      <div class="store">{{ coachName }}: {{ matches.length }}</div>
+      <div class="store">
+        {{ coachName }}: {{ matches.length }} <button @click="addConfig()">Add config</button>
+        <button @click="removeStore()">Remove</button>
+      </div>
       <div class="labels">
         <CategoryLabel
           v-for="category in categories"
@@ -65,12 +76,7 @@ const configs = store.configs
     </div>
     <div class="configs">
       <div class="config" :key="modificationCounter">
-        <GraphConfig
-          v-for="config in configs"
-          :key="config"
-          :config="config"
-          :store-categories="categories"
-        />
+        <GraphConfig v-for="config in configs" :key="config" :config="config" :store="store" />
       </div>
     </div>
   </div>

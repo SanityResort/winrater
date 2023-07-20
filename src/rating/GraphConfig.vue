@@ -8,6 +8,7 @@
       :name="category.name"
       :active="isActive(category)"
     />
+    <button @click="remove()">Remove</button>
   </div>
 </template>
 
@@ -16,18 +17,26 @@ import CategoryLabel from '@/rating/CategoryLabel.vue'
 import { Category } from '@/rating/match'
 import type { PropType } from 'vue'
 import type { GraphConfig } from '@/rating/store'
+import { Store } from '@/rating/store'
 
 const props = defineProps({
   config: Object as PropType<GraphConfig>,
-  storeCategories: Object as PropType<Category[]>
+  store: Object as PropType<Store>
 })
 
-const categories: Category[] = props.config?.categories ? props.config.categories : []
+const config = props.config as GraphConfig
 
-const storeCategories = props.storeCategories?.map((category) => category as Category)
+const categories: Category[] = config.categories
+
+const store = props.store as Store
+const storeCategories = store.categories
 
 function isActive(category: Category): Boolean {
   return categories.indexOf(category) >= 0
+}
+
+function remove() {
+  store.removeConfig(config)
 }
 </script>
 

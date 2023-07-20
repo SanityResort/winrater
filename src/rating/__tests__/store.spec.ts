@@ -132,16 +132,40 @@ describe('Rating Store', () => {
   })
 
   describe('addConfig', () => {
-    it('adds to config array', () => {
-      const config: GraphConfig = new GraphConfig(color, [])
+    it('adds new default config to array', () => {
+      const config: GraphConfig = new GraphConfig(color, [Blackbox, Competitive])
 
-      store.addConfig(config)
+      store.categories = [Blackbox, Competitive, FFB_Test]
+
+      store.addConfig()
 
       const matchStore = useMatchStore()
       const { modificationCounter } = storeToRefs(matchStore)
       expect(modificationCounter.value).toBe(1)
 
       expect(store.configs).toStrictEqual([config])
+    })
+  })
+
+  describe('removeConfig', () => {
+    it('removes config', () => {
+      const configToRemove = new GraphConfig(new Color({ r: 0, g: 0, b: 0 }), [])
+      const configToKeep = new GraphConfig(new Color({ r: 255, g: 0, b: 0 }), [])
+      store.configs = [configToKeep, configToRemove]
+
+      store.removeConfig(configToRemove)
+
+      expect(store.configs).toStrictEqual([configToKeep])
+    })
+
+    it('ignores unknown config', () => {
+      const configToRemove = new GraphConfig(new Color({ r: 0, g: 0, b: 0 }), [])
+      const configToKeep = new GraphConfig(new Color({ r: 255, g: 0, b: 0 }), [])
+      store.configs = [configToKeep]
+
+      store.removeConfig(configToRemove)
+
+      expect(store.configs).toStrictEqual([configToKeep])
     })
   })
 
@@ -163,7 +187,7 @@ describe('Rating Store', () => {
       store.addMatch(fumbblMatch3)
 
       expect(store.matches).toStrictEqual(unsortedMatches.slice(0, 3))
-      expect(store.selectedCategories).toStrictEqual([Blackbox, Competitive])
+      expect(store.categories).toStrictEqual([Blackbox, Competitive])
     })
   })
 

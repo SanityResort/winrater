@@ -27,18 +27,25 @@ export class Store {
     this.matches.sort((a: Match, b: Match) => {
       return a.id - b.id
     })
-    this.addConfig(
-      new GraphConfig(
-        randomColor(),
-        this.categories.filter((cat) => cat.valid)
-      )
-    )
+    this.addConfig()
   }
 
-  addConfig(config: GraphConfig) {
+  addConfig() {
+    const config = new GraphConfig(
+      randomColor(),
+      this.categories.filter((cat) => cat.valid)
+    )
+
     this.configs.push(config)
     const { modificationCounter } = storeToRefs(this.matchStore)
     modificationCounter.value += 1
+  }
+
+  removeConfig(config: GraphConfig) {
+    const index = this.configs.indexOf(config)
+    if (index >= 0) {
+      this.configs.splice(index, 1)
+    }
   }
 
   graphs(): Graph[] {
