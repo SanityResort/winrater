@@ -2,7 +2,7 @@
   <div>GraphConfig</div>
   <div class="labels">
     <CategoryLabel
-      v-for="category in categories"
+      v-for="category in storeCategories"
       :key="category"
       :definedBackground="category.background"
       :definedForeground="category.foreground"
@@ -28,7 +28,7 @@ const categories: Category[] = props.config?.categories ? props.config.categorie
 const storeCategories = props.storeCategories?.map((category) => category as Category)
 
 function isActive(category: Category): Boolean {
-  return storeCategories.indexOf(category) >= 0
+  return categories.indexOf(category) >= 0
 }
 </script>
 
