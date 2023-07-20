@@ -1,5 +1,4 @@
 <template>
-  <div>GraphConfig</div>
   <div class="labels">
     <CategoryLabel
       v-for="category in storeCategories"
@@ -32,4 +31,10 @@ function isActive(category: Category): Boolean {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.labels {
+  display: flex;
+  flex-flow: row wrap;
+  font-size: 0.75em;
+}
+</style>
