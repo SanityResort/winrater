@@ -6,15 +6,15 @@ import CategoryLabel from '@/rating/CategoryLabel.vue'
 import GraphConfig from '@/rating/GraphConfig.vue'
 
 const props = defineProps({
-  coachName: String
+  store: Store
 })
 
 const matchStore = useMatchStore()
 const { stores } = storeToRefs(matchStore)
 let { modificationCounter } = storeToRefs(matchStore)
 
-const key: string = props.coachName.toString()
-const store: Store = stores.value.get(key)
+const store: Store = props.store as Store
+const key = store.coachName
 const matches = store.matches
 const categories = store.categories
 const configs = store.configs
@@ -64,7 +64,7 @@ function addConfig() {
   <div class="rating">
     <div class="coachData">
       <div class="store">
-        {{ coachName }}: {{ matches.length }}
+        {{ key }}: {{ matches.length }}
         <button @click="addConfig()">Add config</button>
         <button @click="removeStore()">Remove</button>
       </div>
