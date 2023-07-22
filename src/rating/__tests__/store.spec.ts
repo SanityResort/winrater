@@ -228,3 +228,31 @@ describe('Rating Store', () => {
     })
   })
 })
+
+describe(' Graph Config', () => {
+  describe('toggleCategory', () => {
+    it('adds category if it is not present', () => {
+      const config = new GraphConfig(new Color(), [Blackbox, Competitive])
+
+      config.toggleCategory(League)
+
+      expect(config.categories).toStrictEqual([Blackbox, Competitive, League])
+    })
+
+    it('removes category if it is present', () => {
+      const config = new GraphConfig(new Color(), [Blackbox, Competitive])
+
+      config.toggleCategory(Competitive)
+
+      expect(config.categories).toStrictEqual([Blackbox])
+    })
+
+    it('does not remove present category if list would be empty then', () => {
+      const config = new GraphConfig(new Color(), [League])
+
+      config.toggleCategory(League)
+
+      expect(config.categories).toStrictEqual([League])
+    })
+  })
+})

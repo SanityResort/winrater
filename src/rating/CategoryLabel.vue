@@ -1,25 +1,32 @@
 <template>
-  <div class="category">
-    {{ name }}
+  <div class="category" @click="callback()">
+    {{ category.name }}
   </div>
 </template>
 
 <script setup lang="ts">
 import Color from 'color'
+import type { PropType } from 'vue'
+import { Category } from '@/rating/match'
 
 const props = defineProps({
-  definedBackground: Color,
-  definedForeground: Color,
-  name: String,
-  active: Boolean
+  category: Object as PropType<Category>,
+  active: Boolean,
+  callback: Function
 })
 
-const foreground = props.active
-  ? props.definedForeground
-  : (props.definedForeground as Color).alpha(0.75)
-const background = props.active
-  ? props.definedBackground
-  : (props.definedBackground as Color).alpha(0.25)
+const category = props.category as Category
+
+const foreground = props.active ? category.foreground : (category.foreground as Color).alpha(0.75)
+const background = props.active ? category.background : (category.background as Color).alpha(0.25)
+
+//const callback = props.callback
+
+function callback() {
+  if (props.callback) {
+    props.callback(category)
+  }
+}
 </script>
 
 <style scoped>

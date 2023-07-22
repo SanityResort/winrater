@@ -72,9 +72,7 @@ function addConfig() {
         <CategoryLabel
           v-for="category in categories"
           :key="category"
-          :definedBackground="category.background"
-          :definedForeground="category.foreground"
-          :name="category.name"
+          :category="category"
           :active="true"
         />
       </div>

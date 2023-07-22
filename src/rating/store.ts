@@ -97,6 +97,18 @@ export class GraphConfig {
     this.color = color
     this.categories = categories
   }
+
+  toggleCategory(category: Category) {
+    const index = this.categories.indexOf(category)
+
+    if (index >= 0) {
+      if (this.categories.length > 1) {
+        this.categories.splice(index, 1)
+      }
+    } else {
+      this.categories.push(category)
+    }
+  }
 }
 
 export class Graph {

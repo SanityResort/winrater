@@ -3,10 +3,9 @@
     <CategoryLabel
       v-for="category in storeCategories"
       :key="category"
-      :definedBackground="category.background"
-      :definedForeground="category.foreground"
-      :name="category.name"
+      :category="category"
       :active="isActive(category)"
+      :callback="toggleCategory"
     />
     <button @click="remove()">Remove</button>
   </div>
@@ -15,13 +14,13 @@
 <script setup lang="ts">
 import CategoryLabel from '@/rating/CategoryLabel.vue'
 import { Category } from '@/rating/match'
-import type { PropType } from 'vue'
-import type { GraphConfig } from '@/rating/store'
-import { Store } from '@/rating/store'
+import { GraphConfig, Store } from '@/rating/store'
+import { storeToRefs } from 'pinia'
+import { useMatchStore } from '@/pinia/store'
 
 const props = defineProps({
-  config: Object as PropType<GraphConfig>,
-  store: Object as PropType<Store>
+  config: GraphConfig,
+  store: Store
 })
 
 const config = props.config as GraphConfig
@@ -31,12 +30,20 @@ const categories: Category[] = config.categories
 const store = props.store as Store
 const storeCategories = store.categories
 
+const matchStore = useMatchStore()
+const { modificationCounter } = storeToRefs(matchStore)
+
 function isActive(category: Category): Boolean {
   return categories.indexOf(category) >= 0
 }
 
 function remove() {
   store.removeConfig(config)
+}
+
+function toggleCategory(category: Category) {
+  config.toggleCategory(category)
+  modificationCounter.value += 1
 }
 </script>
 
