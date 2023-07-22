@@ -42,12 +42,8 @@ function addConfig() {
   width: 100%;
 }
 
-.config {
-  width: 50%;
-}
-
 .configs > :last-child {
-  width: 100%;
+  flex-grow: 2;
 }
 
 .configs {
@@ -56,7 +52,7 @@ function addConfig() {
 }
 
 .rating {
-  max-width: 30em;
+  width: 30em;
 }
 </style>
 
@@ -77,10 +73,8 @@ function addConfig() {
         />
       </div>
     </div>
-    <div class="configs">
-      <div class="config" :key="modificationCounter">
-        <GraphConfig v-for="config in configs" :key="config" :config="config" :store="store" />
-      </div>
+    <div class="configs" :key="modificationCounter">
+      <GraphConfig v-for="config in configs" :key="config" :config="config" :store="store" />
     </div>
   </div>
 </template>

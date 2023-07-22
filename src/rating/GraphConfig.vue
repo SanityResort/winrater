@@ -1,12 +1,14 @@
 <template>
-  <div class="labels">
-    <CategoryLabel
-      v-for="category in storeCategories"
-      :key="category"
-      :category="category"
-      :active="isActive(category)"
-      :callback="toggleCategory"
-    />
+  <div class="config">
+    <div class="labels">
+      <CategoryLabel
+        v-for="category in storeCategories"
+        :key="category"
+        :category="category"
+        :active="isActive(category)"
+        :callback="toggleCategory"
+      />
+    </div>
     <button @click="remove()">Remove</button>
   </div>
 </template>
