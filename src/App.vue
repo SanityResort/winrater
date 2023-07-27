@@ -15,7 +15,7 @@ const { stores, modificationCounter } = storeToRefs(matchStore)
       <div class="top-bar" />
       <div class="description">Explaining text</div>
     </div>
-    <CoachLookup />
+    <CoachLookup class="lookup" />
     <div class="separator" />
   </header>
 
@@ -40,13 +40,16 @@ const { stores, modificationCounter } = storeToRefs(matchStore)
 }
 
 .collapsed > .top-bar::after {
-  content: '\\/';
+  content: '⮋';
+  font-size: xxx-large;
+  width: 100%;
 }
 
 .collapsed:hover > .top-bar::after {
   background: lightblue;
   content: '';
   display: block;
+  font-size: revert;
   min-height: var(--line-height);
 }
 
@@ -54,15 +57,25 @@ const { stores, modificationCounter } = storeToRefs(matchStore)
   background: red;
 }
 
+.lookup {
+  margin: 0 auto;
+}
+
 header {
   display: flex;
-  place-items: flex-start;
   flex-flow: column;
+  margin: 0 auto;
+  place-items: flex-start;
+  width: 100%;
 }
 
 .separator {
   background: darkgrey;
   height: 0.5em;
   width: 100%;
+}
+
+.top-bar {
+  text-align: center;
 }
 </style>

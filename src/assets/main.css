@@ -3,6 +3,7 @@
 #app {
     margin: 0 auto;
     padding: 2rem;
+    width: calc(100% - 4rem);
 
     font-weight: normal;
     display: grid;
