@@ -39,18 +39,20 @@ async function loadData() {
 </style>
 
 <template>
-  <form id="coachForm">
-    <input
-      id="coachName"
-      v-model="currentCoachName"
-      :disabled="loading"
-      placeholder="coach name"
-      type="text"
-    />
-    <button id="addButton" :disabled="loading" @click.prevent="loadData">Add</button>
-  </form>
+  <search>
+    <form id="coachForm">
+      <input
+        id="coachName"
+        v-model="currentCoachName"
+        :disabled="loading"
+        placeholder="coach name"
+        type="text"
+      />
+      <button id="addButton" :disabled="loading" @click.prevent="loadData">Add</button>
+    </form>
 
-  <div class="error">
-    {{ errorMessage }}
-  </div>
+    <div class="error">
+      {{ errorMessage }}
+    </div>
+  </search>
 </template>
