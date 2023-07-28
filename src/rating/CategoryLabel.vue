@@ -20,8 +20,6 @@ const category = props.category as Category
 const foreground = props.active ? category.foreground : (category.foreground as Color).alpha(0.75)
 const background = props.active ? category.background : (category.background as Color).alpha(0.25)
 
-//const callback = props.callback
-
 function callback() {
   if (props.callback) {
     props.callback(category)
@@ -33,11 +31,11 @@ function callback() {
 .category {
   background: v-bind(background);
   border-color: lightgray;
-  border-radius: 1em;
+  border-radius: var(--line-height);
   border-style: ridge;
   color: v-bind(foreground);
   font-weight: bold;
-  margin: 0 0.25em;
-  padding: 0 0.5em;
+  margin: 1px 1px 1px 0;
+  padding: 0 calc(var(--line-height) / 2);
 }
 </style>

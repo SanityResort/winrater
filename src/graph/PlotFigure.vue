@@ -21,6 +21,7 @@ const render = () => {
           el.append(plot)
 
           const plotDom = d3.select(plot)
+          plotDom.attr('style', 'background:var(--color-element-background)')
           const dot = plotDom.append('g').attr('display', 'none')
           dot.append('circle').attr('r', '0.25em').attr('stroke-width', '0.15em')
 

@@ -62,6 +62,7 @@ const { stores, modificationCounter } = storeToRefs(matchStore)
 }
 
 header {
+  background: var(--color-section-background);
   display: flex;
   flex-flow: column;
   margin: 0 auto;
@@ -69,9 +70,14 @@ header {
   width: 100%;
 }
 
+main {
+  background: var(--color-section-background);
+}
+
 .separator {
-  background: darkgrey;
-  height: 0.5em;
+  background: linear-gradient(to bottom, #e9e9e9, grey);
+  height: 0.25em;
+  margin-top: 5px;
   width: 100%;
 }
 
