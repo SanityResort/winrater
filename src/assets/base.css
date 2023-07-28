@@ -4,6 +4,6 @@
     --color-element-background: #f8f5e7;
     --color-element-header-background: #242;
     --color-section-background: #e6ddc7;
-    --color-title-background: #670000;
+    --color-title-background: linear-gradient(to bottom, #670000, #990000);
     --line-height: 1.5em;
 }

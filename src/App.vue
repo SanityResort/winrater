@@ -41,7 +41,7 @@ const { stores, modificationCounter } = storeToRefs(matchStore)
 
 .collapsed > .top-bar::after {
   content: '⮋';
-  font-size: xxx-large;
+  font-size: x-large;
   width: 100%;
 }
 
@@ -72,6 +72,7 @@ header {
 
 main {
   background: var(--color-section-background);
+  padding: 0 0.5em;
 }
 
 .separator {
@@ -82,6 +83,8 @@ main {
 }
 
 .top-bar {
+  background: var(--color-title-background);
+  color: var(--color-element-background);
   text-align: center;
 }
 </style>
