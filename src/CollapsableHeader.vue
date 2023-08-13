@@ -1,5 +1,5 @@
 <template>
-  <div class="collapse-wrapper" :class="{ collapsed: modificationCounter > 0 }">
+  <div class="collapse-wrapper" :class="{ collapsed: stores.size > 0 }">
     <div class="top-bar title"><div class="title-text">WinRater</div></div>
     <div class="description">
       Explaining text <br />
@@ -16,7 +16,7 @@ import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
 
 const matchStore = useMatchStore()
-const { modificationCounter } = storeToRefs(matchStore)
+const { stores } = storeToRefs(matchStore)
 </script>
 
 <style scoped>
