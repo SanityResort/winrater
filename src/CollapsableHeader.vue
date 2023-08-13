@@ -2,10 +2,22 @@
   <div class="collapse-wrapper" :class="{ collapsed: stores.size > 0 }">
     <div class="top-bar title"><div class="title-text">WinRater</div></div>
     <div class="description">
-      Explaining text <br />
-      Explaining text <br />
-      asd sad a an salkdn alksnd Explaining text <br />
-      sdansdkl,ld na
+      <p>
+        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
+        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
+        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
+        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
+        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
+        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
+      </p>
+      <p>
+        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
+        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
+        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
+        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
+        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
+        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
+      </p>
     </div>
     <div class="top-bar pull-down" />
   </div>
