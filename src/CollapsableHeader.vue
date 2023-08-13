@@ -34,14 +34,17 @@ const { stores } = storeToRefs(matchStore)
 <style scoped>
 .collapse-wrapper {
   width: 100%;
+  --min-line-count: 5;
+  --line-inc: 0;
+  --desc-line-height: calc((var(--min-line-count) + var(--line-inc)) * var(--line-height));
 }
 
-.collapsed > .description {
+.collapsed > .description > p {
   height: 0;
 }
 
-.collapsed:hover > .description {
-  height: var(--line-height);
+.collapsed:hover > .description > p {
+  height: var(--desc-line-height);
 }
 
 .collapsed > .top-bar.pull-down {
@@ -68,8 +71,19 @@ const { stores } = storeToRefs(matchStore)
 
 .description {
   background: var(--color-section-background);
+  display: flex;
   overflow: hidden;
+}
+
+.description > p {
+  background: var(--color-element-background);
+  border: black 2px solid;
+  border-radius: 5px;
+  flex-flow: row;
+  padding: 0.5em;
+  margin: 1em;
   transition: height 0.5s ease;
+  height: var(--desc-line-height);
 }
 
 .top-bar {
