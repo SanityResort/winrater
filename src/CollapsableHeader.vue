@@ -1,6 +1,7 @@
 <template>
   <div class="collapse-wrapper" :class="{ collapsed: stores.size > 0 }">
     <div class="top-bar title"><div class="title-text">WinRater</div></div>
+    <div class="top-bar pull-down" />
     <div class="description">
       <p>
         Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
@@ -19,7 +20,6 @@
         Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
       </p>
     </div>
-    <div class="top-bar pull-down" />
   </div>
 </template>
 
@@ -37,14 +37,30 @@ const { stores } = storeToRefs(matchStore)
   --min-line-count: 5;
   --line-inc: 0;
   --desc-line-height: calc((var(--min-line-count) + var(--line-inc)) * var(--line-height));
+  --desc-padding: 0.5em;
+  --desc-margin: 1em;
+  --desc-height: calc(var(--desc-line-height) + (var(--desc-padding) + var(--desc-margin)) * 2);
 }
 
-.collapsed > .description > p {
+.collapsed > .description {
   height: 0;
 }
 
+.description > p,
 .collapsed:hover > .description > p {
-  height: var(--desc-line-height);
+  background: var(--color-element-background);
+  border: black 2px solid;
+  border-radius: 5px;
+  flex-flow: row;
+  padding: var(--desc-padding);
+  margin: var(--desc-margin);
+  height: calc(var(--desc-line-height));
+}
+
+.description,
+.collapsed:hover > .description {
+  transition: height 0.5s ease;
+  height: var(--desc-height);
 }
 
 .collapsed > .top-bar.pull-down {
@@ -73,17 +89,6 @@ const { stores } = storeToRefs(matchStore)
   background: var(--color-section-background);
   display: flex;
   overflow: hidden;
-}
-
-.description > p {
-  background: var(--color-element-background);
-  border: black 2px solid;
-  border-radius: 5px;
-  flex-flow: row;
-  padding: 0.5em;
-  margin: 1em;
-  transition: height 0.5s ease;
-  height: var(--desc-line-height);
 }
 
 .top-bar {
