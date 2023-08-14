@@ -73,6 +73,7 @@ const { stores } = storeToRefs(matchStore)
   content: '⮋';
   font-size: x-large;
   height: var(--line-height);
+  transition: opacity 0.25s ease;
 }
 
 .collapsed > .top-bar.title > .title-text {
@@ -81,7 +82,7 @@ const { stores } = storeToRefs(matchStore)
 }
 
 .collapsed:hover > .top-bar.pull-down::after {
-  content: '';
+  opacity: 0;
   display: block;
 }
 
