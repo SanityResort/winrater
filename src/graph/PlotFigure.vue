@@ -56,8 +56,12 @@ const render = () => {
               }
             })
 
+          let mouseHasMoved = false
+
           plotDom.on('pointerenter', () => {
-            dot.attr('display', null)
+            if (mouseHasMoved) {
+              dot.attr('display', null)
+            }
             tooltip.show()
           })
 
@@ -70,6 +74,7 @@ const render = () => {
           })
 
           plotDom.on('pointermove', (event: MouseEvent) => {
+            mouseHasMoved = true
             const [ex, ey] = d3.pointer(event)
             const closest = d3.least(dataPx, (dataPoint) =>
               Math.hypot(dataPoint.x - ex, dataPoint.y - ey)
