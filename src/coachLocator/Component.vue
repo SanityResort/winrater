@@ -35,11 +35,38 @@ async function loadData() {
 <style scoped>
 .error {
   color: red;
+  font-weight: bold;
+  height: 0;
+  text-align: center;
+  transition: height 0.2s ease;
+}
+
+.error.active {
+  display: block;
+  height: var(--line-height);
+}
+
+#addButton {
+  border: none;
+  background: none;
+  padding-left: 0.25em;
+}
+
+#addButton > img {
+  height: 2em;
+}
+
+#coachForm {
+  display: flex;
+}
+
+.search {
+  padding-top: 0.25em;
 }
 </style>
 
 <template>
-  <search>
+  <div class="search">
     <form id="coachForm">
       <input
         id="coachName"
@@ -48,11 +75,13 @@ async function loadData() {
         placeholder="coach name"
         type="text"
       />
-      <button id="addButton" :disabled="loading" @click.prevent="loadData">Add</button>
-    </form>
 
-    <div class="error">
+      <button id="addButton" :disabled="loading" @click.prevent="loadData">
+        <img src="../../icons/addIcon.png" alt="Add Coach" />
+      </button>
+    </form>
+    <div :class="{ active: errorMessage.length > 0 }" class="error">
       {{ errorMessage }}
     </div>
-  </search>
+  </div>
 </template>
