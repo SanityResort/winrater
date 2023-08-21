@@ -39,7 +39,9 @@ function addConfig() {
 }
 
 .coachData {
-  width: 100%;
+  border: 1px solid black;
+  border-radius: var(--border-radius);
+  max-width: 25em;
 }
 
 .configs > :last-child {
@@ -52,7 +54,26 @@ function addConfig() {
 }
 
 .rating {
-  width: 30em;
+  display: flex;
+  flex-flow: row;
+  background: var(--color-element-background);
+  --border-radius: 1em;
+}
+
+.store {
+  background: var(--color-element-header-background);
+  border-start-end-radius: var(--border-radius);
+  border-start-start-radius: var(--border-radius);
+  color: var(--color-text-header);
+  flex-flow: row;
+  position: relative;
+  text-align: center;
+}
+
+.removeStore {
+  position: absolute;
+  top: 0;
+  right: 1em;
 }
 </style>
 
@@ -60,9 +81,8 @@ function addConfig() {
   <div class="rating">
     <div class="coachData">
       <div class="store">
-        {{ key }}: {{ matches.length }}
-        <button @click="addConfig()">Add config</button>
-        <button @click="removeStore()">Remove</button>
+        <div>{{ key }}: {{ matches.length }}</div>
+        <button class="removeStore" @click="removeStore()">Remove</button>
       </div>
       <div class="labels">
         <CategoryLabel
@@ -72,6 +92,7 @@ function addConfig() {
           :active="true"
         />
       </div>
+      <button @click="addConfig()">Add config</button>
     </div>
     <div class="configs" :key="modificationCounter">
       <GraphConfig v-for="config in configs" :key="config" :config="config" :store="store" />
