@@ -7,7 +7,11 @@ const MATCH_API = BASE_URL + 'match/list/'
 
 const COACH_SEARCH_API = BASE_URL + 'coach/search/'
 
-export async function load(store: Store, errorMessage: Ref<string>): Promise<boolean> {
+export async function load(
+  store: Store,
+  errorMessage: Ref<string>,
+  success: Function
+): Promise<boolean> {
   const coachName = store.coachName
 
   errorMessage.value = ''
@@ -21,12 +25,17 @@ export async function load(store: Store, errorMessage: Ref<string>): Promise<boo
 
   const searchResult: { name: string }[] = await searchResponse.json()
 
-  if (
-    searchResult.filter((value) => value.name.toLowerCase() === coachName.toLowerCase()).length != 1
-  ) {
+  const foundNames = searchResult.filter(
+    (value) => value.name.toLowerCase() === coachName.toLowerCase()
+  )
+  if (foundNames.length != 1) {
     errorMessage.value = "Unknown coach '" + coachName + "'"
     return false
+  } else {
+    store.coachName = foundNames[0].name
   }
+
+  success(store)
 
   let lastResponse: FumbblMatch[]
 

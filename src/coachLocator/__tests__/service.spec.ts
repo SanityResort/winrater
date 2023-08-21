@@ -13,6 +13,7 @@ describe.each([
   let fetchMock: Mock
   let initMock: Mock
   let addMock: Mock
+  let successMock: Mock
 
   let errorRef: Ref<string>
   const coachName = 'name'
@@ -23,6 +24,7 @@ describe.each([
     window.fetch = fetchMock
     initMock = vi.fn()
     addMock = vi.fn()
+    successMock = vi.fn()
   })
 
   beforeEach(() => {
@@ -54,7 +56,7 @@ describe.each([
   })
 
   it.each([{ suffix: parentContext.suffix }])('calls fumbbl api $suffix', async () => {
-    const result: boolean = await load(store, errorRef)
+    const result: boolean = await load(store, errorRef, successMock)
 
     expect(fetchMock).toHaveBeenCalledTimes(4)
     expect(fetchMock).toHaveBeenCalledWith('https://fumbbl.com/api/coach/search/name')
@@ -72,11 +74,12 @@ describe.each([
     expect(errorRef.value).toBe('')
 
     expect(result).toBeTruthy()
+    expect(successMock).toBeCalledTimes(1)
   })
 
   it.each([{ suffix: parentContext.suffix }])('aborts for unknown coach $suffix', async () => {
     store.coachName = 'foo'
-    const result: boolean = await load(store, errorRef)
+    const result: boolean = await load(store, errorRef, successMock)
 
     expect(fetchMock).toHaveBeenCalledTimes(1)
     expect(fetchMock).toHaveBeenCalledWith('https://fumbbl.com/api/coach/search/foo')
@@ -87,6 +90,7 @@ describe.each([
     expect(errorRef.value).toBe("Unknown coach 'foo'")
 
     expect(result).toBeFalsy()
+    expect(successMock).toBeCalledTimes(0)
   })
 
   it.each([
@@ -95,7 +99,7 @@ describe.each([
   ])('aborts for $name coach $suffix', async (param) => {
     store.coachName = param.input
 
-    const result: boolean = await load(store, errorRef)
+    const result: boolean = await load(store, errorRef, successMock)
 
     expect(fetchMock).toHaveBeenCalledTimes(0)
     expect(initMock).toHaveBeenCalledTimes(0)
@@ -104,5 +108,6 @@ describe.each([
     expect(errorRef.value).toBe('No coach name given')
 
     expect(result).toBeFalsy()
+    expect(successMock).toBeCalledTimes(0)
   })
 })

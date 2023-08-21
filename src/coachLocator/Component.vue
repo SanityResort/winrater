@@ -8,7 +8,7 @@ import IconButton from '@/common/IconButton.vue'
 
 const matchStore = useMatchStore()
 const { currentCoachName, stores } = storeToRefs(matchStore)
-const { setStore, deleteStore } = matchStore
+const { setStore } = matchStore
 const loading = ref(false)
 const errorMessage: Ref<string> = ref('')
 
@@ -23,13 +23,12 @@ async function loadData() {
   currentCoachName.value = ''
 
   const store = new Store(coachName)
-  setStore(coachName, store)
 
   loading.value = false
 
-  if (!(await load(store, errorMessage))) {
-    deleteStore(coachName)
-  }
+  await load(store, errorMessage, (store: Store) => {
+    setStore(store.coachName, store)
+  })
 }
 </script>
 

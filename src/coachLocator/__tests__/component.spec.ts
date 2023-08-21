@@ -26,7 +26,6 @@ describe('Coach locator component', () => {
   it('shows error if coach data could not be loaded', async () => {
     const matchStore = useMatchStore()
     const { stores } = storeToRefs(matchStore)
-    const { setStore, deleteStore } = matchStore
 
     const mockedErrorMessage = 'mocked error message'
     vi.mocked(load).mockImplementation(
@@ -37,18 +36,14 @@ describe('Coach locator component', () => {
     )
 
     const textField = wrapper.find('#coachName')
-    await wrapper.find('#addButton').trigger('click')
+    await wrapper.find('.addButton').trigger('click')
 
     expect(wrapper.find('.error').text()).toBe(mockedErrorMessage)
     expect(textField.text()).toBe('')
     expect(stores.value.size).toBe(0)
-    expect(setStore).toHaveBeenCalledOnce()
-    expect(deleteStore).toHaveBeenCalledOnce()
   })
 
   it('adds new store for coach data', async () => {
-    const matchStore = useMatchStore()
-    const { setStore } = matchStore
     const coachName = 'givenCoachName'
 
     vi.mocked(load).mockImplementation((): Promise<boolean> => {
@@ -57,11 +52,10 @@ describe('Coach locator component', () => {
 
     const textField = wrapper.find('#coachName')
     await textField.setValue(coachName)
-    await wrapper.find('#addButton').trigger('click')
+    await wrapper.find('.addButton').trigger('click')
 
     expect(wrapper.find('.error').text()).toBe('')
     expect(textField.text()).toBe('')
-    expect(setStore).toHaveBeenCalledOnce()
   })
 
   it('aborts for duplicate coach', async () => {
@@ -72,7 +66,7 @@ describe('Coach locator component', () => {
 
     const textField = wrapper.find('#coachName')
     await textField.setValue(coachName)
-    await wrapper.find('#addButton').trigger('click')
+    await wrapper.find('.addButton').trigger('click')
 
     expect(load).toHaveBeenCalledTimes(0)
     expect(wrapper.find('.error').text()).toBe('')

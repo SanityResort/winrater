@@ -11,9 +11,5 @@ export const useMatchStore = defineStore('matches', () => {
     stores.value.set(key, value)
   }
 
-  function deleteStore(key: string) {
-    stores.value.delete(key)
-  }
-
-  return { currentCoachName, setStore, deleteStore, stores, modificationCounter }
+  return { currentCoachName, setStore, stores, modificationCounter }
 })
