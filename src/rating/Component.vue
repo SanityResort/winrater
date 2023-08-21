@@ -4,6 +4,7 @@ import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
 import CategoryLabel from '@/rating/CategoryLabel.vue'
 import GraphConfig from '@/rating/GraphConfig.vue'
+import IconButton from '@/common/IconButton.vue'
 
 const props = defineProps({
   store: Store
@@ -82,9 +83,12 @@ function addConfig() {
     <div class="coachData">
       <div class="store">
         <div>{{ key }}: {{ matches.length }}</div>
-        <button class="removeStore iconButton" @click="removeStore()">
-          <img src="../../icons/removeIcon.png" alt="Remove coach" />
-        </button>
+        <IconButton
+          class="removeStore"
+          alt="Remove coach"
+          :callback="removeStore"
+          src="../../icons/removeIcon.png"
+        />
       </div>
       <div class="labels">
         <CategoryLabel

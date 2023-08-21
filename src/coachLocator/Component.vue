@@ -4,6 +4,7 @@ import { load } from './service'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
 import { Store } from '@/rating/store'
+import IconButton from '@/common/IconButton.vue'
 
 const matchStore = useMatchStore()
 const { currentCoachName, stores } = storeToRefs(matchStore)
@@ -46,7 +47,7 @@ async function loadData() {
   height: var(--line-height);
 }
 
-#addButton {
+.addButton {
   padding-left: 0.25em;
 }
 
@@ -70,9 +71,12 @@ async function loadData() {
         type="text"
       />
 
-      <button id="addButton" class="iconButton" :disabled="loading" @click.prevent="loadData">
-        <img src="../../icons/addIcon.png" alt="Add coach" />
-      </button>
+      <IconButton
+        class="addButton"
+        alt="Add coach"
+        :callback="loadData"
+        src="../../icons/addIcon.png"
+      />
     </form>
     <div :class="{ active: errorMessage.length > 0 }" class="error">
       {{ errorMessage }}

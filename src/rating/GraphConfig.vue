@@ -12,9 +12,7 @@
         :callback="toggleCategory"
       />
     </div>
-    <button class="iconButton" @click="remove()">
-      <img src="../../icons/removeIcon.png" alt="Remove config" />
-    </button>
+    <IconButton alt="Remove config" :callback="remove" src="../../icons/removeIcon.png" />
   </div>
 </template>
 
@@ -24,6 +22,7 @@ import { Category } from '@/rating/match'
 import { GraphConfig, Store } from '@/rating/store'
 import { storeToRefs } from 'pinia'
 import { useMatchStore } from '@/pinia/store'
+import IconButton from '@/common/IconButton.vue'
 
 const props = defineProps({
   config: GraphConfig,
