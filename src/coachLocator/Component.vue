@@ -47,13 +47,7 @@ async function loadData() {
 }
 
 #addButton {
-  border: none;
-  background: none;
   padding-left: 0.25em;
-}
-
-#addButton > img {
-  height: 2em;
 }
 
 #coachForm {
@@ -76,8 +70,8 @@ async function loadData() {
         type="text"
       />
 
-      <button id="addButton" :disabled="loading" @click.prevent="loadData">
-        <img src="../../icons/addIcon.png" alt="Add Coach" />
+      <button id="addButton" class="iconButton" :disabled="loading" @click.prevent="loadData">
+        <img src="../../icons/addIcon.png" alt="Add coach" />
       </button>
     </form>
     <div :class="{ active: errorMessage.length > 0 }" class="error">

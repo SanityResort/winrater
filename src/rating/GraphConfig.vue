@@ -12,7 +12,9 @@
         :callback="toggleCategory"
       />
     </div>
-    <button @click="remove()">Remove</button>
+    <button class="iconButton" @click="remove()">
+      <img src="../../icons/removeIcon.png" alt="Remove config" />
+    </button>
   </div>
 </template>
 

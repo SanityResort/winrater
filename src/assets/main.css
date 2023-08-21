@@ -22,6 +22,15 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.iconButton {
+    border: none;
+    background: none;
+}
+
+.iconButton  > img {
+    height: 2em;
+}
+
 html {
     height: 100%;
 }

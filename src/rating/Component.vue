@@ -82,7 +82,9 @@ function addConfig() {
     <div class="coachData">
       <div class="store">
         <div>{{ key }}: {{ matches.length }}</div>
-        <button class="removeStore" @click="removeStore()">Remove</button>
+        <button class="removeStore iconButton" @click="removeStore()">
+          <img src="../../icons/removeIcon.png" alt="Remove coach" />
+        </button>
       </div>
       <div class="labels">
         <CategoryLabel
