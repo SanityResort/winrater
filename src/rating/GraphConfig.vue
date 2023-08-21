@@ -1,5 +1,8 @@
 <template>
   <div class="config">
+    <div class="config-header">
+      <div class="config-color" :style="{ background: config.color }"></div>
+    </div>
     <div class="labels">
       <CategoryLabel
         v-for="category in storeCategories"
