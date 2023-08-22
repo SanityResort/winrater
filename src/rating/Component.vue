@@ -33,16 +33,14 @@ function addConfig() {
 </script>
 
 <style scoped>
-.labels {
-  display: flex;
-  flex-flow: row wrap;
-  font-size: 0.75em;
-}
-
 .coachData {
   border: 1px solid black;
   border-radius: var(--border-radius);
   max-width: 25em;
+}
+
+.coachName {
+  padding: 0.25em 2.5em;
 }
 
 .configs > :last-child {
@@ -54,11 +52,23 @@ function addConfig() {
   flex-flow: row wrap;
 }
 
+.labels {
+  display: flex;
+  flex-flow: row wrap;
+  font-size: 0.75em;
+}
+
 .rating {
   display: flex;
   flex-flow: row;
   background: var(--color-element-background);
   --border-radius: 1em;
+}
+
+.removeStore {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .store {
@@ -70,19 +80,13 @@ function addConfig() {
   position: relative;
   text-align: center;
 }
-
-.removeStore {
-  position: absolute;
-  top: 0;
-  right: 1em;
-}
 </style>
 
 <template>
   <div class="rating">
     <div class="coachData">
       <div class="store">
-        <div>{{ key }}: {{ matches.length }}</div>
+        <div class="coachName">{{ key }}: {{ matches.length }}</div>
         <IconButton
           class="removeStore"
           alt="Remove coach"
