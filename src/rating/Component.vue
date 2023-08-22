@@ -33,7 +33,8 @@ function addConfig() {
 </script>
 
 <style scoped>
-.coachData {
+.coachData,
+.config {
   border: 1px solid black;
   border-radius: var(--border-radius);
   max-width: 25em;
@@ -105,7 +106,13 @@ function addConfig() {
       <button @click="addConfig()">Add config</button>
     </div>
     <div class="configs" :key="modificationCounter">
-      <GraphConfig v-for="config in configs" :key="config" :config="config" :store="store" />
+      <GraphConfig
+        class="config"
+        v-for="config in configs"
+        :key="config"
+        :config="config"
+        :store="store"
+      />
     </div>
   </div>
 </template>

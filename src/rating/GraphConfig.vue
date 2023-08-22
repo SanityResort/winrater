@@ -1,5 +1,5 @@
 <template>
-  <div class="config">
+  <div>
     <div class="config-header">
       <div class="config-color" :style="{ background: config.color }"></div>
     </div>
