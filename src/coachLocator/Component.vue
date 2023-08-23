@@ -26,9 +26,13 @@ async function loadData() {
 
   loading.value = false
 
-  await load(store, errorMessage, (store: Store) => {
-    setStore(store.coachName, store)
-  })
+  try {
+    await load(store, errorMessage, (store: Store) => {
+      setStore(store.coachName, store)
+    })
+  } catch (error) {
+    errorMessage.value = error
+  }
 }
 </script>
 
