@@ -122,7 +122,7 @@ describe('Rating Store', () => {
       expect(store.matches).toStrictEqual(matches)
       expect(store.configs.length).toBe(1)
       expect(store.configs[0]).toStrictEqual(
-        new GraphConfig(color, [Blackbox, Competitive, League])
+        new GraphConfig(color, [Blackbox, Competitive, League], store.matches)
       )
 
       const matchStore = useMatchStore()
@@ -133,7 +133,7 @@ describe('Rating Store', () => {
 
   describe('addConfig', () => {
     it('adds new default config to array', () => {
-      const config: GraphConfig = new GraphConfig(color, [Blackbox, Competitive])
+      const config: GraphConfig = new GraphConfig(color, [Blackbox, Competitive], [])
 
       store.categories = [Blackbox, Competitive, FFB_Test]
 
@@ -149,8 +149,8 @@ describe('Rating Store', () => {
 
   describe('removeConfig', () => {
     it('removes config', () => {
-      const configToRemove = new GraphConfig(new Color({ r: 0, g: 0, b: 0 }), [])
-      const configToKeep = new GraphConfig(new Color({ r: 255, g: 0, b: 0 }), [])
+      const configToRemove = new GraphConfig(new Color({ r: 0, g: 0, b: 0 }), [], [])
+      const configToKeep = new GraphConfig(new Color({ r: 255, g: 0, b: 0 }), [], [])
       store.configs = [configToKeep, configToRemove]
 
       store.removeConfig(configToRemove)
@@ -163,8 +163,8 @@ describe('Rating Store', () => {
     })
 
     it('ignores unknown config', () => {
-      const configToRemove = new GraphConfig(new Color({ r: 0, g: 0, b: 0 }), [])
-      const configToKeep = new GraphConfig(new Color({ r: 255, g: 0, b: 0 }), [])
+      const configToRemove = new GraphConfig(new Color({ r: 0, g: 0, b: 0 }), [], [])
+      const configToKeep = new GraphConfig(new Color({ r: 255, g: 0, b: 0 }), [], [])
       store.configs = [configToKeep]
 
       store.removeConfig(configToRemove)
@@ -232,7 +232,7 @@ describe('Rating Store', () => {
 describe(' Graph Config', () => {
   describe('toggleCategory', () => {
     it('adds category if it is not present', () => {
-      const config = new GraphConfig(new Color(), [Blackbox, Competitive])
+      const config = new GraphConfig(new Color(), [Blackbox, Competitive], [])
 
       config.toggleCategory(League)
 
@@ -240,7 +240,7 @@ describe(' Graph Config', () => {
     })
 
     it('removes category if it is present', () => {
-      const config = new GraphConfig(new Color(), [Blackbox, Competitive])
+      const config = new GraphConfig(new Color(), [Blackbox, Competitive], [])
 
       config.toggleCategory(Competitive)
 
@@ -248,7 +248,7 @@ describe(' Graph Config', () => {
     })
 
     it('does not remove present category if list would be empty then', () => {
-      const config = new GraphConfig(new Color(), [League])
+      const config = new GraphConfig(new Color(), [League], [])
 
       config.toggleCategory(League)
 

@@ -33,7 +33,8 @@ export class Store {
   addConfig() {
     const config = new GraphConfig(
       randomColor(),
-      this.categories.filter((cat) => cat.valid)
+      this.categories.filter((cat) => cat.valid),
+      this.matches
     )
 
     this.configs.push(config)
@@ -53,13 +54,7 @@ export class Store {
   graphs(): Graph[] {
     return this.configs.map(
       (config, configIndex) =>
-        new Graph(
-          config.color,
-          this.accumulated(
-            this.matches.filter((match) => config.categories.indexOf(match.category) > -1),
-            configIndex
-          )
-        )
+        new Graph(config.color, this.accumulated(config.matches, configIndex))
     )
   }
 
@@ -92,10 +87,12 @@ export class Store {
 export class GraphConfig {
   categories: Category[]
   color: Color
+  public matches: UnwrapNestedRefs<Match[]>
 
-  constructor(color: Color, categories: Category[]) {
+  constructor(color: Color, categories: Category[], matches: Match[]) {
     this.color = color
     this.categories = categories
+    this.matches = matches.filter((match) => categories.indexOf(match.category) > -1)
   }
 
   toggleCategory(category: Category) {
