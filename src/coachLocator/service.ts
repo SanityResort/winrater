@@ -11,7 +11,7 @@ export async function load(
   store: Store,
   errorMessage: Ref<string>,
   success: Function
-): Promise<boolean> {
+): Promise<void> {
   try {
     const coachName = store.coachName
 
@@ -19,7 +19,7 @@ export async function load(
 
     if (coachName == null || coachName.trim().length == 0) {
       errorMessage.value = 'No coach name given'
-      return false
+      return
     }
 
     const searchResponse: Response = await fetch(COACH_SEARCH_API + coachName)
@@ -31,7 +31,6 @@ export async function load(
     )
     if (foundNames.length != 1) {
       errorMessage.value = "Unknown coach '" + coachName + "'"
-      return false
     } else {
       store.coachName = foundNames[0].name
     }
@@ -58,10 +57,8 @@ export async function load(
     } while (lastResponse.length > 1)
 
     store.init()
-    return true
   } catch (error) {
     console.log(error)
     errorMessage.value = 'Could not load data, check your network connection'
-    return false
   }
 }
