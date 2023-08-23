@@ -112,6 +112,7 @@ function addConfig() {
         :key="config"
         :config="config"
         :store="store"
+        :show-remove-button="configs.length > 1"
       />
     </div>
   </div>

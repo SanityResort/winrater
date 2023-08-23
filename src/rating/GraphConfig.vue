@@ -12,7 +12,12 @@
         :callback="toggleCategory"
       />
     </div>
-    <IconButton alt="Remove config" :callback="remove" src="../../icons/removeIcon.png" />
+    <IconButton
+      v-if="showRemoveButton"
+      alt="Remove config"
+      :callback="remove"
+      src="../../icons/removeIcon.png"
+    />
   </div>
 </template>
 
@@ -26,7 +31,8 @@ import IconButton from '@/common/IconButton.vue'
 
 const props = defineProps({
   config: GraphConfig,
-  store: Store
+  store: Store,
+  showRemoveButton: Boolean
 })
 
 const config = props.config as GraphConfig
