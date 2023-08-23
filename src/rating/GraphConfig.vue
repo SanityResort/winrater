@@ -1,7 +1,62 @@
+<style scoped>
+.config {
+  --color-circle-size: 1.9em;
+}
+
+.config-color {
+  background-color: v-bind(background);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 0.1em black, inset 0 0 0 0.2em white;
+  height: var(--line-height);
+  margin-right: 1em;
+  width: var(--line-height);
+}
+
+.config-header {
+  background: var(--color-element-header-background);
+  border-start-end-radius: var(--border-radius);
+  border-start-start-radius: var(--border-radius);
+  color: var(--color-text-header);
+  padding: 0.25em 2.5em;
+  position: relative;
+}
+
+.config-title {
+  display: flex;
+  flex-flow: row;
+  margin: auto;
+  width: fit-content;
+}
+
+.labels {
+  display: flex;
+  flex-flow: row wrap;
+  font-size: 0.75em;
+}
+
+.removeStore {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+</style>
+
 <template>
-  <div>
+  <div class="config">
     <div class="config-header">
-      <div class="config-color" :style="{ background: config.color }"></div>
+      <div class="config-title">
+        <div class="config-color" />
+        <div>
+          {{ config.filteredMatches.length }}
+        </div>
+      </div>
+      <IconButton
+        v-if="showRemoveButton"
+        class="removeStore"
+        alt="Remove config"
+        :callback="remove"
+        src="../../icons/removeIcon.png"
+      />
     </div>
     <div class="labels">
       <CategoryLabel
@@ -12,12 +67,6 @@
         :callback="toggleCategory"
       />
     </div>
-    <IconButton
-      v-if="showRemoveButton"
-      alt="Remove config"
-      :callback="remove"
-      src="../../icons/removeIcon.png"
-    />
   </div>
 </template>
 
@@ -36,6 +85,7 @@ const props = defineProps({
 })
 
 const config = props.config as GraphConfig
+const background = config.color
 
 const categories: Category[] = config.categories
 
@@ -58,11 +108,3 @@ function toggleCategory(category: Category) {
   modificationCounter.value += 1
 }
 </script>
-
-<style scoped>
-.labels {
-  display: flex;
-  flex-flow: row wrap;
-  font-size: 0.75em;
-}
-</style>

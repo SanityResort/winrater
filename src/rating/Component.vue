@@ -44,10 +44,6 @@ function addConfig() {
   padding: 0.25em 2.5em;
 }
 
-.configs > :last-child {
-  flex-grow: 2;
-}
-
 .configs {
   display: flex;
   flex-flow: row wrap;
@@ -60,9 +56,9 @@ function addConfig() {
 }
 
 .rating {
+  background: var(--color-element-background);
   display: flex;
   flex-flow: row;
-  background: var(--color-element-background);
   --border-radius: 1em;
 }
 
