@@ -54,7 +54,7 @@ export class Store {
   graphs(): Graph[] {
     return this.configs.map(
       (config, configIndex) =>
-        new Graph(config.color, this.accumulated(config.matches, configIndex))
+        new Graph(config.color, this.accumulated(config.filteredMatches, configIndex))
     )
   }
 
@@ -87,12 +87,14 @@ export class Store {
 export class GraphConfig {
   categories: Category[]
   color: Color
-  public matches: UnwrapNestedRefs<Match[]>
+  private matches: Match[]
+  filteredMatches: Match[]
 
   constructor(color: Color, categories: Category[], matches: Match[]) {
     this.color = color
     this.categories = categories
-    this.matches = matches.filter((match) => categories.indexOf(match.category) > -1)
+    this.matches = matches
+    this.filteredMatches = this.filterMatches()
   }
 
   toggleCategory(category: Category) {
@@ -105,6 +107,11 @@ export class GraphConfig {
     } else {
       this.categories.push(category)
     }
+    this.filteredMatches = this.filterMatches()
+  }
+
+  private filterMatches(): Match[] {
+    return this.matches.filter((match) => this.categories.indexOf(match.category) > -1)
   }
 }
 
