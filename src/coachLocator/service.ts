@@ -31,6 +31,7 @@ export async function load(
     )
     if (foundNames.length != 1) {
       errorMessage.value = "Unknown coach '" + coachName + "'"
+      return
     } else {
       store.coachName = foundNames[0].name
     }
