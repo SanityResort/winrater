@@ -34,12 +34,6 @@ const { stores } = storeToRefs(matchStore)
 <style scoped>
 .collapse-wrapper {
   width: 100%;
-  --min-line-count: 5;
-  --line-inc: 0;
-  --desc-line-height: calc((var(--min-line-count) + var(--line-inc)) * var(--line-height));
-  --desc-padding: 0.5em;
-  --desc-margin: 1em;
-  --desc-height: calc(var(--desc-line-height) + (var(--desc-padding) + var(--desc-margin)) * 2);
 }
 
 .collapsed > .description {
@@ -51,16 +45,26 @@ const { stores } = storeToRefs(matchStore)
   background: var(--color-element-background);
   border: black 2px solid;
   border-radius: 5px;
-  flex-flow: row;
-  padding: var(--desc-padding);
-  margin: var(--desc-margin);
-  height: calc(var(--desc-line-height));
+
+  padding: 0.5em;
+  margin: 1em;
+  max-width: 50em;
 }
 
 .description,
 .collapsed:hover > .description {
-  transition: height 0.5s ease;
-  height: var(--desc-height);
+  display: flex;
+  flex-flow: row;
+  height: auto;
+  margin: auto;
+  width: fit-content;
+}
+
+@media (max-width: 50em) {
+  .description,
+  .collapsed:hover > .description {
+    flex-flow: row wrap;
+  }
 }
 
 .collapsed > .top-bar.pull-down {
