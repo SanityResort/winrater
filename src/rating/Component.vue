@@ -24,6 +24,8 @@ function removeStore() {
   stores.value.delete(key)
   if (stores.value.size == 0) {
     modificationCounter.value = 0
+  } else {
+    modificationCounter.value += 1
   }
 }
 
