@@ -255,4 +255,25 @@ describe(' Graph Config', () => {
       expect(config.categories).toStrictEqual([League])
     })
   })
+  describe('hexColor', () => {
+    it('preserves and returns current color as hex', () => {
+      const originalColor = '#123456'
+      const config = new GraphConfig(new Color(originalColor), [League], [])
+
+      expect(config.hexColor()).toEqual(originalColor)
+      expect(config.color).toEqual(new Color(originalColor))
+    })
+  })
+
+  describe('updateHexColor', () => {
+    it('updates color', () => {
+      const originalColor = '#123456'
+      const newColor = '#654321'
+      const config = new GraphConfig(new Color(originalColor), [League], [])
+
+      config.updateHexColor(newColor)
+
+      expect(config.color).toEqual(new Color(newColor))
+    })
+  })
 })

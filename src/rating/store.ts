@@ -6,6 +6,11 @@ import { match, randomColor } from './mapper'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
 
+function updateCounter() {
+  const { modificationCounter } = storeToRefs(useMatchStore())
+  modificationCounter.value += 1
+}
+
 export class Store {
   public coachName: string
 
@@ -14,13 +19,10 @@ export class Store {
 
   configs: GraphConfig[] = []
 
-  private readonly matchStore
-
   constructor(coachName: string) {
     this.coachName = coachName
     this.matches = reactive([])
     this.categories = reactive([])
-    this.matchStore = useMatchStore()
   }
 
   init() {
@@ -38,17 +40,14 @@ export class Store {
     )
 
     this.configs.push(config)
-    const { modificationCounter } = storeToRefs(this.matchStore)
-    modificationCounter.value += 1
+    updateCounter()
   }
-
   removeConfig(config: GraphConfig) {
     const index = this.configs.indexOf(config)
     if (index >= 0) {
       this.configs.splice(index, 1)
     }
-    const { modificationCounter } = storeToRefs(this.matchStore)
-    modificationCounter.value += 1
+    updateCounter()
   }
 
   graphs(): Graph[] {
@@ -108,6 +107,16 @@ export class GraphConfig {
       this.categories.push(category)
     }
     this.filteredMatches = this.filterMatches()
+    updateCounter()
+  }
+
+  public updateHexColor(newColor: string) {
+    this.color = this.color.hex(newColor)
+    updateCounter()
+  }
+
+  hexColor() {
+    return this.color.hex()
   }
 
   private filterMatches(): Match[] {

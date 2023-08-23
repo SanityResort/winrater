@@ -4,12 +4,11 @@
 }
 
 .config-color {
-  background-color: v-bind(background);
-  border-radius: 50%;
+  border-radius: 25%;
   box-shadow: inset 0 0 0 0.1em black, inset 0 0 0 0.2em white;
   height: var(--line-height);
   margin-right: 1em;
-  width: var(--line-height);
+  width: calc(var(--line-height) * 2);
 }
 
 .config-header {
@@ -45,7 +44,7 @@
   <div class="config">
     <div class="config-header">
       <div class="config-title">
-        <div class="config-color" />
+        <input type="color" class="config-color" :value="background" @change="updateColor" />
         <div>
           {{ config.filteredMatches.length }}
         </div>
@@ -74,8 +73,6 @@
 import CategoryLabel from '@/rating/CategoryLabel.vue'
 import { Category } from '@/rating/match'
 import { GraphConfig, Store } from '@/rating/store'
-import { storeToRefs } from 'pinia'
-import { useMatchStore } from '@/pinia/store'
 import IconButton from '@/common/IconButton.vue'
 
 const props = defineProps({
@@ -85,15 +82,17 @@ const props = defineProps({
 })
 
 const config = props.config as GraphConfig
-const background = config.color
+const background = config.color.hex()
 
 const categories: Category[] = config.categories
 
 const store = props.store as Store
 const storeCategories = store.categories
 
-const matchStore = useMatchStore()
-const { modificationCounter } = storeToRefs(matchStore)
+function updateColor(value: Event) {
+  const newColorHex = (value.target as HTMLInputElement).value
+  config.updateHexColor(newColorHex)
+}
 
 function isActive(category: Category): Boolean {
   return categories.indexOf(category) >= 0
@@ -105,6 +104,5 @@ function remove() {
 
 function toggleCategory(category: Category) {
   config.toggleCategory(category)
-  modificationCounter.value += 1
 }
 </script>
