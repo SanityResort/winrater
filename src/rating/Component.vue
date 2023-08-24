@@ -46,11 +46,6 @@ function addConfig() {
   padding: 0.25em 2.5em;
 }
 
-.configs {
-  display: flex;
-  flex-flow: row wrap;
-}
-
 .labels {
   display: flex;
   flex-flow: row wrap;
@@ -60,7 +55,7 @@ function addConfig() {
 .rating {
   background: var(--color-element-background);
   display: flex;
-  flex-flow: row;
+  flex-flow: row wrap;
   --border-radius: 1em;
 }
 
@@ -82,7 +77,7 @@ function addConfig() {
 </style>
 
 <template>
-  <div class="rating">
+  <div class="rating" :key="modificationCounter">
     <div class="coachData">
       <div class="store">
         <div class="coachName">{{ key }}: {{ matches.length }}</div>
@@ -103,15 +98,13 @@ function addConfig() {
       </div>
       <button @click="addConfig()">Add config</button>
     </div>
-    <div class="configs" :key="modificationCounter">
-      <GraphConfig
-        class="config"
-        v-for="config in configs"
-        :key="config"
-        :config="config"
-        :store="store"
-        :show-remove-button="configs.length > 1"
-      />
-    </div>
+    <GraphConfig
+      class="config"
+      v-for="config in configs"
+      :key="config"
+      :config="config"
+      :store="store"
+      :show-remove-button="configs.length > 1"
+    />
   </div>
 </template>
