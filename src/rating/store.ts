@@ -18,6 +18,7 @@ export class Store {
   public categories: UnwrapNestedRefs<Category[]>
 
   configs: GraphConfig[] = []
+  public ready = false
 
   constructor(coachName: string) {
     this.coachName = coachName
@@ -29,6 +30,7 @@ export class Store {
     this.matches.sort((a: Match, b: Match) => {
       return a.id - b.id
     })
+    this.ready = true
     this.addConfig()
   }
 

@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia'
 import CategoryLabel from '@/rating/CategoryLabel.vue'
 import GraphConfig from '@/rating/GraphConfig.vue'
 import IconButton from '@/common/IconButton.vue'
+import { reactive } from 'vue'
 
 const props = defineProps({
   store: Store
@@ -19,6 +20,7 @@ const key = store.coachName
 const matches = store.matches
 const categories = store.categories
 const configs = store.configs
+const storeRef = reactive(store)
 
 function removeStore() {
   stores.value.delete(key)
@@ -113,6 +115,12 @@ function addConfig() {
       :store="store"
       :show-remove-button="configs.length > 1"
     />
-    <IconButton alt="Add config" :callback="addConfig" src="../../icons/addIcon.png" />
+
+    <IconButton
+      v-if="storeRef.ready"
+      alt="Add config"
+      :callback="addConfig"
+      src="../../icons/addIcon.png"
+    />
   </div>
 </template>
