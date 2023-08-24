@@ -96,7 +96,6 @@ function addConfig() {
           :active="true"
         />
       </div>
-      <button @click="addConfig()">Add config</button>
     </div>
     <GraphConfig
       class="config"
@@ -106,5 +105,6 @@ function addConfig() {
       :store="store"
       :show-remove-button="configs.length > 1"
     />
+    <IconButton alt="Add config" :callback="addConfig" src="../../icons/addIcon.png" />
   </div>
 </template>
