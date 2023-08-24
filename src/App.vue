@@ -40,6 +40,8 @@ header {
 
 main {
   background: var(--color-section-background);
+  display: flex;
+  flex-flow: row wrap;
   padding: 0 0.5em;
 }
 
