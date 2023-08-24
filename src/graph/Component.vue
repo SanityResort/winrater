@@ -29,7 +29,7 @@ function dataMarks() {
   return lines
 }
 
-function ticks() {
+function ticks(): number {
   const xValues: number[] = []
 
   for (const value of stores.value.values()) {
@@ -59,7 +59,12 @@ const resizeCallback = () => {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+#plot {
+  border: 1px black solid;
+  margin-bottom: 0.5em;
+}
+</style>
 
 <template>
   <div id="plot">
@@ -68,6 +73,8 @@ const resizeCallback = () => {
       :key="modificationCounter"
       :options="{
         width: parentWidth(),
+        height: 800,
+        fontSize: 20,
         marks: [...dataMarks(), Plot.ruleY([0]), Plot.ruleX([0], { x: 1, y1: 0, y2: 1 })],
         y: {
           percent: true,

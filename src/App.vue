@@ -40,7 +40,6 @@ header {
 
 main {
   background: var(--color-section-background);
-  height: 100%;
   padding: 0 0.5em;
 }
 
