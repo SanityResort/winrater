@@ -13,8 +13,8 @@
 
 .config-header {
   background: var(--color-element-header-background);
-  border-start-end-radius: var(--border-radius);
-  border-start-start-radius: var(--border-radius);
+  border-start-end-radius: var(--border-radius-element);
+  border-start-start-radius: var(--border-radius-element);
   color: var(--color-text-header);
   padding: 0.25em 2.5em;
   position: relative;
@@ -31,6 +31,7 @@
   display: flex;
   flex-flow: row wrap;
   font-size: 0.75em;
+  margin: 0.2em;
 }
 
 .removeStore {

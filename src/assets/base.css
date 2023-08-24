@@ -3,8 +3,9 @@
     --color-text-header: white;
     --color-app-background: #224522;
     --color-element-background: #f8f5e7;
-    --color-element-header-background: #242;
+    --color-element-header-background: linear-gradient(to bottom, #242, #464);
     --color-section-background: #e6ddc7;
+    --color-sub-section-background: #efe9d7;
     --color-title-background: linear-gradient(to bottom, #670000, #990000);
     --line-height: 1.5em;
 }

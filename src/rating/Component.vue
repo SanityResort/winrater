@@ -37,8 +37,11 @@ function addConfig() {
 <style scoped>
 .coachData,
 .config {
+  background: var(--color-element-background);
+
   border: 1px solid black;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-element);
+  margin: 0.25em;
   max-width: 25em;
 }
 
@@ -50,13 +53,18 @@ function addConfig() {
   display: flex;
   flex-flow: row wrap;
   font-size: 0.75em;
+  margin: 0.2em;
 }
 
 .rating {
-  background: var(--color-element-background);
+  background: var(--color-sub-section-background);
+  border: 2px black solid;
+  border-radius: 2em;
   display: flex;
   flex-flow: row wrap;
-  --border-radius: 1em;
+  margin: 0.5em;
+  padding: 0.5em;
+  --border-radius-element: 1em;
 }
 
 .removeStore {
@@ -66,9 +74,9 @@ function addConfig() {
 }
 
 .store {
-  background: var(--color-element-header-background);
-  border-start-end-radius: var(--border-radius);
-  border-start-start-radius: var(--border-radius);
+  background: var(--color-title-background);
+  border-start-end-radius: var(--border-radius-element);
+  border-start-start-radius: var(--border-radius-element);
   color: var(--color-text-header);
   flex-flow: row;
   position: relative;
