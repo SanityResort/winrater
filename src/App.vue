@@ -7,7 +7,7 @@ import { storeToRefs } from 'pinia'
 import CollapsableHeader from '@/CollapsableHeader.vue'
 
 const matchStore = useMatchStore()
-const { stores } = storeToRefs(matchStore)
+const { modificationCounter, stores } = storeToRefs(matchStore)
 </script>
 
 <template>
@@ -17,9 +17,12 @@ const { stores } = storeToRefs(matchStore)
     <div class="separator" />
   </header>
 
-  <main>
-    <Rating v-for="store in stores.values()" :key="store" :store="store" />
-
+  <main
+    :class="{ 'fill-height': modificationCounter === 0, 'fit-content': modificationCounter !== 0 }"
+  >
+    <div class="ratings">
+      <Rating v-for="store in stores.values()" :key="store" :store="store" />
+    </div>
     <Graph />
   </main>
 </template>
@@ -41,9 +44,21 @@ header {
 main {
   background: var(--color-section-background);
   display: flex;
-  flex-flow: row wrap;
-  height: 100%;
+  flex-flow: column;
   padding: 0 0.5em;
+}
+
+.fill-height {
+  height: 100%;
+}
+
+.fit-content {
+  height: fit-content;
+}
+
+.ratings {
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .separator {
