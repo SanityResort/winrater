@@ -17,7 +17,7 @@ let { modificationCounter } = storeToRefs(matchStore)
 
 const store: Store = props.store as Store
 const key = store.coachName
-const matches = store.matches
+const matches = store.matches()
 const categories = store.categories
 const configs = store.configs
 const storeRef = reactive(store)
@@ -104,6 +104,7 @@ function addConfig() {
           :key="category"
           :category="category"
           :active="true"
+          :match-provider="store"
         />
       </div>
     </div>

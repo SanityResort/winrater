@@ -1,6 +1,6 @@
 <template>
   <div class="category" @click="callback()">
-    {{ category.name }}
+    {{ category.name + suffix }}
   </div>
 </template>
 
@@ -8,17 +8,26 @@
 import Color from 'color'
 import type { PropType } from 'vue'
 import { Category } from '@/rating/match'
+import type { MatchProvider } from '@/rating/store'
+import { computed } from 'vue'
 
 const props = defineProps({
   category: Object as PropType<Category>,
   active: Boolean,
-  callback: Function
+  callback: Function,
+  matchProvider: Object as PropType<MatchProvider>
 })
 
 const category = props.category as Category
 
 const foreground = props.active ? category.foreground : (category.foreground as Color).alpha(0.75)
 const background = props.active ? category.background : (category.background as Color).alpha(0.25)
+
+const suffix = computed(() => {
+  return props.active && props.matchProvider
+    ? ': ' + props.matchProvider.categoryMatches(category).length
+    : ''
+})
 
 function callback() {
   if (props.callback) {

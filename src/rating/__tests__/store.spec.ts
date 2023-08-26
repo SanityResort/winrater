@@ -116,13 +116,13 @@ describe('Rating Store', () => {
 
   describe('init', () => {
     it('sorts matches and creates basic config', () => {
-      store.matches = unsortedMatches
+      store['providedMatches'].push(...unsortedMatches)
       store.categories = [Blackbox, Competitive, FFB_Test, League]
       store.init()
-      expect(store.matches).toStrictEqual(matches)
+      expect(store.matches()).toStrictEqual(matches)
       expect(store.configs.length).toBe(1)
       expect(store.configs[0]).toStrictEqual(
-        new GraphConfig(color, [Blackbox, Competitive, League], store.matches)
+        new GraphConfig(color, [Blackbox, Competitive, League], store['providedMatches'])
       )
 
       const matchStore = useMatchStore()
@@ -190,15 +190,16 @@ describe('Rating Store', () => {
       store.addMatch(fumbblMatch2)
       store.addMatch(fumbblMatch3)
 
-      expect(store.matches).toStrictEqual(unsortedMatches.slice(0, 3))
+      expect(store.matches()).toStrictEqual(unsortedMatches.slice(0, 3))
       expect(store.categories).toStrictEqual([Blackbox, Competitive])
     })
   })
 
   describe('graphs', () => {
     it('returns data points for all matches for default config', () => {
-      store.matches = matches
-      store.categories = [Blackbox, Competitive, FFB_Test, League]
+      store['providedMatches'].push(...matches)
+      store.categories.push(...[Blackbox, Competitive, FFB_Test, League])
+
       store.init()
       const graphs = store.graphs()
       expect(graphs.length).toBe(1)
@@ -214,8 +215,8 @@ describe('Rating Store', () => {
     })
 
     it('returns data points for competitive matches for blackbox config', () => {
-      store.matches = matches
-      store.categories = [Competitive]
+      store['providedMatches'].push(...matches)
+      store.categories.push(...[Competitive])
       store.init()
       const graphs = store.graphs()
       expect(graphs.length).toBe(1)

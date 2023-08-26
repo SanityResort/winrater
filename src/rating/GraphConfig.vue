@@ -47,7 +47,7 @@
       <div class="config-title">
         <input type="color" class="config-color" :value="background" @change="updateColor" />
         <div>
-          {{ config.filteredMatches.length }}
+          {{ config.matches().length }}
         </div>
       </div>
       <IconButton
@@ -65,6 +65,7 @@
         :category="category"
         :active="isActive(category)"
         :callback="toggleCategory"
+        :match-provider="config"
       />
     </div>
   </div>

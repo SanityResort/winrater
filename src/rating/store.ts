@@ -1,6 +1,5 @@
 import type { Category, Match } from '@/rating/match'
 import Color from 'color'
-import type { UnwrapNestedRefs } from 'vue'
 import { reactive } from 'vue'
 import { match, randomColor } from './mapper'
 import { useMatchStore } from '@/pinia/store'
@@ -11,23 +10,32 @@ function updateCounter() {
   modificationCounter.value += 1
 }
 
-export class Store {
+export abstract class MatchProvider {
+  abstract matches(): Match[]
+
+  categoryMatches(category: Category): Match[] {
+    return this.matches().filter((match) => match.category === category)
+  }
+}
+
+export class Store extends MatchProvider {
   public coachName: string
 
-  public matches: UnwrapNestedRefs<Match[]>
-  public categories: UnwrapNestedRefs<Category[]>
+  public providedMatches: Match[]
+  public categories: Category[]
 
   configs: GraphConfig[] = []
   public ready = false
 
   constructor(coachName: string) {
+    super()
     this.coachName = coachName
-    this.matches = reactive([])
+    this.providedMatches = reactive([])
     this.categories = reactive([])
   }
 
   init() {
-    this.matches.sort((a: Match, b: Match) => {
+    this.providedMatches.sort((a: Match, b: Match) => {
       return a.id - b.id
     })
     this.ready = true
@@ -38,7 +46,7 @@ export class Store {
     const config = new GraphConfig(
       randomColor(),
       this.categories.filter((cat) => cat.valid),
-      this.matches
+      this.providedMatches
     )
 
     this.configs.push(config)
@@ -55,13 +63,13 @@ export class Store {
   graphs(): Graph[] {
     return this.configs.map(
       (config, configIndex) =>
-        new Graph(config.color, this.accumulated(config.filteredMatches, configIndex))
+        new Graph(config.color, this.accumulated(config.matches(), configIndex))
     )
   }
 
   addMatch(fumbblMatch: FumbblMatch) {
     const newMatch: Match = match(fumbblMatch, this.coachName)
-    this.matches.push(newMatch)
+    this.providedMatches.push(newMatch)
 
     if (this.categories.indexOf(newMatch.category) < 0) {
       this.categories.push(newMatch.category)
@@ -83,18 +91,23 @@ export class Store {
       }
     })
   }
+
+  matches(): Match[] {
+    return this.providedMatches
+  }
 }
 
-export class GraphConfig {
+export class GraphConfig extends MatchProvider {
   categories: Category[]
   color: Color
-  private matches: Match[]
-  filteredMatches: Match[]
+  private providedMatches: Match[]
+  private filteredMatches: Match[]
 
   constructor(color: Color, categories: Category[], matches: Match[]) {
+    super()
     this.color = color
     this.categories = categories
-    this.matches = matches
+    this.providedMatches = matches
     this.filteredMatches = this.filterMatches()
   }
 
@@ -122,7 +135,11 @@ export class GraphConfig {
   }
 
   private filterMatches(): Match[] {
-    return this.matches.filter((match) => this.categories.indexOf(match.category) > -1)
+    return this.providedMatches.filter((match) => this.categories.indexOf(match.category) > -1)
+  }
+
+  matches(): Match[] {
+    return this.filteredMatches
   }
 }
 
