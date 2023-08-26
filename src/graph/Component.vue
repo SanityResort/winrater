@@ -61,7 +61,6 @@ const resizeCallback = () => {
 
 <style scoped>
 #plot {
-  border: 1px black solid;
   margin-bottom: 0.5em;
 }
 </style>

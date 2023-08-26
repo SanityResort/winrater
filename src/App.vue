@@ -42,6 +42,7 @@ main {
   background: var(--color-section-background);
   display: flex;
   flex-flow: row wrap;
+  height: 100%;
   padding: 0 0.5em;
 }
 
