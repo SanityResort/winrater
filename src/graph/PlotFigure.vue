@@ -60,34 +60,58 @@ const render = () => {
             })
 
           let mouseHasMoved = false
+          let tippyEnabled = false
+
+          function showTippy() {
+            tippyEnabled = true
+            dot.attr('display', null)
+            tooltip.show()
+          }
+
+          tooltip.props.onShow = () => {
+            if (!tippyEnabled) {
+              return false
+            }
+          }
+
+          tooltip.props.onHide = () => {
+            if (tippyEnabled) {
+              return false
+            }
+          }
 
           plotDom.on('pointerenter', () => {
             if (mouseHasMoved) {
-              dot.attr('display', null)
+              showTippy()
             }
-            tooltip.show()
           })
 
           plotDom.on('pointerleave', () => {
+            tippyEnabled = false
+            tooltip.hide()
             dot.attr('display', 'none')
             lines.forEach((line) => {
               d3.select(line).attr('stroke-opacity', '1')
             })
-            tooltip.hide()
           })
 
           plotDom.on('pointermove', (event: MouseEvent) => {
-            mouseHasMoved = true
+            if (!mouseHasMoved) {
+              mouseHasMoved = true
+              showTippy()
+            }
             const [ex, ey] = d3.pointer(event)
             const closest = d3.least(dataPx, (dataPoint) =>
               Math.hypot(dataPoint.x - ex, dataPoint.y - ey)
             )
 
-            const stroke = d3.select(lines.get(closest.title)).attr('stroke')
+            let stroke = undefined
 
             lines.forEach((line, title) => {
               if (title === closest.title) {
-                d3.select(line).attr('stroke-opacity', '1').raise()
+                const graphLine = d3.select(line)
+                stroke = graphLine.attr('stroke')
+                graphLine.attr('stroke-opacity', '1').raise()
               } else {
                 d3.select(line).attr('stroke-opacity', '0.2')
               }
