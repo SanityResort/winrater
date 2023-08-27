@@ -30,8 +30,8 @@ async function loadData() {
     await load(store, errorMessage, (store: Store) => {
       setStore(store.coachName, store)
     })
-  } catch (error) {
-    errorMessage.value = error
+  } catch (error: any) {
+    errorMessage.value = error.message
   }
 }
 </script>

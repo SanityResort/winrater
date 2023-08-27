@@ -5,13 +5,14 @@ import { InternSet } from 'd3'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
 import PlotFigure from '@/graph/PlotFigure.vue'
+import { Line } from '@observablehq/plot'
 
 const matchStore = useMatchStore()
 
 const { stores, modificationCounter } = storeToRefs(matchStore)
 
 function dataMarks() {
-  const lines = []
+  const lines: Line[] = []
   for (const value of stores.value.values()) {
     let counter = 1
     value.graphs().forEach((graph) => {

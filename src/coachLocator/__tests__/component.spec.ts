@@ -28,12 +28,10 @@ describe('Coach locator component', () => {
     const { stores } = storeToRefs(matchStore)
 
     const mockedErrorMessage = 'mocked error message'
-    vi.mocked(load).mockImplementation(
-      (store: Store, errorMessage: Ref<string>): Promise<boolean> => {
-        errorMessage.value = mockedErrorMessage
-        return Promise.resolve(false)
-      }
-    )
+    vi.mocked(load).mockImplementation((store: Store, errorMessage: Ref<string>): Promise<void> => {
+      errorMessage.value = mockedErrorMessage
+      return Promise.resolve()
+    })
 
     const textField = wrapper.find('#coachName')
     await wrapper.find('.addButton').trigger('click')
@@ -46,8 +44,8 @@ describe('Coach locator component', () => {
   it('adds new store for coach data', async () => {
     const coachName = 'givenCoachName'
 
-    vi.mocked(load).mockImplementation((): Promise<boolean> => {
-      return Promise.resolve(true)
+    vi.mocked(load).mockImplementation((): Promise<void> => {
+      return Promise.resolve()
     })
 
     const textField = wrapper.find('#coachName')

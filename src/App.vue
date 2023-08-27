@@ -21,7 +21,7 @@ const { modificationCounter, stores } = storeToRefs(matchStore)
     :class="{ 'fill-height': modificationCounter === 0, 'fit-content': modificationCounter !== 0 }"
   >
     <div class="ratings">
-      <Rating v-for="store in stores.values()" :key="store" :store="store" />
+      <Rating v-for="store in stores.values()" :key="store.coachName" :store="store" />
     </div>
     <Graph />
   </main>

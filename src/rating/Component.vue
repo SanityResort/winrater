@@ -100,7 +100,7 @@ function addConfig() {
       <div class="labels">
         <CategoryLabel
           v-for="category in categories"
-          :key="category"
+          :key="category.name"
           :category="category"
           :active="true"
           :match-provider="store"
@@ -110,7 +110,7 @@ function addConfig() {
     <GraphConfig
       class="config"
       v-for="config in configs"
-      :key="config"
+      :key="configs.indexOf(config)"
       :config="config"
       :store="store"
       :show-remove-button="configs.length > 1"

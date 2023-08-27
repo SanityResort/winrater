@@ -61,7 +61,7 @@
     <div class="labels">
       <CategoryLabel
         v-for="category in storeCategories"
-        :key="category"
+        :key="category.name"
         :category="category"
         :active="isActive(category)"
         :callback="toggleCategory"
@@ -96,7 +96,7 @@ function updateColor(value: Event) {
   config.updateHexColor(newColorHex)
 }
 
-function isActive(category: Category): Boolean {
+function isActive(category: Category): boolean {
   return categories.indexOf(category) >= 0
 }
 

@@ -4,7 +4,7 @@ import { computed, h, ref, withDirectives } from 'vue'
 import type { BaseType } from 'd3'
 import * as d3 from 'd3'
 import Color from 'color'
-import tippy, { Instance } from 'tippy.js'
+import tippy, { Content, Instance } from 'tippy.js'
 
 const props = defineProps(['options'])
 
@@ -50,14 +50,14 @@ const render = () => {
             .attr('style', 'background:var(--color-element-background)')
             .attr('font-size', '1em')
           const dot = plotDom.append('g').attr('display', 'none')
-          dot.append('circle').attr('r', '0.25em').attr('stroke-width', '0.15em')
+          dot.append('circle').attr('r', '0.25em').attr('stroke-width', '0.15em').attr('id', 'dot')
 
           const xPx = plot.scale('x')?.apply
           const yPx = plot.scale('y')?.apply
           const dataPx: DataPoint[] = props.options.marks
-            .filter((mark) => mark.z)
-            .flatMap((mark) => {
-              return mark.data.map((data) => {
+            .filter((mark: any) => mark.z)
+            .flatMap((mark: any) => {
+              return mark.data.map((data: DataPoint) => {
                 const x = xPx ? xPx(data.index) : 0
                 const y = yPx ? yPx(data.ratio * 100) : 0
                 return {
@@ -70,16 +70,22 @@ const render = () => {
               })
             })
 
-          const tooltip: Instance = tippy(dot.node())
+          const tooltip: Instance = tippy('#dot')[0]
 
           plotDom
             .selectAll('title')
             .nodes()
             .forEach((node) => {
               const d3Node = d3.select(node).nodes()[0]
-              if ('parentNode' in d3Node && 'parentNode' in d3Node.parentNode) {
+              if (
+                d3Node &&
+                'parentNode' in d3Node &&
+                d3Node.parentNode &&
+                'parentNode' in d3Node.parentNode &&
+                d3Node.parentNode.parentNode
+              ) {
                 // noinspection TypeScriptValidateTypes
-                lines.set(d3.select(node).text(), d3Node.parentNode.parentNode)
+                lines.set(d3.select(node).text(), d3Node.parentNode.parentNode as BaseType)
               }
             })
 
@@ -149,7 +155,7 @@ const render = () => {
               .attr('display', null)
               .raise()
 
-            tooltip.setProps({ content: document.getElementById('tooltip-content') })
+            tooltip.setProps({ content: document.getElementById('tooltip-content') as Content })
           })
         }
       }
