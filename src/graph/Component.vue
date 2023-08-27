@@ -72,7 +72,7 @@ const resizeCallback = () => {
       :key="modificationCounter"
       :options="{
         width: parentWidth(),
-        height: 800,
+        height: 600,
         fontSize: 20,
         marks: [...dataMarks(), Plot.ruleY([0]), Plot.ruleX([0], { x: 1, y1: 0, y2: 1 })],
         y: {

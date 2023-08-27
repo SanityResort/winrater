@@ -66,7 +66,6 @@ function addConfig() {
   flex-flow: row wrap;
   margin: 0.5em;
   padding: 0.5em;
-  --border-radius-element: 1em;
 }
 
 .removeStore {

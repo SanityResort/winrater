@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as Plot from '@observablehq/plot'
-import { h, withDirectives } from 'vue'
+import { computed, h, ref, withDirectives } from 'vue'
 import type { BaseType } from 'd3'
 import * as d3 from 'd3'
 import Color from 'color'
@@ -9,6 +9,31 @@ import tippy, { Instance } from 'tippy.js'
 const props = defineProps(['options'])
 
 const lines = new Map<string, BaseType>()
+
+let stroke = ref('rgb(0, 0,0)')
+const tooltipGradient = computed(() => {
+  return (
+    'linear-gradient(to bottom, ' +
+    stroke.value +
+    ', ' +
+    new Color(stroke.value).lighten(0.2).rgb() +
+    ')'
+  )
+})
+
+const tooltipColor = computed(() => {
+  return new Color(stroke.value).isLight() ? 'black' : 'white'
+})
+
+let closest = ref({ x: 0, y: 0, title: '', index: 0, ratio: 0 })
+
+type DataPoint = {
+  x: number
+  y: number
+  title: string
+  index: number
+  ratio: number
+}
 
 // this allows to create the plot using the render tag in template
 // noinspection JSUnusedGlobalSymbols
@@ -24,13 +49,12 @@ const render = () => {
           plotDom
             .attr('style', 'background:var(--color-element-background)')
             .attr('font-size', '1em')
-            .attr('border', '2px black solid')
           const dot = plotDom.append('g').attr('display', 'none')
           dot.append('circle').attr('r', '0.25em').attr('stroke-width', '0.15em')
 
           const xPx = plot.scale('x')?.apply
           const yPx = plot.scale('y')?.apply
-          const dataPx = props.options.marks
+          const dataPx: DataPoint[] = props.options.marks
             .filter((mark) => mark.z)
             .flatMap((mark) => {
               return mark.data.map((data) => {
@@ -101,16 +125,17 @@ const render = () => {
               showTippy()
             }
             const [ex, ey] = d3.pointer(event)
-            const closest = d3.least(dataPx, (dataPoint) =>
+            const foundPoint = d3.least(dataPx, (dataPoint) =>
               Math.hypot(dataPoint.x - ex, dataPoint.y - ey)
             )
-
-            let stroke = undefined
+            if (foundPoint) {
+              closest.value = foundPoint
+            }
 
             lines.forEach((line, title) => {
-              if (title === closest.title) {
+              if (title === closest.value.title) {
                 const graphLine = d3.select(line)
-                stroke = graphLine.attr('stroke')
+                stroke.value = graphLine.attr('stroke')
                 graphLine.attr('stroke-opacity', '1').raise()
               } else {
                 d3.select(line).attr('stroke-opacity', '0.2')
@@ -118,13 +143,13 @@ const render = () => {
             })
 
             dot
-              .attr('transform', `translate(${closest.x},${closest.y})`)
-              .attr('stroke', stroke)
-              .attr('fill', Color(stroke).lightness(50).rgb().string())
+              .attr('transform', `translate(${closest.value.x},${closest.value.y})`)
+              .attr('stroke', stroke.value)
+              .attr('fill', Color(stroke.value).lighten(0.1).rgb().string())
               .attr('display', null)
               .raise()
 
-            tooltip.setProps({ content: closest.title })
+            tooltip.setProps({ content: document.getElementById('tooltip-content') })
           })
         }
       }
@@ -133,6 +158,41 @@ const render = () => {
 }
 </script>
 <template>
+  <div id="tooltip">
+    <div id="tooltip-content">
+      <div id="title" :style="{ background: tooltipGradient, color: tooltipColor }">
+        {{ closest.title }}
+      </div>
+      <div id="content">
+        <div class="contentItem">Win% {{ Math.round(closest.ratio * 10000) / 100 }}</div>
+        <div class="contentItem">Match #{{ closest.index }}</div>
+      </div>
+    </div>
+  </div>
   <!--suppress HtmlUnknownTag -->
   <render />
 </template>
+
+<style scoped>
+#tooltip {
+  display: none;
+}
+
+#tooltip-content {
+  border: 1px black solid;
+  border-radius: var(--border-radius-element);
+}
+
+#title {
+  border-start-start-radius: var(--border-radius-element);
+  border-start-end-radius: var(--border-radius-element);
+  padding: 0.2em;
+  text-align: center;
+}
+#content {
+  background: white;
+  border-end-start-radius: var(--border-radius-element);
+  border-end-end-radius: var(--border-radius-element);
+  padding: 0.25em;
+}
+</style>
