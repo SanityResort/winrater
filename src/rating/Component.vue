@@ -44,7 +44,7 @@ function addConfig() {
   border: 1px solid black;
   border-radius: var(--border-radius-element);
   margin: 0.25em;
-  max-width: 25em;
+  max-width: 23em;
 }
 
 .coachName {
