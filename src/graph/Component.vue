@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import * as Plot from '@observablehq/plot'
+import { Line } from '@observablehq/plot'
 import { onMounted, onUnmounted } from 'vue'
-import { InternSet } from 'd3'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
 import PlotFigure from '@/graph/PlotFigure.vue'
-import { Line } from '@observablehq/plot'
 
 const matchStore = useMatchStore()
 
@@ -31,16 +30,7 @@ function dataMarks() {
 }
 
 function ticks(): number {
-  const xValues: number[] = []
-
-  for (const value of stores.value.values()) {
-    value
-      .graphs()
-      .flatMap((data) => data.dataPoints)
-      .forEach((dataPoint) => xValues.push(dataPoint.index))
-  }
-
-  return Math.min(new InternSet(xValues).size, parentWidth() / 50)
+  return parentWidth() / 50
 }
 
 function parentWidth() {

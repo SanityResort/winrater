@@ -150,7 +150,6 @@ export class GraphConfig extends MatchProvider {
   }
 
   private accumulated(): DataPoint[] {
-    console.log('Accumalted for ' + this.coachName + ' ' + this.configNumber)
     let accumulatedScore: number = 0
 
     return this.filteredMatches.map((match, index) => {
