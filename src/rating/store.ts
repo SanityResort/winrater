@@ -26,6 +26,7 @@ export class Store extends MatchProvider {
 
   configs: GraphConfig[] = []
   public ready = false
+  private configCounter = 0
 
   constructor(coachName: string) {
     super()
@@ -44,14 +45,16 @@ export class Store extends MatchProvider {
 
   addConfig() {
     const config = new GraphConfig(
+      this.coachName,
+      ++this.configCounter,
       randomColor(),
       this.categories.filter((cat) => cat.valid),
       this.providedMatches
     )
 
     this.configs.push(config)
-    updateCounter()
   }
+
   removeConfig(config: GraphConfig) {
     const index = this.configs.indexOf(config)
     if (index >= 0) {
@@ -61,10 +64,7 @@ export class Store extends MatchProvider {
   }
 
   graphs(): Graph[] {
-    return this.configs.map(
-      (config, configIndex) =>
-        new Graph(config.color, this.accumulated(config.matches(), configIndex))
-    )
+    return this.configs.map((config) => config.graph())
   }
 
   addMatch(fumbblMatch: FumbblMatch) {
@@ -79,36 +79,36 @@ export class Store extends MatchProvider {
     }
   }
 
-  private accumulated(matches: Match[], configIndex: number): DataPoint[] {
-    let accumulatedScore: number = 0
-
-    return matches.map((match, index) => {
-      accumulatedScore += match.score
-      return {
-        index: index + 1,
-        ratio: Math.round((accumulatedScore / (index + 1)) * 10000) / 10000,
-        title: this.coachName + '_' + configIndex
-      }
-    })
-  }
-
   matches(): Match[] {
     return this.providedMatches
   }
 }
 
 export class GraphConfig extends MatchProvider {
-  categories: Category[]
-  color: Color
+  public categories: Category[]
+  private color: Color
   private providedMatches: Match[]
   private filteredMatches: Match[]
+  private dataPoints: DataPoint[]
+  private readonly coachName: string
+  private readonly configNumber: number
 
-  constructor(color: Color, categories: Category[], matches: Match[]) {
+  constructor(
+    coachName: string,
+    configNumber: number,
+    color: Color,
+    categories: Category[],
+    matches: Match[]
+  ) {
     super()
+    this.coachName = coachName
+    this.configNumber = configNumber
     this.color = color
     this.categories = categories
     this.providedMatches = matches
-    this.filteredMatches = this.filterMatches()
+    this.dataPoints = []
+    this.filteredMatches = []
+    this.update()
   }
 
   toggleCategory(category: Category) {
@@ -121,8 +121,7 @@ export class GraphConfig extends MatchProvider {
     } else {
       this.categories.push(category)
     }
-    this.filteredMatches = this.filterMatches()
-    updateCounter()
+    this.update()
   }
 
   public updateHexColor(newColor: string) {
@@ -134,12 +133,34 @@ export class GraphConfig extends MatchProvider {
     return this.color.hex()
   }
 
-  private filterMatches(): Match[] {
-    return this.providedMatches.filter((match) => this.categories.indexOf(match.category) > -1)
+  private update() {
+    this.filteredMatches = this.providedMatches.filter(
+      (match) => this.categories.indexOf(match.category) > -1
+    )
+    this.dataPoints = this.accumulated()
+    updateCounter()
   }
 
   matches(): Match[] {
     return this.filteredMatches
+  }
+
+  graph(): Graph {
+    return new Graph(this.color, this.dataPoints)
+  }
+
+  private accumulated(): DataPoint[] {
+    console.log('Accumalted for ' + this.coachName + ' ' + this.configNumber)
+    let accumulatedScore: number = 0
+
+    return this.filteredMatches.map((match, index) => {
+      accumulatedScore += match.score
+      return {
+        index: index + 1,
+        ratio: Math.round((accumulatedScore / (index + 1)) * 10000) / 10000,
+        title: this.coachName + ' #' + this.configNumber
+      }
+    })
   }
 }
 
