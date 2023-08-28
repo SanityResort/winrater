@@ -35,12 +35,19 @@ type DataPoint = {
   ratio: number
 }
 
+let tooltip: Instance
+
 // this allows to create the plot using the render tag in template
 // noinspection JSUnusedGlobalSymbols
 const render = () => {
   return withDirectives(h('div'), [
     [
       {
+        unmounted() {
+          if (tooltip) {
+            tooltip.destroy()
+          }
+        },
         mounted(el) {
           const plot = Plot.plot(props.options)
           el.append(plot)
@@ -70,7 +77,7 @@ const render = () => {
               })
             })
 
-          const tooltip: Instance = tippy('#dot')[0]
+          tooltip = tippy('#dot')[0]
 
           plotDom
             .selectAll('title')
@@ -105,7 +112,7 @@ const render = () => {
           }
 
           tooltip.props.onHide = () => {
-            if (tippyEnabled) {
+            if (tippyEnabled || (tooltip && tooltip.state && tooltip.state.isDestroyed)) {
               return false
             }
           }
