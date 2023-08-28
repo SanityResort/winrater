@@ -5,6 +5,7 @@ import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
 import { Store } from '@/rating/store'
 import IconButton from '@/common/IconButton.vue'
+import addIcon from '../../icons/addIcon.png'
 
 const matchStore = useMatchStore()
 const { currentCoachName, stores } = storeToRefs(matchStore)
@@ -74,12 +75,7 @@ async function loadData() {
         type="text"
       />
 
-      <IconButton
-        class="addButton"
-        alt="Add coach"
-        :callback="loadData"
-        src="../../icons/addIcon.png"
-      />
+      <IconButton class="addButton" alt="Add coach" :callback="loadData" :src="addIcon" />
     </form>
     <div :class="{ active: errorMessage.length > 0 }" class="error">
       {{ errorMessage }}

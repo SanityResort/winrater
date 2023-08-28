@@ -6,6 +6,8 @@ import CategoryLabel from '@/rating/CategoryLabel.vue'
 import GraphConfig from '@/rating/GraphConfig.vue'
 import IconButton from '@/common/IconButton.vue'
 import { reactive } from 'vue'
+import addIcon from '../../icons/addIcon.png'
+import removeIcon from '../../icons/removeIcon.png'
 
 const props = defineProps({
   store: Store
@@ -94,7 +96,7 @@ function addConfig() {
           class="removeStore"
           alt="Remove coach"
           :callback="removeStore"
-          src="../../icons/removeIcon.png"
+          :src="removeIcon"
         />
       </div>
       <div class="labels">
@@ -116,11 +118,6 @@ function addConfig() {
       :show-remove-button="configs.length > 1"
     />
 
-    <IconButton
-      v-if="storeRef.ready"
-      alt="Add config"
-      :callback="addConfig"
-      src="../../icons/addIcon.png"
-    />
+    <IconButton v-if="storeRef.ready" alt="Add config" :callback="addConfig" :src="addIcon" />
   </div>
 </template>

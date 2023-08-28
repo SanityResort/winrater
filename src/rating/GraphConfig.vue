@@ -55,7 +55,7 @@
         class="removeStore"
         alt="Remove config"
         :callback="remove"
-        src="../../icons/removeIcon.png"
+        :src="removeIcon"
       />
     </div>
     <div class="labels">
@@ -76,6 +76,7 @@ import CategoryLabel from '@/rating/CategoryLabel.vue'
 import { Category } from '@/rating/match'
 import { GraphConfig, Store } from '@/rating/store'
 import IconButton from '@/common/IconButton.vue'
+import removeIcon from '../../icons/removeIcon.png'
 
 const props = defineProps({
   config: GraphConfig,
