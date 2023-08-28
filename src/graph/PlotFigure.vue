@@ -192,6 +192,7 @@ const render = () => {
 }
 
 #tooltip-content {
+  background: white;
   border: 1px black solid;
   border-radius: var(--border-radius-element);
 }
@@ -199,7 +200,7 @@ const render = () => {
 #title {
   border-start-start-radius: var(--border-radius-element);
   border-start-end-radius: var(--border-radius-element);
-  padding: 0.2em;
+  padding: 0.2em 1.5em;
   text-align: center;
 }
 #content {
@@ -207,5 +208,7 @@ const render = () => {
   border-end-start-radius: var(--border-radius-element);
   border-end-end-radius: var(--border-radius-element);
   padding: 0.25em;
+  width: fit-content;
+  margin: auto;
 }
 </style>
