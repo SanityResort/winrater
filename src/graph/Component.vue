@@ -30,7 +30,7 @@ function dataMarks() {
 }
 
 function ticks(): number {
-  return parentWidth() / 50
+  return parentWidth() / 80
 }
 
 function parentWidth() {
