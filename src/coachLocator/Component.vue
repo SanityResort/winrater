@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, Ref, ref } from 'vue'
+import { Ref, ref } from 'vue'
 import { load } from './service'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
@@ -35,10 +35,6 @@ async function loadData() {
     errorMessage.value = error.message
   }
 }
-
-onMounted(() => {
-  document.getElementById('coachName').focus()
-})
 </script>
 
 <style scoped>
@@ -77,6 +73,7 @@ onMounted(() => {
         :disabled="loading"
         placeholder="coach name"
         type="text"
+        autofocus
       />
 
       <IconButton class="addButton" alt="Add coach" :callback="loadData" :src="addIcon" />
