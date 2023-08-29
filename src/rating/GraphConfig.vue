@@ -46,9 +46,7 @@
     <div class="config-header">
       <div class="config-title">
         <input type="color" class="config-color" :value="background" @change="updateColor" />
-        <div>
-          {{ config.matches().length }}
-        </div>
+        <div>{{ config.matches().length }} (#{{ config.configNumber }})</div>
       </div>
       <IconButton
         v-if="showRemoveButton"

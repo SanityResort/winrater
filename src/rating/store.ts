@@ -98,7 +98,7 @@ export class GraphConfig extends MatchProvider {
   private filteredMatches: Match[]
   private dataPoints: DataPoint[]
   private readonly coachName: string
-  private readonly configNumber: number
+  public readonly configNumber: number
   public matchCounts: Map<Category, number>
   private line: Line
 
