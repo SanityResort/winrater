@@ -74,7 +74,12 @@ export function score(input: FumbblMatch, coachName: string): Score {
 }
 
 export function match(input: FumbblMatch, coachName: string): Match {
-  return { id: input.id, score: score(input, coachName), category: category(input) }
+  return {
+    id: input.id,
+    score: score(input, coachName),
+    category: category(input),
+    dateTime: new Date(input.date + 'T' + input.time)
+  }
 }
 
 export function randomColor(): Color {

@@ -4,6 +4,7 @@ export interface Match {
   score: Score
   id: number
   category: Category
+  dateTime: Date
 }
 
 export enum Score {

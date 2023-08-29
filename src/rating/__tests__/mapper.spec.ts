@@ -214,13 +214,19 @@ describe('Rating Mapper', () => {
         division: 'Competitive',
         scheduler: 'Blackbox',
         team1: { coach: { name: 'coach1' }, score: 1 },
-        team2: { coach: { name: 'coach2' }, score: 1 }
+        team2: { coach: { name: 'coach2' }, score: 1 },
+        date: '2020-10-30',
+        time: '20:51:33'
       }
 
-      expect(mapper.match(input, 'coach1')).toStrictEqual({
+      const expectedDateTime = new Date(2020, 9, 30, 20, 51, 33)
+
+      const result = mapper.match(input, 'coach1')
+      expect(result).toStrictEqual({
         id: 123,
         score: Score.Draw,
-        category: Blackbox
+        category: Blackbox,
+        dateTime: expectedDateTime
       })
     })
   })

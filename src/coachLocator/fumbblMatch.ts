@@ -5,6 +5,8 @@ interface FumbblMatch {
   scheduler: string
   team1: Team
   team2: Team
+  date: string
+  time: string
 }
 
 interface Team {
