@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Ref, ref } from 'vue'
+import { onMounted, Ref, ref } from 'vue'
 import { load } from './service'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
@@ -35,6 +35,10 @@ async function loadData() {
     errorMessage.value = error.message
   }
 }
+
+onMounted(() => {
+  document.getElementById('coachName').focus()
+})
 </script>
 
 <style scoped>
