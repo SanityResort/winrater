@@ -4,6 +4,8 @@ import { reactive } from 'vue'
 import { match, randomColor } from './mapper'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
+import { Line } from '@observablehq/plot'
+import * as Plot from '@observablehq/plot'
 
 function updateCounter() {
   const { modificationCounter } = storeToRefs(useMatchStore())
@@ -98,6 +100,7 @@ export class GraphConfig extends MatchProvider {
   private readonly coachName: string
   private readonly configNumber: number
   public matchCounts: Map<Category, number>
+  private line: Line
 
   constructor(
     coachName: string,
@@ -115,6 +118,7 @@ export class GraphConfig extends MatchProvider {
     this.providedMatches = matches
     this.dataPoints = []
     this.filteredMatches = []
+    this.line = Plot.line()
     this.matchCounts = reactive(new Map<Category, number>(matchCounts))
     this.update(false)
   }
@@ -134,6 +138,7 @@ export class GraphConfig extends MatchProvider {
 
   public updateHexColor(newColor: string) {
     this.color = this.color.hex(newColor)
+    this.updateLine()
     updateCounter()
   }
 
@@ -146,6 +151,7 @@ export class GraphConfig extends MatchProvider {
       (match) => this.categories.indexOf(match.category) > -1
     )
     this.dataPoints = this.accumulated()
+    this.updateLine()
     if (updateCounts) {
       for (const key of this.matchCounts.keys()) {
         this.matchCounts.set(key, 0)
@@ -159,12 +165,22 @@ export class GraphConfig extends MatchProvider {
     updateCounter()
   }
 
+  private updateLine(): void {
+    this.line = Plot.line(this.dataPoints, {
+      x: 'index',
+      y: 'ratio',
+      z: this.coachName + this.configNumber,
+      title: 'title',
+      stroke: this.color.rgb().string()
+    })
+  }
+
   matches(): Match[] {
     return this.filteredMatches
   }
 
   graph(): Graph {
-    return new Graph(this.color, this.dataPoints)
+    return new Graph(this.dataPoints, this.line)
   }
 
   private accumulated(): DataPoint[] {
@@ -183,11 +199,11 @@ export class GraphConfig extends MatchProvider {
 
 export class Graph {
   dataPoints: DataPoint[]
-  color: Color
+  line: Line
 
-  constructor(color: Color, dataPoints: DataPoint[]) {
-    this.color = color
+  constructor(dataPoints: DataPoint[], line: Line) {
     this.dataPoints = dataPoints
+    this.line = line
   }
 }
 

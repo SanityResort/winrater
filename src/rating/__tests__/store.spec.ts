@@ -8,6 +8,8 @@ import { createTestingPinia } from '@pinia/testing'
 import { useMatchStore } from '../../pinia/store'
 import { storeToRefs } from 'pinia'
 import { reactive } from 'vue'
+import * as Plot from '@observablehq/plot'
+import { Line } from '@observablehq/plot'
 
 vi.mock('../mapper')
 
@@ -256,7 +258,7 @@ describe('Rating Store', () => {
   describe('graphs', () => {
     it('collects graphs from configs', () => {
       const config = new GraphConfig('', 0, color, [], [], new Map<Category, number>())
-      const graph = new Graph(color, [])
+      const graph = new Graph([], Plot.line())
       config.graph = vi.fn().mockImplementation(() => {
         return graph
       })
@@ -340,8 +342,9 @@ describe('Graph Config', () => {
         new Map<Category, number>()
       )
 
-      expect(config.hexColor()).toEqual(originalColor)
-      expect(config.graph().color).toEqual(new Color(originalColor))
+      const line: Line = config.graph().line
+      expect(originalColor).toEqual(config.hexColor())
+      expect(line).toEqual(config.graph().line)
     })
   })
 
@@ -358,9 +361,10 @@ describe('Graph Config', () => {
         new Map<Category, number>()
       )
 
-      config.updateHexColor(newColor)
+      const line: Line = config.graph().line
 
-      expect(config.graph().color).toEqual(new Color(newColor))
+      config.updateHexColor(newColor)
+      expect(line).not.toEqual(config.graph().line)
     })
   })
 
@@ -379,15 +383,14 @@ describe('Graph Config', () => {
       )
 
       const graph = config.graph()
-      expect(graph).toStrictEqual(
-        new Graph(color, [
-          { index: 1, ratio: 1, title: 'coach #1' },
-          { index: 2, ratio: 0.5, title: 'coach #1' },
-          { index: 3, ratio: 0.6667, title: 'coach #1' },
-          { index: 4, ratio: 0.625, title: 'coach #1' },
-          { index: 5, ratio: 0.6, title: 'coach #1' }
-        ])
-      )
+      expect(graph.dataPoints).toStrictEqual([
+        { index: 1, ratio: 1, title: 'coach #1' },
+        { index: 2, ratio: 0.5, title: 'coach #1' },
+        { index: 3, ratio: 0.6667, title: 'coach #1' },
+        { index: 4, ratio: 0.625, title: 'coach #1' },
+        { index: 5, ratio: 0.6, title: 'coach #1' }
+      ])
+      expect(graph.line).not.toBeNull()
     })
 
     it('returns data points for competitive matches', () => {
@@ -404,12 +407,10 @@ describe('Graph Config', () => {
       )
 
       const graph = config.graph()
-      expect(graph).toStrictEqual(
-        new Graph(color, [
-          { index: 1, ratio: 1.0, title: 'coach #1' },
-          { index: 2, ratio: 0.75, title: 'coach #1' }
-        ])
-      )
+      expect(graph.dataPoints).toStrictEqual([
+        { index: 1, ratio: 1.0, title: 'coach #1' },
+        { index: 2, ratio: 0.75, title: 'coach #1' }
+      ])
     })
   })
 })

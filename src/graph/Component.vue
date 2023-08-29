@@ -13,17 +13,8 @@ const { stores, modificationCounter } = storeToRefs(matchStore)
 function dataMarks() {
   const lines: Line[] = []
   for (const value of stores.value.values()) {
-    let counter = 1
     value.graphs().forEach((graph) => {
-      lines.push(
-        Plot.line(graph.dataPoints, {
-          x: 'index',
-          y: 'ratio',
-          z: counter++,
-          title: 'title',
-          stroke: graph.color.rgb().string()
-        })
-      )
+      lines.push(graph.line)
     })
   }
   return lines
