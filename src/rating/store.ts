@@ -93,7 +93,7 @@ export class Store extends MatchProvider {
 
 export class GraphConfig extends MatchProvider {
   public categories: Category[]
-  private color: Color
+  public color: Color
   private providedMatches: Match[]
   private filteredMatches: Match[]
   private dataPoints: DataPoint[]
