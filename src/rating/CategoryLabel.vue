@@ -7,9 +7,9 @@
 <script setup lang="ts">
 import Color from 'color'
 import type { PropType } from 'vue'
+import { computed } from 'vue'
 import { Category } from '@/rating/match'
 import type { MatchProvider } from '@/rating/store'
-import { computed } from 'vue'
 
 const props = defineProps({
   category: Object as PropType<Category>,
@@ -25,7 +25,7 @@ const background = props.active ? category.background : (category.background as 
 
 const suffix = computed(() => {
   return props.active && props.matchProvider
-    ? ': ' + props.matchProvider.categoryMatches(category).length
+    ? ': ' + props.matchProvider.matchCounts.get(category)
     : ''
 })
 

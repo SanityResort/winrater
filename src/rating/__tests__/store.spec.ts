@@ -1,12 +1,13 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { Graph, GraphConfig, Store } from '../store'
-import type { Match } from '../match'
+import type { Category, Match } from '../match'
 import { Blackbox, Competitive, FFB_Test, League, Score } from '../match'
 import Color from 'color'
 import { match, randomColor } from '../mapper'
 import { createTestingPinia } from '@pinia/testing'
 import { useMatchStore } from '../../pinia/store'
 import { storeToRefs } from 'pinia'
+import { reactive } from 'vue'
 
 vi.mock('../mapper')
 
@@ -118,7 +119,8 @@ describe('Rating Store', () => {
   describe('init', () => {
     it('sorts matches and creates basic config', () => {
       store['providedMatches'].push(...unsortedMatches)
-      store.categories = [Blackbox, Competitive, FFB_Test, League]
+      store.categories.push(Blackbox, Competitive, FFB_Test, League)
+      store.matchCounts.set(Blackbox, 8)
       store.init()
 
       const matchStore = useMatchStore()
@@ -127,21 +129,22 @@ describe('Rating Store', () => {
 
       expect(store.matches()).toStrictEqual(matches)
       expect(store.configs.length).toBe(1)
-      expect(store.configs[0]).toStrictEqual(
-        new GraphConfig(
-          store.coachName,
-          1,
-          color,
-          [Blackbox, Competitive, League],
-          store['providedMatches']
-        )
+      const expectedConfig = new GraphConfig(
+        store.coachName,
+        1,
+        color,
+        reactive([Blackbox, Competitive, League]),
+        store['providedMatches'],
+        store.matchCounts
       )
+      expect(store.configs[0]).toStrictEqual(expectedConfig)
     })
   })
 
   describe('addConfig', () => {
     it('adds new default config to array', () => {
-      store.categories = [Blackbox, Competitive, FFB_Test]
+      store.categories.push(Blackbox, Competitive, FFB_Test)
+      store.matchCounts.set(Blackbox, 8)
 
       store.addConfig()
 
@@ -154,7 +157,8 @@ describe('Rating Store', () => {
         1,
         color,
         [Blackbox, Competitive],
-        []
+        [],
+        store.matchCounts
       )
       expect(store.configs).toStrictEqual([config])
     })
@@ -167,14 +171,16 @@ describe('Rating Store', () => {
         1,
         new Color({ r: 0, g: 0, b: 0 }),
         [],
-        []
+        [],
+        new Map<Category, number>()
       )
       const configToKeep = new GraphConfig(
         store.coachName,
         2,
         new Color({ r: 255, g: 0, b: 0 }),
         [],
-        []
+        [],
+        new Map<Category, number>()
       )
 
       const matchStore = useMatchStore()
@@ -194,14 +200,16 @@ describe('Rating Store', () => {
         1,
         new Color({ r: 0, g: 0, b: 0 }),
         [],
-        []
+        [],
+        new Map<Category, number>()
       )
       const configToKeep = new GraphConfig(
         store.coachName,
         2,
         new Color({ r: 255, g: 0, b: 0 }),
         [],
-        []
+        [],
+        new Map<Category, number>()
       )
       store.configs = [configToKeep]
 
@@ -247,7 +255,7 @@ describe('Rating Store', () => {
 
   describe('graphs', () => {
     it('collects graphs from configs', () => {
-      const config = new GraphConfig('', 0, color, [], [])
+      const config = new GraphConfig('', 0, color, [], [], new Map<Category, number>())
       const graph = new Graph(color, [])
       config.graph = vi.fn().mockImplementation(() => {
         return graph
@@ -261,10 +269,29 @@ describe('Rating Store', () => {
   })
 })
 
-describe(' Graph Config', () => {
+describe('Graph Config', () => {
+  it('decouples matchCounts', () => {
+    const index = 1
+    const color = new Color('#654321')
+    const categories = [Competitive]
+    const matchCounts = new Map<Category, number>()
+    matchCounts.set(Blackbox, 8)
+    const config = new GraphConfig(coachName, index, color, categories, matches, matchCounts)
+
+    matchCounts.set(Blackbox, 2)
+    expect(config.matchCounts.get(Blackbox)).toBe(8)
+  })
+
   describe('toggleCategory', () => {
     it('adds category if it is not present', () => {
-      const config = new GraphConfig('coachName', 1, new Color(), [Blackbox, Competitive], [])
+      const config = new GraphConfig(
+        'coachName',
+        1,
+        new Color(),
+        [Blackbox, Competitive],
+        [],
+        new Map<Category, number>()
+      )
 
       config.toggleCategory(League)
 
@@ -272,7 +299,14 @@ describe(' Graph Config', () => {
     })
 
     it('removes category if it is present', () => {
-      const config = new GraphConfig('coachName', 1, new Color(), [Blackbox, Competitive], [])
+      const config = new GraphConfig(
+        'coachName',
+        1,
+        new Color(),
+        [Blackbox, Competitive],
+        [],
+        new Map<Category, number>()
+      )
 
       config.toggleCategory(Competitive)
 
@@ -280,7 +314,14 @@ describe(' Graph Config', () => {
     })
 
     it('does not remove present category if list would be empty then', () => {
-      const config = new GraphConfig('coachName', 1, new Color(), [League], [])
+      const config = new GraphConfig(
+        'coachName',
+        1,
+        new Color(),
+        [League],
+        [],
+        new Map<Category, number>()
+      )
 
       config.toggleCategory(League)
 
@@ -290,7 +331,14 @@ describe(' Graph Config', () => {
   describe('hexColor', () => {
     it('preserves and returns current color as hex', () => {
       const originalColor = '#123456'
-      const config = new GraphConfig('coachName', 1, new Color(originalColor), [League], [])
+      const config = new GraphConfig(
+        'coachName',
+        1,
+        new Color(originalColor),
+        [League],
+        [],
+        new Map<Category, number>()
+      )
 
       expect(config.hexColor()).toEqual(originalColor)
       expect(config.graph().color).toEqual(new Color(originalColor))
@@ -301,7 +349,14 @@ describe(' Graph Config', () => {
     it('updates color', () => {
       const originalColor = '#123456'
       const newColor = '#654321'
-      const config = new GraphConfig('coachName', 1, new Color(originalColor), [League], [])
+      const config = new GraphConfig(
+        'coachName',
+        1,
+        new Color(originalColor),
+        [League],
+        [],
+        new Map<Category, number>()
+      )
 
       config.updateHexColor(newColor)
 
@@ -314,7 +369,14 @@ describe(' Graph Config', () => {
       const index = 1
       const color = new Color('#654321')
       const categories = [Blackbox, Competitive, FFB_Test, League]
-      const config = new GraphConfig(coachName, index, color, categories, matches)
+      const config = new GraphConfig(
+        coachName,
+        index,
+        color,
+        categories,
+        matches,
+        new Map<Category, number>()
+      )
 
       const graph = config.graph()
       expect(graph).toStrictEqual(
@@ -332,7 +394,14 @@ describe(' Graph Config', () => {
       const index = 1
       const color = new Color('#654321')
       const categories = [Competitive]
-      const config = new GraphConfig(coachName, index, color, categories, matches)
+      const config = new GraphConfig(
+        coachName,
+        index,
+        color,
+        categories,
+        matches,
+        new Map<Category, number>()
+      )
 
       const graph = config.graph()
       expect(graph).toStrictEqual(

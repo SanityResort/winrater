@@ -13,9 +13,7 @@ function updateCounter() {
 export abstract class MatchProvider {
   abstract matches(): Match[]
 
-  categoryMatches(category: Category): Match[] {
-    return this.matches().filter((match) => match.category === category)
-  }
+  abstract matchCounts: Map<Category, number>
 }
 
 export class Store extends MatchProvider {
@@ -27,12 +25,14 @@ export class Store extends MatchProvider {
   configs: GraphConfig[] = []
   public ready = false
   private configCounter = 0
+  public matchCounts: Map<Category, number>
 
   constructor(coachName: string) {
     super()
     this.coachName = coachName
     this.providedMatches = reactive([])
     this.categories = reactive([])
+    this.matchCounts = reactive(new Map())
   }
 
   init() {
@@ -49,7 +49,8 @@ export class Store extends MatchProvider {
       ++this.configCounter,
       randomColor(),
       this.categories.filter((cat) => cat.valid),
-      this.providedMatches
+      this.providedMatches,
+      this.matchCounts
     )
 
     this.configs.push(config)
@@ -77,6 +78,10 @@ export class Store extends MatchProvider {
         a.name.toString().localeCompare(b.name.toString())
       )
     }
+
+    const oldCount = this.matchCounts.get(newMatch.category) || 0
+
+    this.matchCounts.set(newMatch.category, oldCount + 1)
   }
 
   matches(): Match[] {
@@ -92,13 +97,15 @@ export class GraphConfig extends MatchProvider {
   private dataPoints: DataPoint[]
   private readonly coachName: string
   private readonly configNumber: number
+  public matchCounts: Map<Category, number>
 
   constructor(
     coachName: string,
     configNumber: number,
     color: Color,
     categories: Category[],
-    matches: Match[]
+    matches: Match[],
+    matchCounts: Map<Category, number>
   ) {
     super()
     this.coachName = coachName
@@ -108,7 +115,8 @@ export class GraphConfig extends MatchProvider {
     this.providedMatches = matches
     this.dataPoints = []
     this.filteredMatches = []
-    this.update()
+    this.matchCounts = reactive(new Map<Category, number>(matchCounts))
+    this.update(false)
   }
 
   toggleCategory(category: Category) {
@@ -133,11 +141,21 @@ export class GraphConfig extends MatchProvider {
     return this.color.hex()
   }
 
-  private update() {
+  private update(updateCounts: boolean = true) {
     this.filteredMatches = this.providedMatches.filter(
       (match) => this.categories.indexOf(match.category) > -1
     )
     this.dataPoints = this.accumulated()
+    if (updateCounts) {
+      for (const key of this.matchCounts.keys()) {
+        this.matchCounts.set(key, 0)
+      }
+      this.filteredMatches.forEach((match) => {
+        const category = match.category
+        const oldCount = this.matchCounts.get(category) || 0
+        this.matchCounts.set(category, oldCount + 1)
+      })
+    }
     updateCounter()
   }
 
