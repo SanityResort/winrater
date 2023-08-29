@@ -18,27 +18,32 @@ const matches: Match[] = [
   {
     id: 4,
     category: Competitive,
-    score: Score.Win
+    score: Score.Win,
+    dateTime: new Date('2000-01-02T12:34:59')
   },
   {
     id: 12,
     category: League,
-    score: Score.Loss
+    score: Score.Loss,
+    dateTime: new Date('2005-01-02T17:34:12')
   },
   {
     id: 23,
     category: League,
-    score: Score.Win
+    score: Score.Win,
+    dateTime: new Date('2010-01-02T12:30:10')
   },
   {
     id: 30,
     category: Blackbox,
-    score: Score.Draw
+    score: Score.Draw,
+    dateTime: new Date('2012-01-02T01:05:32')
   },
   {
     id: 51,
     category: Competitive,
-    score: Score.Draw
+    score: Score.Draw,
+    dateTime: new Date('2020-01-02T05:12:05')
   }
 ]
 
@@ -54,7 +59,9 @@ describe('Rating Store', () => {
     division: '',
     scheduler: '',
     team1: { coach: { name: '' }, score: 0 },
-    team2: { coach: { name: '' }, score: 0 }
+    team2: { coach: { name: '' }, score: 0 },
+    date: 'some date',
+    time: 'some time'
   }
 
   const fumbblMatch2: FumbblMatch = {
@@ -62,7 +69,9 @@ describe('Rating Store', () => {
     division: '',
     scheduler: '',
     team1: { coach: { name: '' }, score: 0 },
-    team2: { coach: { name: '' }, score: 0 }
+    team2: { coach: { name: '' }, score: 0 },
+    date: 'some date',
+    time: 'some time'
   }
 
   const fumbblMatch3: FumbblMatch = {
@@ -70,7 +79,9 @@ describe('Rating Store', () => {
     division: '',
     scheduler: '',
     team1: { coach: { name: '' }, score: 0 },
-    team2: { coach: { name: '' }, score: 0 }
+    team2: { coach: { name: '' }, score: 0 },
+    date: 'some date',
+    time: 'some time'
   }
 
   let unsortedMatches: Match[]
@@ -80,27 +91,32 @@ describe('Rating Store', () => {
       {
         id: 51,
         category: Competitive,
-        score: Score.Draw
+        score: Score.Draw,
+        dateTime: new Date('2020-01-02T05:12:05')
       },
       {
         id: 4,
         category: Competitive,
-        score: Score.Win
+        score: Score.Win,
+        dateTime: new Date('2000-01-02T12:34:59')
       },
       {
         id: 30,
         category: Blackbox,
-        score: Score.Draw
+        score: Score.Draw,
+        dateTime: new Date('2012-01-02T01:05:32')
       },
       {
         id: 12,
         category: League,
-        score: Score.Loss
+        score: Score.Loss,
+        dateTime: new Date('2005-01-02T17:34:12')
       },
       {
         id: 23,
         category: League,
-        score: Score.Win
+        score: Score.Win,
+        dateTime: new Date('2010-01-02T12:30:10')
       }
     ]
   }
@@ -384,11 +400,41 @@ describe('Graph Config', () => {
 
       const graph = config.graph()
       expect(graph.dataPoints).toStrictEqual([
-        { index: 1, ratio: 1, title: 'coach #1' },
-        { index: 2, ratio: 0.5, title: 'coach #1' },
-        { index: 3, ratio: 0.6667, title: 'coach #1' },
-        { index: 4, ratio: 0.625, title: 'coach #1' },
-        { index: 5, ratio: 0.6, title: 'coach #1' }
+        {
+          id: 4,
+          index: 1,
+          ratio: 1,
+          title: 'coach #1',
+          dateTime: new Date('2000-01-02T12:34:59')
+        },
+        {
+          id: 12,
+          index: 2,
+          ratio: 0.5,
+          title: 'coach #1',
+          dateTime: new Date('2005-01-02T17:34:12')
+        },
+        {
+          id: 23,
+          index: 3,
+          ratio: 0.6667,
+          title: 'coach #1',
+          dateTime: new Date('2010-01-02T12:30:10')
+        },
+        {
+          id: 30,
+          index: 4,
+          ratio: 0.625,
+          title: 'coach #1',
+          dateTime: new Date('2012-01-02T01:05:32')
+        },
+        {
+          id: 51,
+          index: 5,
+          ratio: 0.6,
+          title: 'coach #1',
+          dateTime: new Date('2020-01-02T05:12:05')
+        }
       ])
       expect(graph.line).not.toBeNull()
     })
@@ -408,8 +454,20 @@ describe('Graph Config', () => {
 
       const graph = config.graph()
       expect(graph.dataPoints).toStrictEqual([
-        { index: 1, ratio: 1.0, title: 'coach #1' },
-        { index: 2, ratio: 0.75, title: 'coach #1' }
+        {
+          id: 4,
+          index: 1,
+          ratio: 1.0,
+          title: 'coach #1',
+          dateTime: new Date('2000-01-02T12:34:59')
+        },
+        {
+          id: 51,
+          index: 2,
+          ratio: 0.75,
+          title: 'coach #1',
+          dateTime: new Date('2020-01-02T05:12:05')
+        }
       ])
     })
   })

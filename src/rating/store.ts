@@ -191,7 +191,9 @@ export class GraphConfig extends MatchProvider {
       return {
         index: index + 1,
         ratio: Math.round((accumulatedScore / (index + 1)) * 10000) / 10000,
-        title: this.coachName + ' #' + this.configNumber
+        title: this.coachName + ' #' + this.configNumber,
+        id: match.id,
+        dateTime: match.dateTime
       }
     })
   }
@@ -211,4 +213,6 @@ export type DataPoint = {
   index: number
   ratio: number
   title: string
+  id: number
+  dateTime: Date
 }
