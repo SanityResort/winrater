@@ -27,6 +27,12 @@
   width: fit-content;
 }
 
+.editConfig {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .labels {
   display: flex;
   flex-flow: row wrap;
@@ -44,6 +50,7 @@
 <template>
   <div class="config">
     <div class="config-header">
+      <IconButton class="editConfig" :src="editIcon" alt="Edit config" />
       <div class="config-title">
         <input type="color" class="config-color" :value="background" @change="updateColor" />
         <div>{{ config.matches().length }} (#{{ config.configNumber }})</div>
@@ -75,6 +82,7 @@ import { Category } from '@/rating/match'
 import { GraphConfig, Store } from '@/rating/store'
 import IconButton from '@/common/IconButton.vue'
 import removeIcon from '../../icons/removeIcon.png'
+import editIcon from '../../icons/editIcon.png'
 
 const props = defineProps({
   config: GraphConfig,
