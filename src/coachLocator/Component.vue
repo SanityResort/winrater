@@ -60,7 +60,7 @@ async function loadData() {
 }
 
 .search {
-  padding-top: 0.25em;
+  padding-top: 0.75em;
 }
 </style>
 

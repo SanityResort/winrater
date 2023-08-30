@@ -45,9 +45,8 @@ const { stores } = storeToRefs(matchStore)
   background: var(--color-element-background);
   border: black 2px solid;
   border-radius: 5px;
-
   padding: 0.5em;
-  margin: 1em;
+  margin: 1em 1em 0 1em;
   max-width: 50em;
 }
 
