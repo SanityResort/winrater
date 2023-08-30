@@ -72,7 +72,7 @@ const render = () => {
             .attr('style', 'background:var(--color-element-background)')
             .attr('font-size', '1em')
           const dot = plotDom.append('g').attr('display', 'none')
-          dot.append('circle').attr('r', '0.25em').attr('stroke-width', '0.15em').attr('id', 'dot')
+          dot.append('circle').attr('r', '0.3em').attr('stroke-width', '0.15em').attr('id', 'dot')
 
           const xPx = plot.scale('x')?.apply
           const yPx = plot.scale('y')?.apply
@@ -175,7 +175,7 @@ const render = () => {
             dot
               .attr('transform', `translate(${closest.value.x},${closest.value.y})`)
               .attr('stroke', stroke.value)
-              .attr('fill', Color(stroke.value).lighten(0.1).rgb().string())
+              .attr('fill', Color(stroke.value).lighten(0.25).rgb().string())
               .attr('display', null)
               .raise()
 
