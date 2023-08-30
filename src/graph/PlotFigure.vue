@@ -5,6 +5,7 @@ import type { BaseType } from 'd3'
 import * as d3 from 'd3'
 import Color from 'color'
 import tippy, { Content, Instance } from 'tippy.js'
+import { DataPoint } from '@/rating/store'
 
 const props = defineProps(['options'])
 
@@ -25,14 +26,26 @@ const tooltipColor = computed(() => {
   return new Color(stroke.value).isLight() ? 'black' : 'white'
 })
 
-let closest = ref({ x: 0, y: 0, title: '', index: 0, ratio: 0 })
+const dummy: GraphDataPoint = {
+  x: 0,
+  y: 0,
+  title: '',
+  index: 0,
+  ratio: 0,
+  id: 0,
+  dateTime: new Date()
+}
 
-type DataPoint = {
+let closest = ref(dummy)
+
+type GraphDataPoint = {
   x: number
   y: number
   title: string
   index: number
   ratio: number
+  id: number
+  dateTime: Date
 }
 
 let tooltip: Instance
@@ -49,6 +62,8 @@ const render = () => {
           }
         },
         mounted(el) {
+          const tooltipContent = document.getElementById('tooltip-content')
+
           const plot = Plot.plot(props.options)
           el.append(plot)
 
@@ -61,7 +76,7 @@ const render = () => {
 
           const xPx = plot.scale('x')?.apply
           const yPx = plot.scale('y')?.apply
-          const dataPx: DataPoint[] = props.options.marks
+          const dataPx: GraphDataPoint[] = props.options.marks
             .filter((mark: any) => mark.z)
             .flatMap((mark: any) => {
               return mark.data.map((data: DataPoint) => {
@@ -72,7 +87,9 @@ const render = () => {
                   y: y,
                   title: data.title,
                   index: data.index,
-                  ratio: data.ratio
+                  ratio: data.ratio,
+                  dateTime: data.dateTime,
+                  id: data.id
                 }
               })
             })
@@ -162,7 +179,11 @@ const render = () => {
               .attr('display', null)
               .raise()
 
-            tooltip.setProps({ content: document.getElementById('tooltip-content') as Content })
+            tooltip.setProps({ content: tooltipContent as Content })
+          })
+
+          dot.on('click', () => {
+            window.open('https://fumbbl.com/FUMBBL.php?page=match&id=' + closest.value.id, '_blank')
           })
         }
       }
@@ -179,6 +200,7 @@ const render = () => {
       <div id="content">
         <div class="contentItem">Win% {{ Math.round(closest.ratio * 10000) / 100 }}</div>
         <div class="contentItem">Match #{{ closest.index }}</div>
+        <div class="contentItem">Time {{ closest.dateTime.toLocaleString() }}</div>
       </div>
     </div>
   </div>
@@ -203,6 +225,7 @@ const render = () => {
   padding: 0.2em 1.5em;
   text-align: center;
 }
+
 #content {
   background: white;
   border-end-start-radius: var(--border-radius-element);
