@@ -198,9 +198,35 @@ const render = () => {
         {{ closest.title }}
       </div>
       <div id="content">
-        <div class="contentItem">Win% {{ Math.round(closest.ratio * 10000) / 100 }}</div>
-        <div class="contentItem">Match #{{ closest.index }}</div>
-        <div class="contentItem">Time {{ closest.dateTime.toLocaleString() }}</div>
+        <div class="content-item odd">
+          <span class="item-part">Win%</span>
+          <span class="item-part">{{
+            (closest.ratio * 100).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })
+          }}</span>
+        </div>
+        <div class="even">
+          <div class="multi-content-item">
+            <span class="item-part">Match</span>
+            <span class="item-part">#{{ closest.index }}</span>
+          </div>
+          <div class="explanation item-part">(Click dot on the graph to open)</div>
+        </div>
+        <div class="content-item odd last">
+          <span id="time-label" class="item-part">Time</span>
+          <span id="time" class="item-part">
+            <span>{{
+              closest.dateTime.toLocaleDateString(undefined, {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+              })
+            }}</span>
+            <span>{{ closest.dateTime.toLocaleTimeString() }}</span>
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -209,14 +235,62 @@ const render = () => {
 </template>
 
 <style scoped>
-#tooltip {
-  display: none;
+#content {
+  background: white;
+  border-end-start-radius: var(--border-radius-element);
+  border-end-end-radius: var(--border-radius-element);
+  font-weight: bold;
+  width: 100%;
+  margin: auto;
 }
 
-#tooltip-content {
-  background: white;
-  border: 1px black solid;
-  border-radius: var(--border-radius-element);
+#content :last-child {
+  border-end-start-radius: var(--border-radius-element);
+  border-end-end-radius: var(--border-radius-element);
+}
+
+.content-item,
+.multi-content-item {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.content-item {
+  padding: 0.2em 0;
+}
+
+.explanation {
+  font-size: 0.7em;
+  font-weight: normal;
+  line-height: calc(var(--line-height) * 0.75);
+}
+
+.even {
+  background: var(--color-element-background);
+}
+
+.item-part {
+  padding: 0 0.7em;
+}
+
+.odd {
+  background: var(--color-section-background);
+}
+
+#time {
+  justify-items: center;
+}
+
+#time > span {
+  display: block;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+#time-label {
+  margin: auto 0;
 }
 
 #title {
@@ -226,12 +300,13 @@ const render = () => {
   text-align: center;
 }
 
-#content {
+#tooltip {
+  display: none;
+}
+
+#tooltip-content {
   background: white;
-  border-end-start-radius: var(--border-radius-element);
-  border-end-end-radius: var(--border-radius-element);
-  padding: 0.25em;
-  width: fit-content;
-  margin: auto;
+  border: 1px black solid;
+  border-radius: var(--border-radius-element);
 }
 </style>
