@@ -209,8 +209,8 @@ const render = () => {
         </div>
         <div class="even">
           <div class="multi-content-item">
-            <span class="item-part">Match</span>
-            <span class="item-part">#{{ closest.index }}</span>
+            <span class="item-part">Match#</span>
+            <span class="item-part">{{ closest.index }}</span>
           </div>
           <div class="explanation item-part">(Click dot on the graph to open)</div>
         </div>
