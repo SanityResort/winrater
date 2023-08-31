@@ -169,7 +169,7 @@ export class GraphConfig extends MatchProvider {
     this.line = Plot.line(this.dataPoints, {
       x: 'index',
       y: 'ratio',
-      z: this.coachName + this.configNumber,
+      z: this.getTitle(),
       title: 'title',
       stroke: this.color.rgb().string()
     })
@@ -191,11 +191,15 @@ export class GraphConfig extends MatchProvider {
       return {
         index: index + 1,
         ratio: Math.round((accumulatedScore / (index + 1)) * 10000) / 10000,
-        title: this.coachName + ' #' + this.configNumber,
+        title: this.getTitle(),
         id: match.id,
         dateTime: match.dateTime
       }
     })
+  }
+
+  public getTitle() {
+    return this.coachName + ' #' + this.configNumber
   }
 }
 
@@ -215,4 +219,8 @@ export type DataPoint = {
   title: string
   id: number
   dateTime: Date
+}
+
+export class ConfigHolder {
+  config: GraphConfig | undefined
 }

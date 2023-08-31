@@ -50,7 +50,7 @@
 <template>
   <div class="config">
     <div class="config-header">
-      <IconButton class="editConfig" :src="editIcon" alt="Edit config" />
+      <IconButton class="editConfig" :src="editIcon" alt="Edit config" :callback="edit" />
       <div class="config-title">
         <input type="color" class="config-color" :value="background" @change="updateColor" />
         <div>{{ config.matches().length }} (#{{ config.configNumber }})</div>
@@ -90,6 +90,8 @@ const props = defineProps({
   showRemoveButton: Boolean
 })
 
+const emit = defineEmits(['edit'])
+
 const config = props.config as GraphConfig
 const background = config.color.hex()
 
@@ -113,5 +115,9 @@ function remove() {
 
 function toggleCategory(category: Category) {
   config.toggleCategory(category)
+}
+
+function edit() {
+  emit('edit', config)
 }
 </script>

@@ -245,7 +245,7 @@ describe('Rating Store', () => {
       store.removeConfig(store.configs[0])
       store.addConfig()
 
-      expect(store.configs[1]['configNumber']).toBe(3)
+      expect(store.configs[1].configNumber).toBe(3)
     })
   })
 
