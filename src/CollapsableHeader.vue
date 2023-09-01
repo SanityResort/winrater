@@ -1,7 +1,9 @@
 <template>
   <div class="collapse-wrapper" :class="{ collapsed: stores.size > 0 }">
     <div class="top-bar title"><div class="title-text">WinRater</div></div>
-    <div class="top-bar pull-down" />
+    <div class="top-bar pull-down">
+      <img id="pull-down-icon" src="../icons/pulldown.png" alt="Pull down arrow" />
+    </div>
     <div class="description">
       <p>
         Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
@@ -69,12 +71,11 @@ const { stores } = storeToRefs(matchStore)
 .collapsed > .top-bar.pull-down {
   height: var(--line-height);
   opacity: 1;
+  padding: 0.2em 0;
   text-align: center;
 }
 
-.collapsed > .top-bar.pull-down::after {
-  content: '⮋';
-  font-size: x-large;
+.collapsed > .top-bar.pull-down > #pull-down-icon {
   height: var(--line-height);
   transition: opacity 0.25s ease;
 }
@@ -84,9 +85,8 @@ const { stores } = storeToRefs(matchStore)
   opacity: 0;
 }
 
-.collapsed:hover > .top-bar.pull-down::after {
+.collapsed:hover > .top-bar.pull-down > #pull-down-icon {
   opacity: 0;
-  display: block;
 }
 
 .description {
