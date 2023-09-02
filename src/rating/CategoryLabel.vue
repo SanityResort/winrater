@@ -46,5 +46,6 @@ function callback() {
   font-weight: bold;
   margin: 1px 1px 1px 0;
   padding: 0 calc(var(--line-height) / 2);
+  user-select: none;
 }
 </style>

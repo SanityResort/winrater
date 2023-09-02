@@ -25,6 +25,7 @@
   flex-flow: row;
   margin: auto;
   width: fit-content;
+  user-select: none;
 }
 
 .editConfig {

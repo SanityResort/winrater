@@ -84,6 +84,7 @@ function addConfig() {
   flex-flow: row;
   position: relative;
   text-align: center;
+  user-select: none;
 }
 </style>
 
