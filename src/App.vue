@@ -5,14 +5,10 @@ import Graph from './graph/Component.vue'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
 import CollapsableHeader from '@/CollapsableHeader.vue'
-import { ConfigHolder, GraphConfig } from '@/rating/store'
-import { ref } from 'vue'
 import ConfigEditor from '@/editor/ConfigEditor.vue'
 
 const matchStore = useMatchStore()
 const { modificationCounter, stores } = storeToRefs(matchStore)
-
-const configHolder = ref(new ConfigHolder())
 </script>
 
 <template>
@@ -25,14 +21,9 @@ const configHolder = ref(new ConfigHolder())
   <main
     :class="{ 'fill-height': modificationCounter === 0, 'fit-content': modificationCounter !== 0 }"
   >
-    <ConfigEditor :configHolder="configHolder" />
+    <ConfigEditor />
     <div class="ratings">
-      <Rating
-        v-for="store in stores.values()"
-        :key="store.coachName"
-        :store="store"
-        @edit="(config: GraphConfig) => configHolder.config = config"
-      />
+      <Rating v-for="store in stores.values()" :key="store.coachName" :store="store" />
     </div>
     <Graph />
   </main>

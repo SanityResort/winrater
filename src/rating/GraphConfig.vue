@@ -83,14 +83,14 @@ import { GraphConfig, Store } from '@/rating/store'
 import IconButton from '@/common/IconButton.vue'
 import removeIcon from '../../icons/removeIcon.png'
 import editIcon from '../../icons/editIcon.png'
+import { storeToRefs } from 'pinia'
+import { useMatchStore } from '@/pinia/store'
 
 const props = defineProps({
   config: GraphConfig,
   store: Store,
   showRemoveButton: Boolean
 })
-
-const emit = defineEmits(['edit'])
 
 const config = props.config as GraphConfig
 const background = config.color.hex()
@@ -118,6 +118,7 @@ function toggleCategory(category: Category) {
 }
 
 function edit() {
-  emit('edit', config)
+  const { editedConfig } = storeToRefs(useMatchStore())
+  editedConfig.value = config
 }
 </script>

@@ -1,12 +1,34 @@
 <template>
-  <div>{{ configHolder.config?.getTitle() }}</div>
+  <div id="title">{{ editedConfig?.getTitle() }}</div>
+  <div id="settings">
+    <div id="limits">
+      <div class="limit">
+        <input type="radio" id="start-limit" name="limits" value="startLimit" />
+        <label for="start-limit">Start</label>
+        <input
+          type="number"
+          :value="settings?.startLimit"
+          @input="event => { if (event.target) {
+            setStartLimit(Number.parseInt(((event as Event).target as HTMLInputElement).value))}
+          }"
+        />
+      </div>
+    </div>
+    <div id="aggregation"></div>
+  </div>
 </template>
 <script setup lang="ts">
-import { ConfigHolder } from '@/rating/store'
+import { Settings } from '@/rating/store'
+import { storeToRefs } from 'pinia'
+import { useMatchStore } from '@/pinia/store'
 
-const props = defineProps({ configHolder: ConfigHolder })
+const { editedConfig } = storeToRefs(useMatchStore())
 
-const configHolder: ConfigHolder = props.configHolder as ConfigHolder
+const settings: Settings | undefined = editedConfig.value?.settings
+
+function setStartLimit(value: number) {
+  settings?.setStartLimit(value)
+}
 </script>
 
 <style scoped></style>

@@ -13,8 +13,6 @@ const props = defineProps({
   store: Store
 })
 
-const emit = defineEmits(['edit'])
-
 const matchStore = useMatchStore()
 const { stores } = storeToRefs(matchStore)
 let { modificationCounter } = storeToRefs(matchStore)
@@ -37,10 +35,6 @@ function removeStore() {
 
 function addConfig() {
   store.addConfig()
-}
-
-function edit(config: GraphConfig) {
-  emit('edit', config)
 }
 </script>
 
@@ -122,7 +116,6 @@ function edit(config: GraphConfig) {
       :config="config"
       :store="store"
       :show-remove-button="configs.length > 1"
-      @edit="edit"
     />
 
     <IconButton v-if="storeRef.ready" alt="Add config" :callback="addConfig" :src="addIcon" />
