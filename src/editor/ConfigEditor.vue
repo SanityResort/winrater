@@ -7,9 +7,10 @@
         <label for="start-limit">Start</label>
         <input
           type="number"
-          :value="settings?.startLimit"
+          maxlength="5"
+          :value="editedConfig?.settings.limit"
           @input="event => { if (event.target) {
-            setStartLimit(Number.parseInt(((event as Event).target as HTMLInputElement).value))}
+            setLimit(Number.parseInt(((event as Event).target as HTMLInputElement).value))}
           }"
         />
       </div>
@@ -18,16 +19,13 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Settings } from '@/rating/store'
 import { storeToRefs } from 'pinia'
 import { useMatchStore } from '@/pinia/store'
 
 const { editedConfig } = storeToRefs(useMatchStore())
 
-const settings: Settings | undefined = editedConfig.value?.settings
-
-function setStartLimit(value: number) {
-  settings?.setStartLimit(value)
+function setLimit(value: number) {
+  editedConfig.value?.settings.setLimit(value)
 }
 </script>
 

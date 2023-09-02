@@ -223,13 +223,12 @@ export type DataPoint = {
 }
 
 export class Settings {
-  public startLimit: number = 0
-  endLimit: number = 0
+  public limit: number = 0
   indexRange: number[] = [0, Number.MAX_VALUE]
   idRange: number[] = [0, Number.MAX_VALUE]
   dateRange: Date[] = [new Date('2002-01-01T00:00'), new Date()]
 
-  setStartLimit(value: number) {
-    this.startLimit = value
+  setLimit(value: number) {
+    this.limit = value
   }
 }
