@@ -101,7 +101,7 @@ export class GraphConfig extends MatchProvider {
   public readonly configNumber: number
   public matchCounts: Map<Category, number>
   private line: Line
-  public settings: Settings = new Settings()
+  public settings: Settings
 
   constructor(
     coachName: string,
@@ -122,6 +122,8 @@ export class GraphConfig extends MatchProvider {
     this.line = Plot.line()
     this.matchCounts = reactive(new Map<Category, number>(matchCounts))
     this.update(false)
+    const matchCount = this.providedMatches.length
+    this.settings = new Settings(matchCount, this.providedMatches[matchCount - 1].id)
   }
 
   toggleCategory(category: Category) {
@@ -223,12 +225,21 @@ export type DataPoint = {
 }
 
 export class Settings {
-  public limit: number = 0
-  indexRange: number[] = [0, Number.MAX_VALUE]
-  idRange: number[] = [0, Number.MAX_VALUE]
-  dateRange: Date[] = [new Date('2002-01-01T00:00'), new Date()]
+  matchCount: number
+  maxId: number
+  countRange: number[]
+  idRange: number[]
+  dateRange: Date[]
 
-  setLimit(value: number) {
-    this.limit = value
+  constructor(matchCount: number, maxId: number) {
+    this.matchCount = matchCount
+    this.maxId = maxId
+    this.countRange = [1, matchCount]
+    this.idRange = [1, maxId]
+    this.dateRange = [new Date('2002-01-01T00:00'), new Date()]
+  }
+
+  setFromCount(value: number) {
+    this.countRange[0] = value
   }
 }

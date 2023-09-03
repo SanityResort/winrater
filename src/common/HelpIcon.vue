@@ -25,7 +25,6 @@ onMounted(() => {
 })
 </script>
 
-<!--suppress CssUnusedSymbol -->
 <style scoped>
 .help {
   color: var(--color-text-header);

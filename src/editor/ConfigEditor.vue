@@ -1,21 +1,33 @@
 <template>
   <div id="title">{{ editedConfig?.getTitle() }}</div>
   <div id="settings">
-    <div id="limits">
-      <div class="limit setting">
-        <input type="radio" id="limit" class="setting-radio" name="limits" value="startLimit" />
-        <label for="limit" class="setting-label">Limit</label>
+    <div id="ranges">
+      <div class="range setting">
+        <input type="radio" id="range" class="setting-radio" name="ranges" value="count" />
+        <label for="range" class="setting-label">Count</label>
+        <label for="fromCount" class="setting-label">from</label>
         <input
+          id="fromCount"
           class="setting-input"
           type="number"
-          :value="editedConfig?.settings.limit"
+          :value="editedConfig?.settings.countRange[0]"
           @input="event => { if (event.target) {
-            setLimit(Number.parseInt(((event as Event).target as HTMLInputElement).value))}
+            setFromCount(Number.parseInt(((event as Event).target as HTMLInputElement).value))}
+          }"
+        />
+        <label for="toCount" class="setting-label">from</label>
+        <input
+          id="toCount"
+          class="setting-input"
+          type="number"
+          :value="editedConfig?.settings.countRange[1]"
+          @input="event => { if (event.target) {
+            setFromCount(Number.parseInt(((event as Event).target as HTMLInputElement).value))}
           }"
         />
         <HelpIcon
           tooltip="Limits the number of games to first n games (or last n games for negative value)"
-          id="limit-help"
+          id="range-help"
         />
       </div>
     </div>
@@ -29,8 +41,8 @@ import HelpIcon from '@/common/HelpIcon.vue'
 
 const { editedConfig } = storeToRefs(useMatchStore())
 
-function setLimit(value: number) {
-  editedConfig.value?.settings.setLimit(value)
+function setFromCount(value: number) {
+  editedConfig.value?.settings.setFromCount(value)
 }
 </script>
 
