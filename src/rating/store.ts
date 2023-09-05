@@ -242,4 +242,8 @@ export class Settings {
   setFromCount(value: number) {
     this.countRange[0] = value
   }
+
+  setToCount(value: number) {
+    this.countRange[1] = value
+  }
 }

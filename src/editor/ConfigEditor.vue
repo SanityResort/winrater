@@ -5,30 +5,19 @@
       <div class="range setting">
         <input type="radio" id="range" class="setting-radio" name="ranges" value="count" />
         <label for="range" class="setting-label">Count</label>
-        <label for="fromCount" class="setting-label">from</label>
-        <input
-          id="fromCount"
-          class="setting-input"
-          type="number"
+        <NumberInput
+          input-id="fromCount"
           :value="editedConfig?.settings.countRange[0]"
-          @input="event => { if (event.target) {
-            setFromCount(Number.parseInt(((event as Event).target as HTMLInputElement).value))}
-          }"
+          :callback="setFromCount"
+          label="from"
         />
-        <label for="toCount" class="setting-label">from</label>
-        <input
-          id="toCount"
-          class="setting-input"
-          type="number"
+        <NumberInput
+          input-id="toCount"
           :value="editedConfig?.settings.countRange[1]"
-          @input="event => { if (event.target) {
-            setFromCount(Number.parseInt(((event as Event).target as HTMLInputElement).value))}
-          }"
+          :callback="setToCount"
+          label="to"
         />
-        <HelpIcon
-          tooltip="Limits the number of games to first n games (or last n games for negative value)"
-          id="range-help"
-        />
+        <HelpIcon tooltip="Limits to games within the range based on order of games" />
       </div>
     </div>
     <div id="aggregation"></div>
@@ -38,22 +27,21 @@
 import { storeToRefs } from 'pinia'
 import { useMatchStore } from '@/pinia/store'
 import HelpIcon from '@/common/HelpIcon.vue'
+import NumberInput from '@/editor/NumberInput.vue'
 
 const { editedConfig } = storeToRefs(useMatchStore())
 
 function setFromCount(value: number) {
   editedConfig.value?.settings.setFromCount(value)
 }
+function setToCount(value: number) {
+  editedConfig.value?.settings.setToCount(value)
+}
 </script>
 
 <style scoped>
-.setting-input {
-  text-align: right;
-  margin: 0 0.5em;
-  width: 8em;
-}
-
 .setting {
   display: flex;
+  gap: 2em;
 }
 </style>
