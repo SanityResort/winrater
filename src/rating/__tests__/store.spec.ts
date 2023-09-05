@@ -1,5 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Graph, GraphConfig, Store } from '../store'
+import { Graph, GraphConfig, Settings, Store } from '../store'
 import type { Category, Match } from '../match'
 import { Blackbox, Competitive, FFB_Test, League, Score } from '../match'
 import Color from 'color'
@@ -163,6 +163,13 @@ describe('Rating Store', () => {
     it('adds new default config to array', () => {
       store.categories.push(Blackbox, Competitive, FFB_Test)
       store.matchCounts.set(Blackbox, 8)
+      const match = {
+        score: Score.Draw,
+        id: 1,
+        category: Competitive,
+        dateTime: new Date()
+      }
+      store.providedMatches.push(match)
 
       store.addConfig()
 
@@ -175,7 +182,7 @@ describe('Rating Store', () => {
         1,
         color,
         [Blackbox, Competitive],
-        [],
+        [match],
         store.matchCounts
       )
       expect(store.configs).toStrictEqual([config])
@@ -298,6 +305,47 @@ describe('Graph Config', () => {
 
     matchCounts.set(Blackbox, 2)
     expect(config.matchCounts.get(Blackbox)).toBe(8)
+  })
+
+  it('creates settings correctly', () => {
+    const index = 1
+    const color = new Color('#654321')
+    const categories = [Competitive]
+    const matchCounts = new Map<Category, number>()
+    const config = new GraphConfig(coachName, index, color, categories, matches, matchCounts)
+
+    expect(config.settings).toStrictEqual(
+      new Settings(
+        matches.length,
+        matches[0].id,
+        matches[4].id,
+        matches[0].dateTime,
+        matches[4].dateTime
+      )
+    )
+  })
+
+  it.each([
+    { name: 'empty', value: [] as Match[] },
+    {
+      name: 'null',
+      value: null as unknown as Match[]
+    }
+  ])('handles settings correctly for $name matches', (param) => {
+    const index = 1
+    const color = new Color('#654321')
+    const categories = [Competitive]
+    const matchCounts = new Map<Category, number>()
+    const config = new GraphConfig(coachName, index, color, categories, param.value, matchCounts)
+
+    expect(config.settings.matchCount).toBe(0)
+    expect(config.settings.minId).toBe(0)
+    expect(config.settings.maxId).toBe(0)
+    expect(config.settings.minDate).toBeDefined()
+    expect(config.settings.maxDate).toBeDefined()
+    expect(config.settings.countRange).toStrictEqual([0, 0])
+    expect(config.settings.idRange).toStrictEqual([0, 0])
+    expect(config.settings.dateRange.length).toBe(2)
   })
 
   describe('toggleCategory', () => {

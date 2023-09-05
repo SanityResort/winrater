@@ -4,8 +4,8 @@ import { reactive } from 'vue'
 import { match, randomColor } from './mapper'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
-import { Line } from '@observablehq/plot'
 import * as Plot from '@observablehq/plot'
+import { Line } from '@observablehq/plot'
 
 function updateCounter() {
   const { modificationCounter } = storeToRefs(useMatchStore())
@@ -116,14 +116,24 @@ export class GraphConfig extends MatchProvider {
     this.configNumber = configNumber
     this.color = color
     this.categories = categories
-    this.providedMatches = matches
+    this.providedMatches = matches ? matches : []
     this.dataPoints = []
     this.filteredMatches = []
     this.line = Plot.line()
     this.matchCounts = reactive(new Map<Category, number>(matchCounts))
     this.update(false)
     const matchCount = this.providedMatches.length
-    this.settings = new Settings(matchCount, this.providedMatches[matchCount - 1].id)
+    if (this.providedMatches && this.providedMatches.length > 0) {
+      this.settings = new Settings(
+        matchCount,
+        this.providedMatches[0].id,
+        this.providedMatches[matchCount - 1].id,
+        this.providedMatches[0].dateTime,
+        this.providedMatches[matchCount - 1].dateTime
+      )
+    } else {
+      this.settings = new Settings(0, 0, 0, new Date(), new Date())
+    }
   }
 
   toggleCategory(category: Category) {
@@ -226,17 +236,23 @@ export type DataPoint = {
 
 export class Settings {
   matchCount: number
+  minId: number
   maxId: number
+  minDate: Date
+  maxDate: Date
   countRange: number[]
   idRange: number[]
   dateRange: Date[]
 
-  constructor(matchCount: number, maxId: number) {
+  constructor(matchCount: number, minId: number, maxId: number, minDate: Date, maxDate: Date) {
     this.matchCount = matchCount
+    this.minId = minId
     this.maxId = maxId
-    this.countRange = [1, matchCount]
-    this.idRange = [1, maxId]
-    this.dateRange = [new Date('2002-01-01T00:00'), new Date()]
+    this.minDate = minDate
+    this.maxDate = maxDate
+    this.countRange = [Math.min(1, matchCount), matchCount]
+    this.idRange = [minId, maxId]
+    this.dateRange = [minDate, maxDate]
   }
 
   setFromCount(value: number) {
@@ -245,5 +261,21 @@ export class Settings {
 
   setToCount(value: number) {
     this.countRange[1] = value
+  }
+
+  setFromId(value: number) {
+    this.idRange[0] = value
+  }
+
+  setToId(value: number) {
+    this.idRange[1] = value
+  }
+
+  setFromDate(value: Date) {
+    this.dateRange[0] = value
+  }
+
+  setToDate(value: Date) {
+    this.dateRange[1] = value
   }
 }
