@@ -520,3 +520,146 @@ describe('Graph Config', () => {
     })
   })
 })
+
+describe('Settings', () => {
+  let settings: Settings
+  const matchCount = 10
+  const minId = 5
+  const maxId = 20
+  const minDate = new Date('2020-01-01T12:34:56')
+  const maxDate = new Date('2022-12-01T04:05:13')
+  const earlierDate = new Date('2021-01-01T12:34:56')
+  const laterDate = new Date('2021-12-01T04:05:13')
+  const invalidFromDate = new Date('2019-01-01T12:34:56')
+  const invalidToDate = new Date('2023-12-01T04:05:13')
+
+  beforeEach(() => {
+    settings = new Settings(matchCount, minId, maxId, minDate, maxDate)
+  })
+
+  describe('setFromCount', () => {
+    it('sets new value properly', () => {
+      settings.setFromCount(5)
+
+      expect(settings.countRange).toStrictEqual([5, matchCount])
+    })
+
+    it('ignores too low value', () => {
+      settings.setFromCount(0)
+
+      expect(settings.countRange).toStrictEqual([1, matchCount])
+    })
+
+    it('ignores too high value', () => {
+      settings.setToCount(5)
+      settings.setFromCount(6)
+
+      expect(settings.countRange).toStrictEqual([1, 5])
+    })
+  })
+
+  describe('setToCount', () => {
+    it('sets new value properly', () => {
+      settings.setToCount(5)
+
+      expect(settings.countRange).toStrictEqual([1, 5])
+    })
+
+    it('ignores too low value', () => {
+      settings.setFromCount(5)
+      settings.setToCount(4)
+
+      expect(settings.countRange).toStrictEqual([5, matchCount])
+    })
+
+    it('ignores too high value', () => {
+      settings.setToCount(matchCount + 1)
+
+      expect(settings.countRange).toStrictEqual([1, matchCount])
+    })
+  })
+
+  describe('setFromId', () => {
+    it('sets new value properly', () => {
+      settings.setFromId(7)
+
+      expect(settings.idRange).toStrictEqual([7, maxId])
+    })
+
+    it('ignores too low value', () => {
+      settings.setFromId(minId - 1)
+
+      expect(settings.idRange).toStrictEqual([minId, maxId])
+    })
+
+    it('ignores too high value', () => {
+      settings.setToId(10)
+      settings.setFromId(12)
+
+      expect(settings.idRange).toStrictEqual([minId, 10])
+    })
+  })
+
+  describe('setToId', () => {
+    it('sets new value properly', () => {
+      settings.setToId(10)
+
+      expect(settings.idRange).toStrictEqual([5, 10])
+    })
+
+    it('ignores too low value', () => {
+      settings.setFromId(10)
+      settings.setToId(9)
+
+      expect(settings.idRange).toStrictEqual([10, maxId])
+    })
+
+    it('ignores too high value', () => {
+      settings.setToId(maxId + 1)
+
+      expect(settings.idRange).toStrictEqual([minId, maxId])
+    })
+  })
+
+  describe('setFromDate', () => {
+    it('sets new value properly', () => {
+      settings.setFromDate(earlierDate)
+
+      expect(settings.idRange).toStrictEqual([earlierDate, maxDate])
+    })
+
+    it('ignores too low value', () => {
+      settings.setFromDate(invalidFromDate)
+
+      expect(settings.idRange).toStrictEqual([minDate, maxDate])
+    })
+
+    it('ignores too high value', () => {
+      settings.setToDate(earlierDate)
+      settings.setFromDate(laterDate)
+
+      expect(settings.idRange).toStrictEqual([minDate, earlierDate])
+    })
+  })
+
+  describe('setToDate', () => {
+    it('sets new value properly', () => {
+      settings.setToDate(laterDate)
+
+      expect(settings.idRange).toStrictEqual([minDate, laterDate])
+    })
+
+    it('ignores too low value', () => {
+      settings.setFromDate(laterDate)
+      settings.setToDate(earlierDate)
+
+      expect(settings.idRange).toStrictEqual([laterDate, maxDate])
+    })
+
+    it('ignores too high value', () => {
+      settings.setToDate(invalidToDate)
+
+      expect(settings.idRange).toStrictEqual([minDate, maxDate])
+    })
+  })
+})
