@@ -256,26 +256,38 @@ export class Settings {
   }
 
   setFromCount(value: number) {
-    this.countRange[0] = value
+    if (value <= this.countRange[1] && value >= 1) {
+      this.countRange[0] = value
+    }
   }
 
   setToCount(value: number) {
-    this.countRange[1] = value
+    if (value <= this.matchCount && value >= this.countRange[0]) {
+      this.countRange[1] = value
+    }
   }
 
   setFromId(value: number) {
-    this.idRange[0] = value
+    if (value <= this.idRange[1] && value >= this.minId) {
+      this.idRange[0] = value
+    }
   }
 
   setToId(value: number) {
-    this.idRange[1] = value
+    if (value <= this.maxId && value >= this.idRange[0]) {
+      this.idRange[1] = value
+    }
   }
 
   setFromDate(value: Date) {
-    this.dateRange[0] = value
+    if (value <= this.dateRange[1] && value >= this.minDate) {
+      this.dateRange[0] = value
+    }
   }
 
   setToDate(value: Date) {
-    this.dateRange[1] = value
+    if (value <= this.maxDate && value >= this.dateRange[0]) {
+      this.dateRange[1] = value
+    }
   }
 }

@@ -625,20 +625,20 @@ describe('Settings', () => {
     it('sets new value properly', () => {
       settings.setFromDate(earlierDate)
 
-      expect(settings.idRange).toStrictEqual([earlierDate, maxDate])
+      expect(settings.dateRange).toStrictEqual([earlierDate, maxDate])
     })
 
     it('ignores too low value', () => {
       settings.setFromDate(invalidFromDate)
 
-      expect(settings.idRange).toStrictEqual([minDate, maxDate])
+      expect(settings.dateRange).toStrictEqual([minDate, maxDate])
     })
 
     it('ignores too high value', () => {
       settings.setToDate(earlierDate)
       settings.setFromDate(laterDate)
 
-      expect(settings.idRange).toStrictEqual([minDate, earlierDate])
+      expect(settings.dateRange).toStrictEqual([minDate, earlierDate])
     })
   })
 
@@ -646,20 +646,20 @@ describe('Settings', () => {
     it('sets new value properly', () => {
       settings.setToDate(laterDate)
 
-      expect(settings.idRange).toStrictEqual([minDate, laterDate])
+      expect(settings.dateRange).toStrictEqual([minDate, laterDate])
     })
 
     it('ignores too low value', () => {
       settings.setFromDate(laterDate)
       settings.setToDate(earlierDate)
 
-      expect(settings.idRange).toStrictEqual([laterDate, maxDate])
+      expect(settings.dateRange).toStrictEqual([laterDate, maxDate])
     })
 
     it('ignores too high value', () => {
       settings.setToDate(invalidToDate)
 
-      expect(settings.idRange).toStrictEqual([minDate, maxDate])
+      expect(settings.dateRange).toStrictEqual([minDate, maxDate])
     })
   })
 })
