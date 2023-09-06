@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Ref, ref } from 'vue'
+import { ref } from 'vue'
 import { load } from './service'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
@@ -8,10 +8,9 @@ import IconButton from '@/common/IconButton.vue'
 import addIcon from '../../icons/addIcon.png'
 
 const matchStore = useMatchStore()
-const { currentCoachName, stores } = storeToRefs(matchStore)
+const { currentCoachName, stores, errorMessage } = storeToRefs(matchStore)
 const { setStore } = matchStore
 const loading = ref(false)
-const errorMessage: Ref<string> = ref('')
 
 async function loadData() {
   loading.value = true

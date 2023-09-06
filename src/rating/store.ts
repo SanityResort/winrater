@@ -1,6 +1,6 @@
 import type { Category, Match } from '@/rating/match'
 import Color from 'color'
-import { reactive } from 'vue'
+import { reactive, Ref } from 'vue'
 import { match, randomColor } from './mapper'
 import { useMatchStore } from '@/pinia/store'
 import { storeToRefs } from 'pinia'
@@ -255,39 +255,71 @@ export class Settings {
     this.dateRange = [minDate, maxDate]
   }
 
-  setFromCount(value: number) {
-    if (value <= this.countRange[1] && value >= 1) {
-      this.countRange[0] = value
+  setCountRange(from: number, to: number, errorMessage: Ref<string>): boolean {
+    const res =
+      this.checkOrder(from, to, errorMessage) &&
+      this.checkLowerBound(from, 1, errorMessage) &&
+      this.checkUpperBound(to, this.matchCount, errorMessage)
+
+    if (res) {
+      this.countRange = [from, to]
+      errorMessage.value = ''
     }
+
+    return res
   }
 
-  setToCount(value: number) {
-    if (value <= this.matchCount && value >= this.countRange[0]) {
-      this.countRange[1] = value
+  setIdRange(from: number, to: number, errorMessage: Ref<string>): boolean {
+    const res =
+      this.checkOrder(from, to, errorMessage) &&
+      this.checkLowerBound(from, this.minId, errorMessage) &&
+      this.checkUpperBound(to, this.maxId, errorMessage)
+
+    if (res) {
+      this.idRange = [from, to]
+      errorMessage.value = ''
     }
+
+    return res
   }
 
-  setFromId(value: number) {
-    if (value <= this.idRange[1] && value >= this.minId) {
-      this.idRange[0] = value
+  setDateRange(from: Date, to: Date, errorMessage: Ref<string>): boolean {
+    const res =
+      this.checkOrder(from, to, errorMessage) &&
+      this.checkLowerBound(from, this.minDate, errorMessage) &&
+      this.checkUpperBound(to, this.maxDate, errorMessage)
+
+    if (res) {
+      this.dateRange = [from, to]
+      errorMessage.value = ''
     }
+
+    return res
   }
 
-  setToId(value: number) {
-    if (value <= this.maxId && value >= this.idRange[0]) {
-      this.idRange[1] = value
+  private checkOrder<T>(from: T, to: T, errorMessage: Ref<string>): boolean {
+    if (from > to) {
+      errorMessage.value = '"From" must not be larger than "to"'
+      return false
     }
+    return true
   }
 
-  setFromDate(value: Date) {
-    if (value <= this.dateRange[1] && value >= this.minDate) {
-      this.dateRange[0] = value
+  private checkLowerBound<T>(from: T, minFrom: T, errorMessage: Ref<string>): boolean {
+    if (minFrom > from) {
+      errorMessage.value = '"From" must not be smaller than ' + minFrom
+      return false
     }
+
+    return true
   }
 
-  setToDate(value: Date) {
-    if (value <= this.maxDate && value >= this.dateRange[0]) {
-      this.dateRange[1] = value
+  private checkUpperBound<T>(to: T, maxTo: T, errorMessage: Ref<string>): boolean {
+    if (maxTo < to) {
+      errorMessage.value = '"To" must not be larger than ' + maxTo
+      return false
     }
+
+    return true
   }
 }
