@@ -53,7 +53,7 @@
         />
         <HelpIcon tooltip="Limits to games with ids within given" />
       </div>
-      <div class="range setting" :class="{ error: idError }">
+      <div class="range setting" :class="{ error: dateError }">
         <input type="radio" id="dateRange" class="setting-radio" name="ranges" value="date" />
         <label for="dateRange" class="setting-label">Date</label>
         <label for="fromId" class="setting-label">from</label>
