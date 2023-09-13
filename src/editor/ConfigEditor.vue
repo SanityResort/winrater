@@ -3,80 +3,107 @@
   <div id="settings">
     <div id="ranges">
       <div class="range setting" :class="{ error: countError }">
-        <input type="radio" id="countRange" class="setting-radio" name="ranges" value="count" />
-        <label for="countRange" class="setting-label">Match Number</label>
-        <label for="fromCount" class="setting-label">from</label>
-        <input
-          id="fromCount"
-          class="setting-input"
-          type="number"
-          :value="editedConfig?.settings.countRange[0]"
-          @input="setCountRange"
-          min="1"
-          :max="editedConfig?.settings.matchCount"
-        />
-        <label for="toCount" class="setting-label">to</label>
-        <input
-          id="toCount"
-          class="setting-input"
-          type="number"
-          :value="editedConfig?.settings.countRange[1]"
-          @input="setCountRange"
-          min="1"
-          :max="editedConfig?.settings.matchCount"
-        />
-        <HelpIcon tooltip="Limits to games within the range based on order of games" />
+        <div>
+          <input type="radio" id="countRange" class="setting-radio" name="ranges" value="count" />
+          <label for="countRange" class="setting-label">Match Number</label>
+        </div>
+        <div class="range-data">
+          <label for="fromCount" class="setting-label">from</label>
+          <div class="input-wrapper">
+            <input
+              id="fromCount"
+              class="setting-input"
+              type="number"
+              :value="editedConfig?.settings.countRange[0]"
+              @input="setCountRange"
+              min="1"
+              :max="editedConfig?.settings.matchCount"
+            />
+          </div>
+          <label for="toCount" class="setting-label">to</label>
+          <div class="input-wrapper">
+            <input
+              id="toCount"
+              class="setting-input"
+              type="number"
+              :value="editedConfig?.settings.countRange[1]"
+              @input="setCountRange"
+              min="1"
+              :max="editedConfig?.settings.matchCount"
+            />
+          </div>
+          <HelpIcon
+            id="countHelp"
+            tooltip="Limits to games within the range based on order of games"
+          />
+        </div>
       </div>
 
       <div class="range setting" :class="{ error: idError }">
-        <input type="radio" id="idRange" class="setting-radio" name="ranges" value="id" />
-        <label for="idRange" class="setting-label">Match Id</label>
-        <label for="fromId" class="setting-label">from</label>
-        <input
-          id="fromId"
-          class="setting-input"
-          type="number"
-          :value="editedConfig?.settings.idRange[0]"
-          @input="setIdRange"
-          :min="editedConfig?.settings.minId"
-          :max="editedConfig?.settings.maxId"
-        />
-        <label for="toId" class="setting-label">to</label>
-        <input
-          id="toId"
-          class="setting-input"
-          type="number"
-          :value="editedConfig?.settings.idRange[1]"
-          @input="setIdRange"
-          :min="editedConfig?.settings.minId"
-          :max="editedConfig?.settings.maxId"
-        />
-        <HelpIcon tooltip="Limits to games with ids within given" />
+        <div>
+          <input type="radio" id="idRange" class="setting-radio" name="ranges" value="id" />
+          <label for="idRange" class="setting-label">Match Id</label>
+        </div>
+        <div class="range-data">
+          <label for="fromId" class="setting-label">from</label>
+          <div class="input-wrapper">
+            <input
+              id="fromId"
+              class="setting-input"
+              type="number"
+              :value="editedConfig?.settings.idRange[0]"
+              @input="setIdRange"
+              :min="editedConfig?.settings.minId"
+              :max="editedConfig?.settings.maxId"
+            />
+          </div>
+          <label for="toId" class="setting-label">to</label>
+          <div class="input-wrapper">
+            <input
+              id="toId"
+              class="setting-input"
+              type="number"
+              :value="editedConfig?.settings.idRange[1]"
+              @input="setIdRange"
+              :min="editedConfig?.settings.minId"
+              :max="editedConfig?.settings.maxId"
+            />
+          </div>
+          <HelpIcon id="idHelp" tooltip="Limits to games with ids within given" />
+        </div>
       </div>
       <div class="range setting" :class="{ error: dateError }">
-        <input type="radio" id="dateRange" class="setting-radio" name="ranges" value="date" />
-        <label for="dateRange" class="setting-label">Date</label>
-        <label for="fromId" class="setting-label">from</label>
-        <input
-          id="fromDate"
-          class="setting-input"
-          type="date"
-          :value="toString(editedConfig?.settings.dateRange[0])"
-          @input="setDateRange"
-          :min="editedConfig?.settings.minDate"
-          :max="editedConfig?.settings.maxDate"
-        />
-        <label for="toId" class="setting-label">to</label>
-        <input
-          id="toDate"
-          class="setting-input"
-          type="date"
-          :value="toString(editedConfig?.settings.dateRange[1])"
-          @input="setDateRange"
-          :min="editedConfig?.settings.minDate"
-          :max="editedConfig?.settings.maxDate"
-        />
-        <HelpIcon tooltip="Limits to games played within those date" />
+        <div>
+          <input type="radio" id="dateRange" class="setting-radio" name="ranges" value="date" />
+          <label for="dateRange" class="setting-label">Date</label>
+        </div>
+        <div class="range-data">
+          <label for="fromId" class="setting-label">from</label>
+          <div class="input-wrapper">
+            <input
+              id="fromDate"
+              class="setting-input"
+              type="date"
+              :value="toString(editedConfig?.settings.dateRange[0])"
+              @input="setDateRange"
+              :min="editedConfig?.settings.minDate"
+              :max="editedConfig?.settings.maxDate"
+            />
+          </div>
+          <label for="toId" class="setting-label">to</label>
+          <div class="input-wrapper">
+            <input
+              id="toDate"
+              class="setting-input"
+              type="date"
+              :value="toString(editedConfig?.settings.dateRange[1])"
+              @input="setDateRange"
+              :min="editedConfig?.settings.minDate"
+              :max="editedConfig?.settings.maxDate"
+            />
+          </div>
+          <HelpIcon id="dateHelp" tooltip="Limits to games played within those date" />
+        </div>
       </div>
     </div>
     <div id="aggregation"></div>
@@ -134,13 +161,28 @@ function toString(date: Date): string {
   border: red solid 2px;
 }
 
-.setting {
+.input-wrapper {
+  margin-right: 0.75em;
+  width: 7em;
+}
+
+.range-data {
   display: flex;
   gap: 0.5em;
 }
 
+#ranges {
+  width: fit-content;
+}
+
+.setting {
+  display: flex;
+  gap: 0.5em;
+  justify-content: space-between;
+}
+
 .setting-input {
   text-align: right;
-  width: 8em;
+  width: 100%;
 }
 </style>
