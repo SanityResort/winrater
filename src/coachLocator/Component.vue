@@ -56,6 +56,7 @@ async function loadData() {
 
 #coachForm {
   display: flex;
+  justify-content: center;
 }
 
 .search {

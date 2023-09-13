@@ -124,12 +124,24 @@ export class GraphConfig extends MatchProvider {
     this.update(false)
     const matchCount = this.providedMatches.length
     if (this.providedMatches && this.providedMatches.length > 0) {
+      const minDate = this.providedMatches[0].dateTime
+      minDate.setHours(0)
+      minDate.setMinutes(0)
+      minDate.setSeconds(0)
+      minDate.setMilliseconds(0)
+
+      const maxDate = this.providedMatches[matchCount - 1].dateTime
+      maxDate.setHours(23)
+      maxDate.setMinutes(59)
+      maxDate.setSeconds(59)
+      maxDate.setMilliseconds(999)
+
       this.settings = new Settings(
         matchCount,
         this.providedMatches[0].id,
         this.providedMatches[matchCount - 1].id,
-        this.providedMatches[0].dateTime,
-        this.providedMatches[matchCount - 1].dateTime
+        minDate,
+        maxDate
       )
     } else {
       this.settings = new Settings(0, 0, 0, new Date(), new Date())
