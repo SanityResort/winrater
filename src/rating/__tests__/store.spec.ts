@@ -319,8 +319,8 @@ describe('Graph Config', () => {
         matches.length,
         matches[0].id,
         matches[4].id,
-        new Date('2000-01-02T00:00:00.000'),
-        new Date('2020-01-02T23:59:59.999')
+        new Date('2000-01-02T00:00:00.000+00:00'),
+        new Date('2020-01-02T23:59:59.999+00:00')
       )
     )
   })
@@ -526,12 +526,12 @@ describe('Settings', () => {
   const matchCount = 10
   const minId = 1
   const maxId = 10
-  const minDate = new Date('2020-01-01T00:00:00.000+01:00')
-  const maxDate = new Date('2022-12-01T23:59:59.999+01:00')
-  const earlierDate = new Date('2021-01-01T00:00:00.000+01:00')
-  const laterDate = new Date('2021-12-01T23:59:59.999+01:00')
-  const invalidFromDate = new Date('2019-01-01T00:00:00.000+01:00')
-  const invalidToDate = new Date('2023-12-01T23:59:59.999+01:00')
+  const minDate = new Date('2020-01-01T00:00:00.000+00:00')
+  const maxDate = new Date('2022-12-01T23:59:59.999+00:00')
+  const earlierDate = new Date('2021-01-01T00:00:00.000+00:00')
+  const laterDate = new Date('2021-12-01T23:59:59.999+00:00')
+  const invalidFromDate = new Date('2019-01-01T00:00:00.000+00:00')
+  const invalidToDate = new Date('2023-12-01T23:59:59.999+00:00')
 
   beforeEach(() => {
     createTestingPinia({ createSpy: vi.fn })
@@ -664,6 +664,24 @@ describe('Settings', () => {
       expect(settings.setDateRange(earlierDate, laterDate, errorMessage)).toBeTruthy()
       expect(settings.dateRange).toStrictEqual([earlierDate, laterDate])
       expect(errorMessage.value).toBe('')
+    })
+  })
+
+  describe('getStartDate', () => {
+    it('returns start date as text', () => {
+      const matchStore = useMatchStore()
+      const { errorMessage } = storeToRefs(matchStore)
+      settings.setDateRange(earlierDate, laterDate, errorMessage)
+      expect(settings.getStartDate()).toEqual('2021-01-01')
+    })
+  })
+
+  describe('getEndDate', () => {
+    it('returns end date as text', () => {
+      const matchStore = useMatchStore()
+      const { errorMessage } = storeToRefs(matchStore)
+      settings.setDateRange(earlierDate, laterDate, errorMessage)
+      expect(settings.getEndDate()).toEqual('2021-12-01')
     })
   })
 })

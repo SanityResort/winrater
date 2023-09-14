@@ -125,16 +125,16 @@ export class GraphConfig extends MatchProvider {
     const matchCount = this.providedMatches.length
     if (this.providedMatches && this.providedMatches.length > 0) {
       const minDate = new Date(this.providedMatches[0].dateTime)
-      minDate.setHours(0)
-      minDate.setMinutes(0)
-      minDate.setSeconds(0)
-      minDate.setMilliseconds(0)
+      minDate.setUTCHours(0)
+      minDate.setUTCMinutes(0)
+      minDate.setUTCSeconds(0)
+      minDate.setUTCMilliseconds(0)
 
       const maxDate = new Date(this.providedMatches[matchCount - 1].dateTime)
-      maxDate.setHours(23)
-      maxDate.setMinutes(59)
-      maxDate.setSeconds(59)
-      maxDate.setMilliseconds(999)
+      maxDate.setUTCHours(23)
+      maxDate.setUTCMinutes(59)
+      maxDate.setUTCSeconds(59)
+      maxDate.setUTCMilliseconds(999)
 
       this.settings = new Settings(
         matchCount,
@@ -307,6 +307,18 @@ export class Settings {
     }
 
     return res
+  }
+
+  getStartDate(): string {
+    return this.dateToString(this.dateRange[0])
+  }
+
+  getEndDate(): string {
+    return this.dateToString(this.dateRange[1])
+  }
+
+  private dateToString(date: Date) {
+    return date.toISOString().split('T')[0]
   }
 
   private checkOrder<T>(from: T, to: T, errorMessage: Ref<string>): boolean {

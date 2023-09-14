@@ -219,7 +219,7 @@ describe('Rating Mapper', () => {
         time: '20:51:33'
       }
 
-      const expectedDateTime = new Date(2020, 9, 30, 20, 51, 33)
+      const expectedDateTime = new Date('2020-10-30T20:51:33.000+00:00')
 
       const result = mapper.match(input, 'coach1')
       expect(result).toStrictEqual({
