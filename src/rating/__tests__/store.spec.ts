@@ -319,8 +319,8 @@ describe('Graph Config', () => {
         matches.length,
         matches[0].id,
         matches[4].id,
-        matches[0].dateTime,
-        matches[4].dateTime
+        new Date('2000-01-02T00:00:00.000'),
+        new Date('2020-01-02T23:59:59.999')
       )
     )
   })
@@ -526,12 +526,12 @@ describe('Settings', () => {
   const matchCount = 10
   const minId = 1
   const maxId = 10
-  const minDate = new Date('2020-01-01T12:34:56')
-  const maxDate = new Date('2022-12-01T04:05:13')
-  const earlierDate = new Date('2021-01-01T12:34:56')
-  const laterDate = new Date('2021-12-01T04:05:13')
-  const invalidFromDate = new Date('2019-01-01T12:34:56')
-  const invalidToDate = new Date('2023-12-01T04:05:13')
+  const minDate = new Date('2020-01-01T00:00:00.000+01:00')
+  const maxDate = new Date('2022-12-01T23:59:59.999+01:00')
+  const earlierDate = new Date('2021-01-01T00:00:00.000+01:00')
+  const laterDate = new Date('2021-12-01T23:59:59.999+01:00')
+  const invalidFromDate = new Date('2019-01-01T00:00:00.000+01:00')
+  const invalidToDate = new Date('2023-12-01T23:59:59.999+01:00')
 
   beforeEach(() => {
     createTestingPinia({ createSpy: vi.fn })
@@ -542,7 +542,7 @@ describe('Settings', () => {
     it('sets correct range', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setCountRange(2, 8)).toBeTruthy()
+      expect(settings.setCountRange(2, 8, errorMessage)).toBeTruthy()
       expect(settings.countRange).toStrictEqual([2, 8])
       expect(errorMessage.value).toBe('')
     })
@@ -550,7 +550,7 @@ describe('Settings', () => {
     it('rejects incorrect range', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setCountRange(8, 2)).toBeFalsy()
+      expect(settings.setCountRange(8, 2, errorMessage)).toBeFalsy()
       expect(settings.countRange).toStrictEqual([1, matchCount])
       expect(errorMessage.value).toBe('"From" must not be larger than "to"')
     })
@@ -558,7 +558,7 @@ describe('Settings', () => {
     it('rejects if from value too low', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setCountRange(0, 2)).toBeFalsy()
+      expect(settings.setCountRange(0, 2, errorMessage)).toBeFalsy()
       expect(settings.countRange).toStrictEqual([1, matchCount])
       expect(errorMessage.value).toBe('"From" must not be smaller than 1')
     })
@@ -566,7 +566,7 @@ describe('Settings', () => {
     it('rejects if to value is too high', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setCountRange(8, 12)).toBeFalsy()
+      expect(settings.setCountRange(8, 12, errorMessage)).toBeFalsy()
       expect(settings.countRange).toStrictEqual([1, matchCount])
       expect(errorMessage.value).toBe('"To" must not be larger than ' + matchCount)
     })
@@ -574,8 +574,8 @@ describe('Settings', () => {
     it('resets error after success', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      settings.setCountRange(5, 1)
-      expect(settings.setCountRange(1, 2)).toBeTruthy()
+      settings.setCountRange(5, 1, errorMessage)
+      expect(settings.setCountRange(1, 2, errorMessage)).toBeTruthy()
       expect(settings.countRange).toStrictEqual([1, 2])
       expect(errorMessage.value).toBe('')
     })
@@ -585,7 +585,7 @@ describe('Settings', () => {
     it('sets correct range', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setIdRange(2, 8)).toBeTruthy()
+      expect(settings.setIdRange(2, 8, errorMessage)).toBeTruthy()
       expect(settings.idRange).toStrictEqual([2, 8])
       expect(errorMessage.value).toBe('')
     })
@@ -593,7 +593,7 @@ describe('Settings', () => {
     it('rejects incorrect range', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setIdRange(8, 2)).toBeFalsy()
+      expect(settings.setIdRange(8, 2, errorMessage)).toBeFalsy()
       expect(settings.idRange).toStrictEqual([minId, maxId])
       expect(errorMessage.value).toBe('"From" must not be larger than "to"')
     })
@@ -601,7 +601,7 @@ describe('Settings', () => {
     it('rejects if from value too low', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setIdRange(0, 2)).toBeFalsy()
+      expect(settings.setIdRange(0, 2, errorMessage)).toBeFalsy()
       expect(settings.idRange).toStrictEqual([minId, maxId])
       expect(errorMessage.value).toBe('"From" must not be smaller than 1')
     })
@@ -609,16 +609,16 @@ describe('Settings', () => {
     it('rejects if to value is too high', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setIdRange(8, 12)).toBeFalsy()
+      expect(settings.setIdRange(8, 15, errorMessage)).toBeFalsy()
       expect(settings.idRange).toStrictEqual([minId, maxId])
-      expect(errorMessage.value).toBe('"To" must not be larger than ' + matchCount)
+      expect(errorMessage.value).toBe('"To" must not be larger than ' + maxId)
     })
 
     it('resets error after success', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      settings.setIdRange(5, 1)
-      expect(settings.setIdRange(1, 2)).toBeTruthy()
+      settings.setIdRange(5, 1, errorMessage)
+      expect(settings.setIdRange(1, 2, errorMessage)).toBeTruthy()
       expect(settings.idRange).toStrictEqual([1, 2])
       expect(errorMessage.value).toBe('')
     })
@@ -628,7 +628,7 @@ describe('Settings', () => {
     it('sets correct range', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setDateRange(earlierDate, laterDate)).toBeTruthy()
+      expect(settings.setDateRange(earlierDate, laterDate, errorMessage)).toBeTruthy()
       expect(settings.dateRange).toStrictEqual([earlierDate, laterDate])
       expect(errorMessage.value).toBe('')
     })
@@ -636,7 +636,7 @@ describe('Settings', () => {
     it('rejects incorrect range', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setDateRange(laterDate, earlierDate)).toBeFalsy()
+      expect(settings.setDateRange(laterDate, earlierDate, errorMessage)).toBeFalsy()
       expect(settings.dateRange).toStrictEqual([minDate, maxDate])
       expect(errorMessage.value).toBe('"From" must not be larger than "to"')
     })
@@ -644,7 +644,7 @@ describe('Settings', () => {
     it('rejects if from value too low', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setDateRange(invalidFromDate, earlierDate)).toBeFalsy()
+      expect(settings.setDateRange(invalidFromDate, earlierDate, errorMessage)).toBeFalsy()
       expect(settings.dateRange).toStrictEqual([minDate, maxDate])
       expect(errorMessage.value).toBe('"From" must not be smaller than ' + minDate)
     })
@@ -652,7 +652,7 @@ describe('Settings', () => {
     it('rejects if to value is too high', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setDateRange(laterDate, invalidToDate)).toBeFalsy()
+      expect(settings.setDateRange(laterDate, invalidToDate, errorMessage)).toBeFalsy()
       expect(settings.dateRange).toStrictEqual([minDate, maxDate])
       expect(errorMessage.value).toBe('"To" must not be larger than ' + maxDate)
     })
@@ -660,8 +660,8 @@ describe('Settings', () => {
     it('resets error after success', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      settings.setDateRange(laterDate, earlierDate)
-      expect(settings.setDateRange(earlierDate, laterDate)).toBeTruthy()
+      settings.setDateRange(laterDate, earlierDate, errorMessage)
+      expect(settings.setDateRange(earlierDate, laterDate, errorMessage)).toBeTruthy()
       expect(settings.dateRange).toStrictEqual([earlierDate, laterDate])
       expect(errorMessage.value).toBe('')
     })

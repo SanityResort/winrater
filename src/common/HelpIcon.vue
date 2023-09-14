@@ -19,7 +19,6 @@ const props = defineProps({
 const id: string = props.id as string
 
 onMounted(() => {
-  console.log('id: ' + props.id)
   tippy(document.getElementById(id), {
     content: document.getElementsByClassName('tooltip-content')[0]
   })
