@@ -119,8 +119,6 @@
               type="date"
               :value="editedConfig?.settings.getStartDate()"
               @input="setDateRange"
-              :min="editedConfig?.settings.minDate"
-              :max="editedConfig?.settings.maxDate"
             />
           </div>
           <label for="toId">to</label>
@@ -131,8 +129,6 @@
               type="date"
               :value="editedConfig?.settings.getEndDate()"
               @input="setDateRange"
-              :min="editedConfig?.settings.minDate"
-              :max="editedConfig?.settings.maxDate"
             />
           </div>
           <HelpIcon id="dateHelp" tooltip="Limits to games played within those dates" />
