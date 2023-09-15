@@ -530,8 +530,11 @@ describe('Settings', () => {
   const maxDate = new Date('2022-12-01T23:59:59.999+00:00')
   const earlierDate = new Date('2021-01-01T00:00:00.000+00:00')
   const laterDate = new Date('2021-12-01T23:59:59.999+00:00')
-  const invalidFromDate = new Date('2019-01-01T00:00:00.000+00:00')
-  const invalidToDate = new Date('2023-12-01T23:59:59.999+00:00')
+
+  const earlierDateString = '2021-01-01'
+  const laterDateString = '2021-12-01'
+  const invalidFromDateString = '2019-01-01'
+  const invalidToDateString = '2023-12-01'
 
   beforeEach(() => {
     createTestingPinia({ createSpy: vi.fn })
@@ -628,7 +631,7 @@ describe('Settings', () => {
     it('sets correct range', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setDateRange(earlierDate, laterDate, errorMessage)).toBeTruthy()
+      expect(settings.setDateRange(earlierDateString, laterDateString, errorMessage)).toBeTruthy()
       expect(settings.dateRange).toStrictEqual([earlierDate, laterDate])
       expect(errorMessage.value).toBe('')
     })
@@ -636,7 +639,7 @@ describe('Settings', () => {
     it('rejects incorrect range', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setDateRange(laterDate, earlierDate, errorMessage)).toBeFalsy()
+      expect(settings.setDateRange(laterDateString, earlierDateString, errorMessage)).toBeFalsy()
       expect(settings.dateRange).toStrictEqual([minDate, maxDate])
       expect(errorMessage.value).toBe('"From" must not be larger than "to"')
     })
@@ -644,7 +647,9 @@ describe('Settings', () => {
     it('rejects if from value too low', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setDateRange(invalidFromDate, earlierDate, errorMessage)).toBeFalsy()
+      expect(
+        settings.setDateRange(invalidFromDateString, earlierDateString, errorMessage)
+      ).toBeFalsy()
       expect(settings.dateRange).toStrictEqual([minDate, maxDate])
       expect(errorMessage.value).toBe('"From" must not be smaller than ' + minDate)
     })
@@ -652,7 +657,7 @@ describe('Settings', () => {
     it('rejects if to value is too high', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setDateRange(laterDate, invalidToDate, errorMessage)).toBeFalsy()
+      expect(settings.setDateRange(laterDateString, invalidToDateString, errorMessage)).toBeFalsy()
       expect(settings.dateRange).toStrictEqual([minDate, maxDate])
       expect(errorMessage.value).toBe('"To" must not be larger than ' + maxDate)
     })
@@ -660,8 +665,8 @@ describe('Settings', () => {
     it('resets error after success', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      settings.setDateRange(laterDate, earlierDate, errorMessage)
-      expect(settings.setDateRange(earlierDate, laterDate, errorMessage)).toBeTruthy()
+      settings.setDateRange(laterDateString, earlierDateString, errorMessage)
+      expect(settings.setDateRange(earlierDateString, laterDateString, errorMessage)).toBeTruthy()
       expect(settings.dateRange).toStrictEqual([earlierDate, laterDate])
       expect(errorMessage.value).toBe('')
     })
@@ -671,7 +676,7 @@ describe('Settings', () => {
     it('returns start date as text', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      settings.setDateRange(earlierDate, laterDate, errorMessage)
+      settings.setDateRange(earlierDateString, laterDateString, errorMessage)
       expect(settings.getStartDate()).toEqual('2021-01-01')
     })
   })
@@ -680,7 +685,7 @@ describe('Settings', () => {
     it('returns end date as text', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      settings.setDateRange(earlierDate, laterDate, errorMessage)
+      settings.setDateRange(earlierDateString, laterDateString, errorMessage)
       expect(settings.getEndDate()).toEqual('2021-12-01')
     })
   })

@@ -84,7 +84,7 @@
               id="fromDate"
               class="setting-input"
               type="date"
-              :value="toString(editedConfig?.settings.dateRange[0])"
+              :value="fromDate"
               @input="setDateRange"
               :min="editedConfig?.settings.minDate"
               :max="editedConfig?.settings.maxDate"
@@ -96,7 +96,7 @@
               id="toDate"
               class="setting-input"
               type="date"
-              :value="toString(editedConfig?.settings.dateRange[1])"
+              :value="toDate"
               @input="setDateRange"
               :min="editedConfig?.settings.minDate"
               :max="editedConfig?.settings.maxDate"
@@ -113,7 +113,7 @@
 import { storeToRefs } from 'pinia'
 import { useMatchStore } from '@/pinia/store'
 import HelpIcon from '@/common/HelpIcon.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 const { editedConfig, errorMessage } = storeToRefs(useMatchStore())
 
@@ -121,7 +121,13 @@ const countError = ref(false)
 const idError = ref(false)
 const dateError = ref(false)
 
-new Date().toUTCString()
+const fromDate = computed(() => {
+  return editedConfig.value?.settings.getStartDate()
+})
+
+const toDate = computed(() => {
+  return editedConfig.value?.settings.getEndDate()
+})
 
 function setCountRange() {
   if (editedConfig.value) {
@@ -141,18 +147,10 @@ function setIdRange() {
 
 function setDateRange() {
   if (editedConfig.value) {
-    const from = new Date((document.getElementById('fromDate') as HTMLInputElement).value)
-    const to = new Date((document.getElementById('toDate') as HTMLInputElement).value)
+    const from = (document.getElementById('fromDate') as HTMLInputElement).value
+    const to = (document.getElementById('toDate') as HTMLInputElement).value
     dateError.value = !editedConfig.value.settings.setDateRange(from, to, errorMessage)
   }
-}
-
-function toString(date: Date): string {
-  if (!date) {
-    return ''
-  }
-
-  return date.toISOString().split('T')[0]
 }
 </script>
 

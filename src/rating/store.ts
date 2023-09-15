@@ -124,17 +124,8 @@ export class GraphConfig extends MatchProvider {
     this.update(false)
     const matchCount = this.providedMatches.length
     if (this.providedMatches && this.providedMatches.length > 0) {
-      const minDate = new Date(this.providedMatches[0].dateTime)
-      minDate.setUTCHours(0)
-      minDate.setUTCMinutes(0)
-      minDate.setUTCSeconds(0)
-      minDate.setUTCMilliseconds(0)
-
-      const maxDate = new Date(this.providedMatches[matchCount - 1].dateTime)
-      maxDate.setUTCHours(23)
-      maxDate.setUTCMinutes(59)
-      maxDate.setUTCSeconds(59)
-      maxDate.setUTCMilliseconds(999)
+      const minDate = createStartOfDayDate(this.providedMatches[0].dateTime)
+      const maxDate = createEndOfDayDate(this.providedMatches[matchCount - 1].dateTime)
 
       this.settings = new Settings(
         matchCount,
@@ -295,14 +286,17 @@ export class Settings {
     return res
   }
 
-  setDateRange(from: Date, to: Date, errorMessage: Ref<string>): boolean {
+  setDateRange(from: string, to: string, errorMessage: Ref<string>): boolean {
+    const fromDate = createStartOfDayDate(new Date(from))
+    const toDate = createEndOfDayDate(new Date(to))
+
     const res =
       this.checkOrder(from, to, errorMessage) &&
-      this.checkLowerBound(from, this.minDate, errorMessage) &&
-      this.checkUpperBound(to, this.maxDate, errorMessage)
+      this.checkLowerBound(fromDate, this.minDate, errorMessage) &&
+      this.checkUpperBound(toDate, this.maxDate, errorMessage)
 
     if (res) {
-      this.dateRange = [from, to]
+      this.dateRange = [fromDate, toDate]
       errorMessage.value = ''
     }
 
@@ -346,4 +340,22 @@ export class Settings {
 
     return true
   }
+}
+
+function createEndOfDayDate(date: Date) {
+  const maxDate = new Date(date)
+  maxDate.setUTCHours(23)
+  maxDate.setUTCMinutes(59)
+  maxDate.setUTCSeconds(59)
+  maxDate.setUTCMilliseconds(999)
+  return maxDate
+}
+
+function createStartOfDayDate(date: Date) {
+  const minDate = new Date(date)
+  minDate.setUTCHours(0)
+  minDate.setUTCMinutes(0)
+  minDate.setUTCSeconds(0)
+  minDate.setUTCMilliseconds(0)
+  return minDate
 }
