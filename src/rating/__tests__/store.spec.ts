@@ -651,7 +651,7 @@ describe('Settings', () => {
         settings.setDateRange(invalidFromDateString, earlierDateString, errorMessage)
       ).toBeFalsy()
       expect(settings.dateRange).toStrictEqual([minDate, maxDate])
-      expect(errorMessage.value).toBe('"From" must not be smaller than ' + minDate)
+      expect(errorMessage.value).toBe('"From" must not be smaller than 2020-01-01')
     })
 
     it('rejects if to value is too high', () => {
@@ -659,7 +659,7 @@ describe('Settings', () => {
       const { errorMessage } = storeToRefs(matchStore)
       expect(settings.setDateRange(laterDateString, invalidToDateString, errorMessage)).toBeFalsy()
       expect(settings.dateRange).toStrictEqual([minDate, maxDate])
-      expect(errorMessage.value).toBe('"To" must not be larger than ' + maxDate)
+      expect(errorMessage.value).toBe('"To" must not be larger than 2022-12-01')
     })
 
     it('resets error after success', () => {

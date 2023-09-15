@@ -261,8 +261,8 @@ export class Settings {
   setCountRange(from: number, to: number, errorMessage: Ref<string>): boolean {
     const res =
       this.checkOrder(from, to, errorMessage) &&
-      this.checkLowerBound(from, 1, errorMessage) &&
-      this.checkUpperBound(to, this.matchCount, errorMessage)
+      this.checkLowerBound(from, 1, '1', errorMessage) &&
+      this.checkUpperBound(to, this.matchCount, this.matchCount.toString(), errorMessage)
 
     if (res) {
       this.countRange = [from, to]
@@ -275,8 +275,8 @@ export class Settings {
   setIdRange(from: number, to: number, errorMessage: Ref<string>): boolean {
     const res =
       this.checkOrder(from, to, errorMessage) &&
-      this.checkLowerBound(from, this.minId, errorMessage) &&
-      this.checkUpperBound(to, this.maxId, errorMessage)
+      this.checkLowerBound(from, this.minId, this.minId.toString(), errorMessage) &&
+      this.checkUpperBound(to, this.maxId, this.maxId.toString(), errorMessage)
 
     if (res) {
       this.idRange = [from, to]
@@ -292,8 +292,18 @@ export class Settings {
 
     const res =
       this.checkOrder(from, to, errorMessage) &&
-      this.checkLowerBound(fromDate, this.minDate, errorMessage) &&
-      this.checkUpperBound(toDate, this.maxDate, errorMessage)
+      this.checkLowerBound(
+        fromDate,
+        this.minDate,
+        this.minDate.toISOString().split('T')[0],
+        errorMessage
+      ) &&
+      this.checkUpperBound(
+        toDate,
+        this.maxDate,
+        this.maxDate.toISOString().split('T')[0],
+        errorMessage
+      )
 
     if (res) {
       this.dateRange = [fromDate, toDate]
@@ -323,18 +333,23 @@ export class Settings {
     return true
   }
 
-  private checkLowerBound<T>(from: T, minFrom: T, errorMessage: Ref<string>): boolean {
+  private checkLowerBound<T>(
+    from: T,
+    minFrom: T,
+    limit: string,
+    errorMessage: Ref<string>
+  ): boolean {
     if (minFrom > from) {
-      errorMessage.value = '"From" must not be smaller than ' + minFrom
+      errorMessage.value = '"From" must not be smaller than ' + limit
       return false
     }
 
     return true
   }
 
-  private checkUpperBound<T>(to: T, maxTo: T, errorMessage: Ref<string>): boolean {
+  private checkUpperBound<T>(to: T, maxTo: T, limit: string, errorMessage: Ref<string>): boolean {
     if (maxTo < to) {
-      errorMessage.value = '"To" must not be larger than ' + maxTo
+      errorMessage.value = '"To" must not be larger than ' + limit
       return false
     }
 

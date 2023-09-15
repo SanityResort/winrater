@@ -102,7 +102,7 @@
               :max="editedConfig?.settings.maxDate"
             />
           </div>
-          <HelpIcon id="dateHelp" tooltip="Limits to games played within those date" />
+          <HelpIcon id="dateHelp" tooltip="Limits to games played within those dates" />
         </div>
       </div>
     </div>
