@@ -2,13 +2,13 @@
   <div id="title">{{ editedConfig?.getTitle() }}</div>
   <div id="settings">
     <div id="ranges">
-      <div class="range setting" :class="{ error: countError }">
+      <div class="setting spaced" :class="{ error: countError }">
         <div>
-          <input type="radio" id="countRange" class="setting-radio" name="ranges" value="count" />
-          <label for="countRange" class="setting-label">Match Number</label>
+          <input type="radio" id="countRange" name="ranges" value="count" />
+          <label for="countRange">Match Number</label>
         </div>
         <div class="range-data">
-          <label for="fromCount" class="setting-label">from</label>
+          <label for="fromCount">from</label>
           <div class="input-wrapper">
             <input
               id="fromCount"
@@ -20,7 +20,7 @@
               :max="editedConfig?.settings.matchCount"
             />
           </div>
-          <label for="toCount" class="setting-label">to</label>
+          <label for="toCount">to</label>
           <div class="input-wrapper">
             <input
               id="toCount"
@@ -39,13 +39,13 @@
         </div>
       </div>
 
-      <div class="range setting" :class="{ error: idError }">
+      <div class="setting spaced" :class="{ error: idError }">
         <div>
-          <input type="radio" id="idRange" class="setting-radio" name="ranges" value="id" />
-          <label for="idRange" class="setting-label">Match Id</label>
+          <input type="radio" id="idRange" name="ranges" value="id" />
+          <label for="idRange">Match Id</label>
         </div>
         <div class="range-data">
-          <label for="fromId" class="setting-label">from</label>
+          <label for="fromId">from</label>
           <div class="input-wrapper">
             <input
               id="fromId"
@@ -57,7 +57,7 @@
               :max="editedConfig?.settings.maxId"
             />
           </div>
-          <label for="toId" class="setting-label">to</label>
+          <label for="toId">to</label>
           <div class="input-wrapper">
             <input
               id="toId"
@@ -72,13 +72,13 @@
           <HelpIcon id="idHelp" tooltip="Limits to games with ids within given" />
         </div>
       </div>
-      <div class="range setting" :class="{ error: dateError }">
+      <div class="setting spaced" :class="{ error: dateError }">
         <div>
-          <input type="radio" id="dateRange" class="setting-radio" name="ranges" value="date" />
-          <label for="dateRange" class="setting-label">Date</label>
+          <input type="radio" id="dateRange" name="ranges" value="date" />
+          <label for="dateRange">Date</label>
         </div>
         <div class="range-data">
-          <label for="fromId" class="setting-label">from</label>
+          <label for="fromId">from</label>
           <div class="input-wrapper">
             <input
               id="fromDate"
@@ -90,7 +90,7 @@
               :max="editedConfig?.settings.maxDate"
             />
           </div>
-          <label for="toId" class="setting-label">to</label>
+          <label for="toId">to</label>
           <div class="input-wrapper">
             <input
               id="toDate"
@@ -106,7 +106,35 @@
         </div>
       </div>
     </div>
-    <div id="aggregation"></div>
+    <div id="aggregation">
+      <div class="setting">
+        <div>
+          <input type="radio" id="sum-aggregation" class="" name="aggregation" value="sum" />
+          <label for="sum-aggregation">Sum</label>
+        </div>
+        <HelpIcon id="sumHelp" tooltip="Win ratios are summed up" />
+      </div>
+      <div class="setting">
+        <div>
+          <input type="radio" id="window-aggregation" class="" name="aggregation" value="window" />
+          <label for="sum-aggregation">Sliding window</label>
+        </div>
+        <div class="input-wrapper">
+          <input
+            type="number"
+            min="1"
+            id="windowSize"
+            class="setting-input"
+            :value="editedConfig?.settings.windowSize"
+            @input="setWindowSize"
+          />
+        </div>
+        <HelpIcon
+          id="windowHelp"
+          tooltip="Calculates the win ratio of all series of <n> consecutive games as separate values (1..n, 2..n+1, ...)"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -144,9 +172,21 @@ function setDateRange() {
     dateError.value = !editedConfig.value.settings.setDateRange(from, to, errorMessage)
   }
 }
+
+function setWindowSize() {
+  if (editedConfig.value) {
+    const size = Number.parseInt((document.getElementById('windowSize') as HTMLInputElement).value)
+    editedConfig.value.settings.setWindowSize(size)
+  }
+}
 </script>
 
 <style scoped>
+#aggregation,
+#ranges {
+  width: fit-content;
+}
+
 .error {
   border: red solid 2px;
 }
@@ -161,18 +201,20 @@ function setDateRange() {
   gap: 0.5em;
 }
 
-#ranges {
-  width: fit-content;
-}
-
 .setting {
   display: flex;
   gap: 0.5em;
-  justify-content: space-between;
+}
+
+#settings {
+  display: flex;
 }
 
 .setting-input {
   text-align: right;
   width: 100%;
+}
+.spaced {
+  justify-content: space-between;
 }
 </style>

@@ -246,6 +246,7 @@ export class Settings {
   countRange: number[]
   idRange: number[]
   dateRange: Date[]
+  windowSize: number
 
   constructor(matchCount: number, minId: number, maxId: number, minDate: Date, maxDate: Date) {
     this.matchCount = matchCount
@@ -256,6 +257,7 @@ export class Settings {
     this.countRange = [Math.min(1, matchCount), matchCount]
     this.idRange = [minId, maxId]
     this.dateRange = [minDate, maxDate]
+    this.windowSize = 1
   }
 
   setCountRange(from: number, to: number, errorMessage: Ref<string>): boolean {
@@ -311,6 +313,10 @@ export class Settings {
     }
 
     return res
+  }
+
+  setWindowSize(size: number) {
+    this.windowSize = size
   }
 
   getStartDate(): string {
