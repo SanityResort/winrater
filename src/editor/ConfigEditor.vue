@@ -207,7 +207,7 @@ function setCountRange() {
   if (editedConfig.value) {
     const from = Number.parseInt((document.getElementById('fromCount') as HTMLInputElement).value)
     const to = Number.parseInt((document.getElementById('toCount') as HTMLInputElement).value)
-    countError.value = !editedConfig.value.settings.setCountRange(from, to, errorMessage)
+    countError.value = !editedConfig.value.setCountRange(from, to, errorMessage)
   }
 }
 
@@ -215,7 +215,7 @@ function setIdRange() {
   if (editedConfig.value) {
     const from = Number.parseInt((document.getElementById('fromId') as HTMLInputElement).value)
     const to = Number.parseInt((document.getElementById('toId') as HTMLInputElement).value)
-    idError.value = !editedConfig.value.settings.setIdRange(from, to, errorMessage)
+    idError.value = !editedConfig.value.setIdRange(from, to, errorMessage)
   }
 }
 
@@ -223,26 +223,26 @@ function setDateRange() {
   if (editedConfig.value) {
     const from = (document.getElementById('fromDate') as HTMLInputElement).value
     const to = (document.getElementById('toDate') as HTMLInputElement).value
-    dateError.value = !editedConfig.value.settings.setDateRange(from, to, errorMessage)
+    dateError.value = !editedConfig.value.setDateRange(from, to, errorMessage)
   }
 }
 
 function setWindowSize() {
   if (editedConfig.value) {
     const size = Number.parseInt((document.getElementById('windowSize') as HTMLInputElement).value)
-    editedConfig.value.settings.setWindowSize(size)
+    editedConfig.value.setWindowSize(size)
   }
 }
 
 function setRange(range: Range) {
   if (editedConfig.value) {
-    editedConfig.value.settings.range = range
+    editedConfig.value.setRange(range)
   }
 }
 
 function setAggregation(aggregation: Aggregation) {
   if (editedConfig.value) {
-    editedConfig.value.settings.aggregation = aggregation
+    editedConfig.value.setAggregation(aggregation)
   }
 }
 </script>

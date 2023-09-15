@@ -94,7 +94,7 @@ export class Store extends MatchProvider {
 export class GraphConfig extends MatchProvider {
   public categories: Category[]
   public color: Color
-  private providedMatches: Match[]
+  private readonly providedMatches: Match[]
   private filteredMatches: Match[]
   private dataPoints: DataPoint[]
   private readonly coachName: string
@@ -216,6 +216,33 @@ export class GraphConfig extends MatchProvider {
 
   public getTitle() {
     return this.coachName + ' #' + this.configNumber
+  }
+
+  setCountRange(from: number, to: number, errorMessage: Ref<string>): boolean {
+    const res = this.settings.setCountRange(from, to, errorMessage)
+    return res
+  }
+
+  setIdRange(from: number, to: number, errorMessage: Ref<string>): boolean {
+    const res = this.settings.setIdRange(from, to, errorMessage)
+    return res
+  }
+
+  setDateRange(from: string, to: string, errorMessage: Ref<string>): boolean {
+    const res = this.settings.setDateRange(from, to, errorMessage)
+    return res
+  }
+
+  setWindowSize(size: number) {
+    this.settings.setWindowSize(size)
+  }
+
+  setRange(range: Range) {
+    this.settings.range = range
+  }
+
+  setAggregation(aggregation: Aggregation) {
+    this.settings.aggregation = aggregation
   }
 }
 
