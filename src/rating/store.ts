@@ -247,6 +247,8 @@ export class Settings {
   idRange: number[]
   dateRange: Date[]
   windowSize: number
+  range: Range
+  aggregation: Aggregation
 
   constructor(matchCount: number, minId: number, maxId: number, minDate: Date, maxDate: Date) {
     this.matchCount = matchCount
@@ -258,6 +260,8 @@ export class Settings {
     this.idRange = [minId, maxId]
     this.dateRange = [minDate, maxDate]
     this.windowSize = 1
+    this.range = Range.COUNT
+    this.aggregation = Aggregation.SUM
   }
 
   setCountRange(from: number, to: number, errorMessage: Ref<string>): boolean {
@@ -379,4 +383,15 @@ function createStartOfDayDate(date: Date) {
   minDate.setUTCSeconds(0)
   minDate.setUTCMilliseconds(0)
   return minDate
+}
+
+export enum Range {
+  COUNT,
+  ID,
+  DATE
+}
+
+export enum Aggregation {
+  SUM,
+  WINDOW
 }

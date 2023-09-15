@@ -4,7 +4,18 @@
     <div id="ranges">
       <div class="setting spaced" :class="{ error: countError }">
         <div>
-          <input type="radio" id="countRange" name="ranges" value="count" />
+          <input
+            type="radio"
+            id="countRange"
+            name="ranges"
+            value="count"
+            :checked="editedConfig?.settings.range == Range.COUNT"
+            @input="
+              () => {
+                setRange(Range.COUNT)
+              }
+            "
+          />
           <label for="countRange">Match Number</label>
         </div>
         <div class="range-data">
@@ -41,7 +52,18 @@
 
       <div class="setting spaced" :class="{ error: idError }">
         <div>
-          <input type="radio" id="idRange" name="ranges" value="id" />
+          <input
+            type="radio"
+            id="idRange"
+            name="ranges"
+            value="id"
+            :checked="editedConfig?.settings.range == Range.ID"
+            @input="
+              () => {
+                setRange(Range.ID)
+              }
+            "
+          />
           <label for="idRange">Match Id</label>
         </div>
         <div class="range-data">
@@ -74,7 +96,18 @@
       </div>
       <div class="setting spaced" :class="{ error: dateError }">
         <div>
-          <input type="radio" id="dateRange" name="ranges" value="date" />
+          <input
+            type="radio"
+            id="dateRange"
+            name="ranges"
+            value="date"
+            :checked="editedConfig?.settings.range == Range.DATE"
+            @input="
+              () => {
+                setRange(Range.DATE)
+              }
+            "
+          />
           <label for="dateRange">Date</label>
         </div>
         <div class="range-data">
@@ -109,14 +142,38 @@
     <div id="aggregation">
       <div class="setting">
         <div>
-          <input type="radio" id="sum-aggregation" class="" name="aggregation" value="sum" />
+          <input
+            type="radio"
+            id="sum-aggregation"
+            class=""
+            name="aggregation"
+            value="sum"
+            :checked="editedConfig?.settings.aggregation == Aggregation.SUM"
+            @input="
+              () => {
+                setAggregation(Aggregation.SUM)
+              }
+            "
+          />
           <label for="sum-aggregation">Sum</label>
         </div>
         <HelpIcon id="sumHelp" tooltip="Win ratios are summed up" />
       </div>
       <div class="setting">
         <div>
-          <input type="radio" id="window-aggregation" class="" name="aggregation" value="window" />
+          <input
+            type="radio"
+            id="window-aggregation"
+            class=""
+            name="aggregation"
+            value="window"
+            :checked="editedConfig?.settings.aggregation == Aggregation.WINDOW"
+            @input="
+              () => {
+                setAggregation(Aggregation.WINDOW)
+              }
+            "
+          />
           <label for="sum-aggregation">Sliding window</label>
         </div>
         <div class="input-wrapper">
@@ -142,6 +199,7 @@ import { storeToRefs } from 'pinia'
 import { useMatchStore } from '@/pinia/store'
 import HelpIcon from '@/common/HelpIcon.vue'
 import { ref } from 'vue'
+import { Aggregation, Range } from '@/rating/store'
 
 const { editedConfig, errorMessage } = storeToRefs(useMatchStore())
 
@@ -179,6 +237,18 @@ function setWindowSize() {
     editedConfig.value.settings.setWindowSize(size)
   }
 }
+
+function setRange(range: Range) {
+  if (editedConfig.value) {
+    editedConfig.value.settings.range = range
+  }
+}
+
+function setAggregation(aggregation: Aggregation) {
+  if (editedConfig.value) {
+    editedConfig.value.settings.aggregation = aggregation
+  }
+}
 </script>
 
 <style scoped>
@@ -214,6 +284,7 @@ function setWindowSize() {
   text-align: right;
   width: 100%;
 }
+
 .spaced {
   justify-content: space-between;
 }
