@@ -84,7 +84,7 @@
               id="fromDate"
               class="setting-input"
               type="date"
-              :value="fromDate"
+              :value="editedConfig?.settings.getStartDate()"
               @input="setDateRange"
               :min="editedConfig?.settings.minDate"
               :max="editedConfig?.settings.maxDate"
@@ -96,7 +96,7 @@
               id="toDate"
               class="setting-input"
               type="date"
-              :value="toDate"
+              :value="editedConfig?.settings.getEndDate()"
               @input="setDateRange"
               :min="editedConfig?.settings.minDate"
               :max="editedConfig?.settings.maxDate"
@@ -113,21 +113,13 @@
 import { storeToRefs } from 'pinia'
 import { useMatchStore } from '@/pinia/store'
 import HelpIcon from '@/common/HelpIcon.vue'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 const { editedConfig, errorMessage } = storeToRefs(useMatchStore())
 
 const countError = ref(false)
 const idError = ref(false)
 const dateError = ref(false)
-
-const fromDate = computed(() => {
-  return editedConfig.value?.settings.getStartDate()
-})
-
-const toDate = computed(() => {
-  return editedConfig.value?.settings.getEndDate()
-})
 
 function setCountRange() {
   if (editedConfig.value) {
