@@ -95,6 +95,7 @@ export class GraphConfig extends MatchProvider {
   public categories: Category[]
   public color: Color
   private readonly providedMatches: Match[]
+  private categoryMatches: Match[]
   private filteredMatches: Match[]
   private dataPoints: DataPoint[]
   private readonly coachName: string
@@ -119,9 +120,9 @@ export class GraphConfig extends MatchProvider {
     this.providedMatches = matches ? matches : []
     this.dataPoints = []
     this.filteredMatches = []
+    this.categoryMatches = []
     this.line = Plot.line()
     this.matchCounts = reactive(new Map<Category, number>(matchCounts))
-    this.update(false)
     const matchCount = this.providedMatches.length
     if (this.providedMatches && this.providedMatches.length > 0) {
       const minDate = createStartOfDayDate(this.providedMatches[0].dateTime)
@@ -137,6 +138,7 @@ export class GraphConfig extends MatchProvider {
     } else {
       this.settings = new Settings(0, 0, 0, new Date(), new Date())
     }
+    this.update(UpdateDepth.ALL, false)
   }
 
   toggleCategory(category: Category) {
@@ -162,11 +164,38 @@ export class GraphConfig extends MatchProvider {
     return this.color.hex()
   }
 
-  private update(updateCounts: boolean = true) {
-    this.filteredMatches = this.providedMatches.filter(
-      (match) => this.categories.indexOf(match.category) > -1
-    )
-    this.dataPoints = this.accumulated()
+  private update(depth: UpdateDepth = UpdateDepth.ALL, updateCounts: boolean = true) {
+    if (depth >= UpdateDepth.ALL) {
+      this.categoryMatches = this.providedMatches.filter(
+        (match) => this.categories.indexOf(match.category) > -1
+      )
+    }
+
+    if (depth >= UpdateDepth.RANGE) {
+      this.filteredMatches = this.categoryMatches.filter((match: Match, index: number) =>
+        this.settings.isInRange(match, index + 1)
+      )
+    }
+
+    if (depth >= UpdateDepth.AGGREGATION) {
+      if (this.settings.aggregation == Aggregation.SUM) {
+        this.dataPoints = this.accumulated(this.filteredMatches)
+      } else {
+        const lastWindowStart = Math.max(this.filteredMatches.length - this.settings.windowSize, 0)
+        const sliceSize = Math.min(
+          Math.min(this.filteredMatches.length, this.settings.windowSize),
+          0
+        )
+        this.dataPoints = []
+        if (sliceSize > 0) {
+          for (let index = 0; index <= lastWindowStart; index++)
+            this.dataPoints.push(
+              ...this.accumulated(this.filteredMatches.slice(index, index + sliceSize))
+            )
+        }
+      }
+    }
+
     this.updateLine()
     if (updateCounts) {
       for (const key of this.matchCounts.keys()) {
@@ -199,10 +228,10 @@ export class GraphConfig extends MatchProvider {
     return new Graph(this.dataPoints, this.line)
   }
 
-  private accumulated(): DataPoint[] {
+  private accumulated(matches: Match[]): DataPoint[] {
     let accumulatedScore: number = 0
 
-    return this.filteredMatches.map((match, index) => {
+    return matches.map((match, index) => {
       accumulatedScore += match.score
       return {
         index: index + 1,
@@ -220,30 +249,50 @@ export class GraphConfig extends MatchProvider {
 
   setCountRange(from: number, to: number, errorMessage: Ref<string>): boolean {
     const res = this.settings.setCountRange(from, to, errorMessage)
+    if (res) {
+      this.update(UpdateDepth.RANGE)
+    }
     return res
   }
 
   setIdRange(from: number, to: number, errorMessage: Ref<string>): boolean {
     const res = this.settings.setIdRange(from, to, errorMessage)
+    if (res) {
+      this.update(UpdateDepth.RANGE)
+    }
     return res
   }
 
   setDateRange(from: string, to: string, errorMessage: Ref<string>): boolean {
     const res = this.settings.setDateRange(from, to, errorMessage)
+    if (res) {
+      this.update(UpdateDepth.RANGE)
+    }
     return res
   }
 
   setWindowSize(size: number) {
     this.settings.setWindowSize(size)
+    if (this.settings.aggregation == Aggregation.WINDOW) {
+      this.update(UpdateDepth.AGGREGATION)
+    }
   }
 
   setRange(range: Range) {
     this.settings.range = range
+    this.update(UpdateDepth.RANGE)
   }
 
   setAggregation(aggregation: Aggregation) {
     this.settings.aggregation = aggregation
+    this.update(UpdateDepth.AGGREGATION)
   }
+}
+
+enum UpdateDepth {
+  AGGREGATION,
+  RANGE,
+  ALL
 }
 
 export class Graph {
@@ -356,6 +405,23 @@ export class Settings {
 
   getEndDate(): string {
     return this.dateToString(this.dateRange[1])
+  }
+
+  isInRange(match: Match, index: number): boolean {
+    switch (this.range) {
+      case Range.COUNT:
+        return this.isInRangeInt(this.countRange, index)
+      case Range.ID:
+        return this.isInRangeInt(this.idRange, match.id)
+      case Range.DATE:
+        return this.isInRangeInt(this.dateRange, match.dateTime)
+      default:
+        return false
+    }
+  }
+
+  private isInRangeInt<T>(range: T[], value: T) {
+    return range[0] <= value && range[1] >= value
   }
 
   private dateToString(date: Date) {
