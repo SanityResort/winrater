@@ -1,5 +1,34 @@
 <template>
-  <div id="title">{{ editedConfig?.getTitle() }}</div>
+  <div id="title">
+    {{ editedConfig?.getTitle() }}
+    <IconButton
+      :src="applyIcon"
+      alt="Apply"
+      :callback="
+        () => {
+          console.log('apply')
+        }
+      "
+    />
+    <IconButton
+      :src="resetIcon"
+      alt="Reset"
+      :callback="
+        () => {
+          console.log('reset')
+        }
+      "
+    />
+    <IconButton
+      :src="removeIcon"
+      alt="Close"
+      :callback="
+        () => {
+          console.log('close')
+        }
+      "
+    />
+  </div>
   <div id="settings">
     <div id="ranges">
       <div class="setting spaced" :class="{ error: countError }">
@@ -192,6 +221,10 @@ import { useMatchStore } from '@/pinia/store'
 import HelpIcon from '@/common/HelpIcon.vue'
 import { ref } from 'vue'
 import { Aggregation, Range } from '@/rating/store'
+import IconButton from '@/common/IconButton.vue'
+import applyIcon from '../../icons/applyIcon.png'
+import removeIcon from '../../icons/removeIcon.png'
+import resetIcon from '../../icons/resetIcon.png'
 
 const { editedConfig, errorMessage } = storeToRefs(useMatchStore())
 
