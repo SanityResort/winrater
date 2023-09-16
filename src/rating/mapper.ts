@@ -78,7 +78,7 @@ export function match(input: FumbblMatch, coachName: string): Match {
     id: input.id,
     score: score(input, coachName),
     category: category(input),
-    dateTime: new Date(input.date + 'T' + input.time + '+00:00')
+    dateTime: new Date(input.date + 'T' + (input.time || '00:00:00') + '+00:00')
   }
 }
 
