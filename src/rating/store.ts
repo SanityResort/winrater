@@ -182,16 +182,17 @@ export class GraphConfig extends MatchProvider {
         this.dataPoints = this.accumulated(this.filteredMatches)
       } else {
         const lastWindowStart = Math.max(this.filteredMatches.length - this.settings.windowSize, 0)
-        const sliceSize = Math.min(
-          Math.min(this.filteredMatches.length, this.settings.windowSize),
-          0
-        )
+        const sliceSize = Math.min(this.filteredMatches.length, this.settings.windowSize)
         this.dataPoints = []
         if (sliceSize > 0) {
-          for (let index = 0; index <= lastWindowStart; index++)
-            this.dataPoints.push(
-              ...this.accumulated(this.filteredMatches.slice(index, index + sliceSize))
+          for (let index = 0; index <= lastWindowStart; index++) {
+            const windowData = this.accumulated(
+              this.filteredMatches.slice(index, index + sliceSize)
             )
+            const lastData: DataPoint = windowData[sliceSize - 1]
+            lastData.index = index + 1
+            this.dataPoints.push(lastData)
+          }
         }
       }
     }
