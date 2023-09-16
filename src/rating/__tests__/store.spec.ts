@@ -558,20 +558,20 @@ describe('Settings', () => {
       expect(errorMessage.value).toBe('"From" must not be larger than "to"')
     })
 
-    it('rejects if from value too low', () => {
+    it('rejects if to value too low', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setCountRange(0, 2, errorMessage)).toBeFalsy()
+      expect(settings.setCountRange(-2, 0, errorMessage)).toBeFalsy()
       expect(settings.countRange).toStrictEqual([1, matchCount])
-      expect(errorMessage.value).toBe('"From" must not be smaller than 1')
+      expect(errorMessage.value).toBe('"To" must not be smaller than 1')
     })
 
-    it('rejects if to value is too high', () => {
+    it('rejects if from value is too high', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setCountRange(8, 12, errorMessage)).toBeFalsy()
+      expect(settings.setCountRange(11, 12, errorMessage)).toBeFalsy()
       expect(settings.countRange).toStrictEqual([1, matchCount])
-      expect(errorMessage.value).toBe('"To" must not be larger than ' + matchCount)
+      expect(errorMessage.value).toBe('"From" must not be larger than ' + matchCount)
     })
 
     it('resets error after success', () => {
@@ -601,20 +601,20 @@ describe('Settings', () => {
       expect(errorMessage.value).toBe('"From" must not be larger than "to"')
     })
 
-    it('rejects if from value too low', () => {
+    it('rejects if to value too low', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setIdRange(0, 2, errorMessage)).toBeFalsy()
+      expect(settings.setIdRange(-2, 0, errorMessage)).toBeFalsy()
       expect(settings.idRange).toStrictEqual([minId, maxId])
-      expect(errorMessage.value).toBe('"From" must not be smaller than 1')
+      expect(errorMessage.value).toBe('"To" must not be smaller than 1')
     })
 
-    it('rejects if to value is too high', () => {
+    it('rejects if from value is too high', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setIdRange(8, 15, errorMessage)).toBeFalsy()
+      expect(settings.setIdRange(13, 15, errorMessage)).toBeFalsy()
       expect(settings.idRange).toStrictEqual([minId, maxId])
-      expect(errorMessage.value).toBe('"To" must not be larger than ' + maxId)
+      expect(errorMessage.value).toBe('"From" must not be larger than ' + maxId)
     })
 
     it('resets error after success', () => {
@@ -644,22 +644,24 @@ describe('Settings', () => {
       expect(errorMessage.value).toBe('"From" must not be larger than "to"')
     })
 
-    it('rejects if from value too low', () => {
+    it('rejects if to value too low', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
       expect(
-        settings.setDateRange(invalidFromDateString, earlierDateString, errorMessage)
+        settings.setDateRange(invalidFromDateString, invalidFromDateString, errorMessage)
       ).toBeFalsy()
       expect(settings.dateRange).toStrictEqual([minDate, maxDate])
-      expect(errorMessage.value).toBe('"From" must not be smaller than 2020-01-01')
+      expect(errorMessage.value).toBe('"To" must not be smaller than 2020-01-01')
     })
 
-    it('rejects if to value is too high', () => {
+    it('rejects if from value is too high', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
-      expect(settings.setDateRange(laterDateString, invalidToDateString, errorMessage)).toBeFalsy()
+      expect(
+        settings.setDateRange(invalidToDateString, invalidToDateString, errorMessage)
+      ).toBeFalsy()
       expect(settings.dateRange).toStrictEqual([minDate, maxDate])
-      expect(errorMessage.value).toBe('"To" must not be larger than 2022-12-01')
+      expect(errorMessage.value).toBe('"From" must not be larger than 2022-12-01')
     })
 
     it('resets error after success', () => {

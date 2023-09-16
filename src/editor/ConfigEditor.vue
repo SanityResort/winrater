@@ -28,7 +28,6 @@
               :value="editedConfig?.settings.countRange[0]"
               @input="setCountRange"
               min="1"
-              :max="editedConfig?.settings.matchCount"
             />
           </div>
           <label for="toCount">to</label>
@@ -40,7 +39,6 @@
               :value="editedConfig?.settings.countRange[1]"
               @input="setCountRange"
               min="1"
-              :max="editedConfig?.settings.matchCount"
             />
           </div>
           <HelpIcon
@@ -75,8 +73,7 @@
               type="number"
               :value="editedConfig?.settings.idRange[0]"
               @input="setIdRange"
-              :min="editedConfig?.settings.minId"
-              :max="editedConfig?.settings.maxId"
+              min="1"
             />
           </div>
           <label for="toId">to</label>
@@ -87,8 +84,7 @@
               type="number"
               :value="editedConfig?.settings.idRange[1]"
               @input="setIdRange"
-              :min="editedConfig?.settings.minId"
-              :max="editedConfig?.settings.maxId"
+              min="1"
             />
           </div>
           <HelpIcon id="idHelp" tooltip="Limits to games with ids within given" />
