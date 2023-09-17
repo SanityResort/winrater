@@ -1,21 +1,16 @@
 <template>
   <div id="title">
     {{ editedConfig?.getTitle() }}
-    <IconButton
-      :src="applyIcon"
-      alt="Apply"
-      :callback="
-        () => {
-          console.log('apply')
-        }
-      "
-    />
+    <IconButton :src="applyIcon" alt="Apply" :callback="update" />
     <IconButton
       :src="resetIcon"
       alt="Reset"
       :callback="
         () => {
-          console.log('reset')
+          // TODO
+          const oldConfig = editedConfig
+          editedConfig = undefined
+          editedConfig = oldConfig
         }
       "
     />
@@ -24,14 +19,14 @@
       alt="Close"
       :callback="
         () => {
-          console.log('close')
+          editedConfig = undefined
         }
       "
     />
   </div>
   <div id="settings">
     <div id="ranges">
-      <div class="setting spaced" :class="{ error: countError }">
+      <div class="setting spaced">
         <div>
           <input
             type="radio"
@@ -55,7 +50,6 @@
               class="setting-input"
               type="number"
               :value="editedConfig?.settings.countRange[0]"
-              @input="setCountRange"
               min="1"
             />
           </div>
@@ -66,7 +60,6 @@
               class="setting-input"
               type="number"
               :value="editedConfig?.settings.countRange[1]"
-              @input="setCountRange"
               min="1"
             />
           </div>
@@ -77,7 +70,7 @@
         </div>
       </div>
 
-      <div class="setting spaced" :class="{ error: idError }">
+      <div class="setting spaced">
         <div>
           <input
             type="radio"
@@ -101,7 +94,6 @@
               class="setting-input"
               type="number"
               :value="editedConfig?.settings.idRange[0]"
-              @input="setIdRange"
               min="1"
             />
           </div>
@@ -112,14 +104,13 @@
               class="setting-input"
               type="number"
               :value="editedConfig?.settings.idRange[1]"
-              @input="setIdRange"
               min="1"
             />
           </div>
           <HelpIcon id="idHelp" tooltip="Limits to games with ids within given" />
         </div>
       </div>
-      <div class="setting spaced" :class="{ error: dateError }">
+      <div class="setting spaced">
         <div>
           <input
             type="radio"
@@ -143,7 +134,6 @@
               class="setting-input"
               type="date"
               :value="editedConfig?.settings.getStartDate()"
-              @input="setDateRange"
             />
           </div>
           <label for="toId">to</label>
@@ -153,7 +143,6 @@
               class="setting-input"
               type="date"
               :value="editedConfig?.settings.getEndDate()"
-              @input="setDateRange"
             />
           </div>
           <HelpIcon id="dateHelp" tooltip="Limits to games played within those dates" />
@@ -204,7 +193,6 @@
             id="windowSize"
             class="setting-input"
             :value="editedConfig?.settings.windowSize"
-            @input="setWindowSize"
           />
         </div>
         <HelpIcon
@@ -219,8 +207,7 @@
 import { storeToRefs } from 'pinia'
 import { useMatchStore } from '@/pinia/store'
 import HelpIcon from '@/common/HelpIcon.vue'
-import { ref } from 'vue'
-import { Aggregation, Range } from '@/rating/store'
+import { Aggregation, Range, SettingsUpdate } from '@/rating/store'
 import IconButton from '@/common/IconButton.vue'
 import applyIcon from '../../icons/applyIcon.png'
 import removeIcon from '../../icons/removeIcon.png'
@@ -228,51 +215,37 @@ import resetIcon from '../../icons/resetIcon.png'
 
 const { editedConfig, errorMessage } = storeToRefs(useMatchStore())
 
-const countError = ref(false)
-const idError = ref(false)
-const dateError = ref(false)
+let range = editedConfig.value?.settings.range || Range.COUNT
+let aggregation = editedConfig.value?.settings.aggregation || Aggregation.SUM
 
-function setCountRange() {
+function update() {
   if (editedConfig.value) {
-    const from = Number.parseInt((document.getElementById('fromCount') as HTMLInputElement).value)
-    const to = Number.parseInt((document.getElementById('toCount') as HTMLInputElement).value)
-    countError.value = !editedConfig.value.setCountRange(from, to, errorMessage)
-  }
-}
-
-function setIdRange() {
-  if (editedConfig.value) {
-    const from = Number.parseInt((document.getElementById('fromId') as HTMLInputElement).value)
-    const to = Number.parseInt((document.getElementById('toId') as HTMLInputElement).value)
-    idError.value = !editedConfig.value.setIdRange(from, to, errorMessage)
-  }
-}
-
-function setDateRange() {
-  if (editedConfig.value) {
-    const from = (document.getElementById('fromDate') as HTMLInputElement).value
-    const to = (document.getElementById('toDate') as HTMLInputElement).value
-    dateError.value = !editedConfig.value.setDateRange(from, to, errorMessage)
-  }
-}
-
-function setWindowSize() {
-  if (editedConfig.value) {
+    const countRange = [
+      Number.parseInt((document.getElementById('fromCount') as HTMLInputElement).value),
+      Number.parseInt((document.getElementById('toCount') as HTMLInputElement).value)
+    ]
+    const idRange = [
+      Number.parseInt((document.getElementById('fromId') as HTMLInputElement).value),
+      Number.parseInt((document.getElementById('toId') as HTMLInputElement).value)
+    ]
+    const dateRange = [
+      (document.getElementById('fromDate') as HTMLInputElement).value,
+      (document.getElementById('toDate') as HTMLInputElement).value
+    ]
     const size = Number.parseInt((document.getElementById('windowSize') as HTMLInputElement).value)
-    editedConfig.value.setWindowSize(size)
+    editedConfig.value.updateIfChanged(
+      new SettingsUpdate(countRange, idRange, dateRange, size, aggregation, range),
+      errorMessage
+    )
   }
 }
 
-function setRange(range: Range) {
-  if (editedConfig.value) {
-    editedConfig.value.setRange(range)
-  }
+function setRange(newRange: Range) {
+  range = newRange
 }
 
-function setAggregation(aggregation: Aggregation) {
-  if (editedConfig.value) {
-    editedConfig.value.setAggregation(aggregation)
-  }
+function setAggregation(newAggregation: Aggregation) {
+  aggregation = newAggregation
 }
 </script>
 
@@ -280,10 +253,6 @@ function setAggregation(aggregation: Aggregation) {
 #aggregation,
 #ranges {
   width: fit-content;
-}
-
-.error {
-  border: red solid 2px;
 }
 
 .input-wrapper {

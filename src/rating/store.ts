@@ -195,20 +195,20 @@ export class GraphConfig extends MatchProvider {
           }
         }
       }
-    }
 
-    this.updateLine()
-    if (updateCounts) {
-      for (const key of this.matchCounts.keys()) {
-        this.matchCounts.set(key, 0)
+      this.updateLine()
+      if (updateCounts) {
+        for (const key of this.matchCounts.keys()) {
+          this.matchCounts.set(key, 0)
+        }
+        this.filteredMatches.forEach((match) => {
+          const category = match.category
+          const oldCount = this.matchCounts.get(category) || 0
+          this.matchCounts.set(category, oldCount + 1)
+        })
       }
-      this.filteredMatches.forEach((match) => {
-        const category = match.category
-        const oldCount = this.matchCounts.get(category) || 0
-        this.matchCounts.set(category, oldCount + 1)
-      })
+      updateCounter()
     }
-    updateCounter()
   }
 
   private updateLine(): void {
@@ -248,49 +248,51 @@ export class GraphConfig extends MatchProvider {
     return this.coachName + ' #' + this.configNumber
   }
 
-  setCountRange(from: number, to: number, errorMessage: Ref<string>): boolean {
-    const res = this.settings.setCountRange(from, to, errorMessage)
-    if (res) {
-      this.update(UpdateDepth.RANGE)
+  updateIfChanged(settingsUpdate: SettingsUpdate, errorMessage: Ref<string>) {
+    const fromDate = createStartOfDayDate(new Date(settingsUpdate.dateUpdate[0]))
+    const toDate = createEndOfDayDate(new Date(settingsUpdate.dateUpdate[1]))
+
+    const isValid = this.settings.validateUpdate(settingsUpdate, fromDate, toDate, errorMessage)
+
+    if (isValid) {
+      let updateDepth = UpdateDepth.NONE
+      if (
+        this.settings.aggregation != settingsUpdate.aggregationUpdate ||
+        (settingsUpdate.aggregationUpdate == Aggregation.WINDOW &&
+          this.settings.windowSize != settingsUpdate.windowUpdate)
+      ) {
+        updateDepth = UpdateDepth.AGGREGATION
+      }
+      if (this.settings.range != settingsUpdate.rangeUpdate) {
+        updateDepth = UpdateDepth.RANGE
+      } else {
+        if (
+          settingsUpdate.rangeUpdate == Range.COUNT &&
+          JSON.stringify(this.settings.countRange) != JSON.stringify(settingsUpdate.countUpdate)
+        ) {
+          updateDepth = UpdateDepth.RANGE
+        } else if (
+          settingsUpdate.rangeUpdate == Range.ID &&
+          JSON.stringify(this.settings.idRange) != JSON.stringify(settingsUpdate.idUpdate)
+        ) {
+          updateDepth = UpdateDepth.RANGE
+        } else if (
+          settingsUpdate.rangeUpdate == Range.DATE &&
+          JSON.stringify(this.settings.dateRange) != JSON.stringify([fromDate, toDate])
+        ) {
+          updateDepth = UpdateDepth.RANGE
+        }
+      }
+      this.settings.update(settingsUpdate, fromDate, toDate)
+      this.update(updateDepth)
     }
-    return res
-  }
 
-  setIdRange(from: number, to: number, errorMessage: Ref<string>): boolean {
-    const res = this.settings.setIdRange(from, to, errorMessage)
-    if (res) {
-      this.update(UpdateDepth.RANGE)
-    }
-    return res
-  }
-
-  setDateRange(from: string, to: string, errorMessage: Ref<string>): boolean {
-    const res = this.settings.setDateRange(from, to, errorMessage)
-    if (res) {
-      this.update(UpdateDepth.RANGE)
-    }
-    return res
-  }
-
-  setWindowSize(size: number) {
-    this.settings.setWindowSize(size)
-    if (this.settings.aggregation == Aggregation.WINDOW) {
-      this.update(UpdateDepth.AGGREGATION)
-    }
-  }
-
-  setRange(range: Range) {
-    this.settings.range = range
-    this.update(UpdateDepth.RANGE)
-  }
-
-  setAggregation(aggregation: Aggregation) {
-    this.settings.aggregation = aggregation
-    this.update(UpdateDepth.AGGREGATION)
+    return isValid
   }
 }
 
 enum UpdateDepth {
+  NONE,
   AGGREGATION,
   RANGE,
   ALL
@@ -341,63 +343,70 @@ export class Settings {
     this.aggregation = Aggregation.SUM
   }
 
-  setCountRange(from: number, to: number, errorMessage: Ref<string>): boolean {
-    const res =
-      this.checkOrder(from, to, errorMessage) &&
-      this.checkLowerBound(to, 1, '1', errorMessage) &&
-      this.checkUpperBound(from, this.matchCount, this.matchCount.toString(), errorMessage)
-
-    if (res) {
-      this.countRange = [from, to]
-      errorMessage.value = ''
-    }
-
-    return res
+  update(settingsUpdate: SettingsUpdate, fromDate: Date, toDate: Date) {
+    this.countRange = settingsUpdate.countUpdate
+    this.idRange = settingsUpdate.idUpdate
+    this.dateRange = [fromDate, toDate]
+    this.range = settingsUpdate.rangeUpdate
+    this.aggregation = settingsUpdate.aggregationUpdate
+    this.windowSize = settingsUpdate.windowUpdate
   }
 
-  setIdRange(from: number, to: number, errorMessage: Ref<string>): boolean {
-    const res =
-      this.checkOrder(from, to, errorMessage) &&
-      this.checkLowerBound(to, this.minId, this.minId.toString(), errorMessage) &&
-      this.checkUpperBound(from, this.maxId, this.maxId.toString(), errorMessage)
-
-    if (res) {
-      this.idRange = [from, to]
-      errorMessage.value = ''
-    }
-
-    return res
-  }
-
-  setDateRange(from: string, to: string, errorMessage: Ref<string>): boolean {
-    const fromDate = createStartOfDayDate(new Date(from))
-    const toDate = createEndOfDayDate(new Date(to))
-
-    const res =
-      this.checkOrder(from, to, errorMessage) &&
-      this.checkLowerBound(
-        toDate,
-        this.minDate,
-        this.minDate.toISOString().split('T')[0],
+  validateUpdate(
+    settingsUpdate: SettingsUpdate,
+    fromDate: Date,
+    toDate: Date,
+    errorMessage: Ref<string>
+  ) {
+    let isValid =
+      settingsUpdate.rangeUpdate != Range.COUNT ||
+      (this.checkOrder(
+        settingsUpdate.countUpdate[0],
+        settingsUpdate.countUpdate[1],
         errorMessage
       ) &&
-      this.checkUpperBound(
-        fromDate,
-        this.maxDate,
-        this.maxDate.toISOString().split('T')[0],
-        errorMessage
-      )
+        this.checkLowerBound(settingsUpdate.countUpdate[1], 1, '1', errorMessage) &&
+        this.checkUpperBound(
+          settingsUpdate.countUpdate[0],
+          this.matchCount,
+          this.matchCount.toString(),
+          errorMessage
+        ))
 
-    if (res) {
-      this.dateRange = [fromDate, toDate]
-      errorMessage.value = ''
-    }
+    isValid =
+      isValid &&
+      (settingsUpdate.rangeUpdate != Range.ID ||
+        (this.checkOrder(settingsUpdate.idUpdate[0], settingsUpdate.idUpdate[1], errorMessage) &&
+          this.checkLowerBound(
+            settingsUpdate.idUpdate[1],
+            this.minId,
+            this.minId.toString(),
+            errorMessage
+          ) &&
+          this.checkUpperBound(
+            settingsUpdate.idUpdate[0],
+            this.maxId,
+            this.maxId.toString(),
+            errorMessage
+          )))
 
-    return res
-  }
-
-  setWindowSize(size: number) {
-    this.windowSize = size
+    return (
+      isValid &&
+      (settingsUpdate.rangeUpdate != Range.DATE ||
+        (this.checkOrder(fromDate, toDate, errorMessage) &&
+          this.checkLowerBound(
+            toDate,
+            this.minDate,
+            this.minDate.toISOString().split('T')[0],
+            errorMessage
+          ) &&
+          this.checkUpperBound(
+            fromDate,
+            this.maxDate,
+            this.maxDate.toISOString().split('T')[0],
+            errorMessage
+          )))
+    )
   }
 
   getStartDate(): string {
@@ -458,6 +467,31 @@ export class Settings {
     }
 
     return true
+  }
+}
+
+export class SettingsUpdate {
+  countUpdate: number[]
+  idUpdate: number[]
+  dateUpdate: string[]
+  windowUpdate: number
+  aggregationUpdate: Aggregation
+  rangeUpdate: Range
+
+  constructor(
+    countUpdate: number[],
+    idUpdate: number[],
+    dateUpdate: string[],
+    windowUpdate: number,
+    aggregationUpdate: Aggregation,
+    rangeUpdate: Range
+  ) {
+    this.countUpdate = countUpdate
+    this.idUpdate = idUpdate
+    this.dateUpdate = dateUpdate
+    this.windowUpdate = windowUpdate
+    this.aggregationUpdate = aggregationUpdate
+    this.rangeUpdate = rangeUpdate
   }
 }
 
