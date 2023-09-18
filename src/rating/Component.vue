@@ -42,7 +42,6 @@ function addConfig() {
 .coachData,
 .config {
   background: var(--color-element-background);
-
   border: 1px solid black;
   border-radius: var(--border-radius-element);
   margin: 0.25em;

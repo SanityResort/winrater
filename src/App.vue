@@ -15,7 +15,6 @@ const { modificationCounter, stores, editedConfig } = storeToRefs(matchStore)
   <header>
     <CollapsableHeader />
     <CoachLookup class="lookup" />
-    <div class="separator" />
   </header>
 
   <main
@@ -24,6 +23,7 @@ const { modificationCounter, stores, editedConfig } = storeToRefs(matchStore)
       'fit-content': modificationCounter !== 0 && stores.size !== 0
     }"
   >
+    <div class="separator" />
     <ConfigEditor v-if="editedConfig" />
     <div class="ratings">
       <Rating v-for="store in stores.values()" :key="store.coachName" :store="store" />
@@ -64,12 +64,5 @@ main {
 .ratings {
   display: flex;
   flex-flow: row wrap;
-}
-
-.separator {
-  background: linear-gradient(to bottom, #e9e9e9, grey);
-  height: 0.25em;
-  margin-top: 5px;
-  width: 100%;
 }
 </style>
