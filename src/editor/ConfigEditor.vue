@@ -253,9 +253,9 @@ const endDate = computed(() => {
 const tooltipGradient = computed(() => {
   return (
     'linear-gradient(to bottom, ' +
-    editedConfig.value?.color +
+    new Color(editedConfig.value?.color).darken(0.2).rgb() +
     ', ' +
-    new Color(editedConfig.value?.color).lighten(0.2).rgb() +
+    editedConfig.value?.color +
     ')'
   )
 })

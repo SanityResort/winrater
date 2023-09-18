@@ -15,9 +15,9 @@ let stroke = ref('rgb(0, 0,0)')
 const tooltipGradient = computed(() => {
   return (
     'linear-gradient(to bottom, ' +
-    stroke.value +
+    new Color(stroke.value).darken(0.2).rgb() +
     ', ' +
-    new Color(stroke.value).lighten(0.2).rgb() +
+    stroke.value +
     ')'
   )
 })
