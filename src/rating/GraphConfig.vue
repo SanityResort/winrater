@@ -51,7 +51,13 @@
 <template>
   <div class="config">
     <div class="config-header">
-      <IconButton class="editConfig" :src="editIcon" alt="Edit config" :callback="edit" />
+      <IconButton
+        class="editConfig"
+        :src="editIcon"
+        alt="Edit config"
+        :callback="edit"
+        :show-indicator="false"
+      />
       <div class="config-title">
         <input type="color" class="config-color" :value="background" @change="updateColor" />
         <div>{{ config.matches().length }} (#{{ config.configNumber }})</div>
@@ -62,6 +68,7 @@
         alt="Remove config"
         :callback="remove"
         :src="removeIcon"
+        :show-indicator="true"
       />
     </div>
     <div class="labels">

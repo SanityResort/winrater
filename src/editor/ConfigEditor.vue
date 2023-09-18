@@ -1,7 +1,7 @@
 <template>
   <div id="title">
     {{ editedConfig?.getTitle() }}
-    <IconButton :src="applyIcon" alt="Apply" :callback="update" />
+    <IconButton :src="applyIcon" alt="Apply" :callback="update" :show-indicator="true" />
     <IconButton
       :src="resetIcon"
       alt="Reset"
@@ -11,6 +11,7 @@
           editedConfig?.update()
         }
       "
+      :show-indicator="true"
     />
     <IconButton
       :src="removeIcon"
@@ -20,6 +21,7 @@
           editedConfig = undefined
         }
       "
+      :show-indicator="false"
     />
   </div>
   <div id="settings">

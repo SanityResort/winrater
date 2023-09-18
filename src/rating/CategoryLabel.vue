@@ -10,6 +10,7 @@ import type { PropType } from 'vue'
 import { computed } from 'vue'
 import { Category } from '@/rating/match'
 import type { MatchProvider } from '@/rating/store'
+import { useLoading } from 'vue-loading-overlay'
 
 const props = defineProps({
   category: Object as PropType<Category>,
@@ -28,10 +29,19 @@ const suffix = computed(() => {
     ? ': ' + props.matchProvider.matchCounts.get(category)
     : ''
 })
-
+const loading = useLoading({
+  isFullPage: false
+  // options
+})
 function callback() {
   if (props.callback) {
-    props.callback(category)
+    const loader = loading.show()
+    setTimeout(() => {
+      if (props.callback) {
+        props.callback(category)
+      }
+      loader.hide()
+    }, 1)
   }
 }
 </script>

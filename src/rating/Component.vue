@@ -98,6 +98,7 @@ function addConfig() {
           alt="Remove coach"
           :callback="removeStore"
           :src="removeIcon"
+          :show-indicator="true"
         />
       </div>
       <div class="labels">
@@ -119,6 +120,12 @@ function addConfig() {
       :show-remove-button="configs.length > 1"
     />
 
-    <IconButton v-if="storeRef.ready" alt="Add config" :callback="addConfig" :src="addIcon" />
+    <IconButton
+      v-if="storeRef.ready"
+      alt="Add config"
+      :callback="addConfig"
+      :src="addIcon"
+      :show-indicator="true"
+    />
   </div>
 </template>
