@@ -1,26 +1,50 @@
 <template>
   <div class="collapse-wrapper" :class="{ collapsed: stores.size > 0 }">
-    <div class="top-bar title"><div class="title-text">WinRater</div></div>
+    <div class="top-bar title">
+      <div class="title-text">WinRater</div>
+    </div>
     <div class="top-bar pull-down">
       <img id="pull-down-icon" src="../icons/pulldown.png" alt="Pull down arrow" />
     </div>
     <div class="description">
-      <p>
-        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
-        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
-        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
-        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
-        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
-        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
-      </p>
-      <p>
-        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
-        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
-        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
-        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
-        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
-        Explaining text Explaining text asd sad a an salkdn alksnd Explaining text sdansdkl,ld na
-      </p>
+      <div class="description-section">
+        <p>
+          With the WinRater you can visualize the win ratio development for fumbbl coaches. To start
+          simply enter the coach name into the search box and hit the add button. You can load the
+          data for several coaches simultaneously and compare their development.
+        </p>
+        <p>
+          Currently the horizontal position of data points is only based on the number of games in
+          the given dataset and not on the time when the games were played.
+        </p>
+        <p>
+          For each coach multiple graph configs can be added. In each of these configs you can
+          filter games be the different divisions. With the orange edit button on a config a panel
+          opens allowing you to further customize the data set.
+        </p>
+      </div>
+      <div class="description-section">
+        <p>
+          You can reduce the size of the data set by either count (i.e. first 100 games, games 75 -
+          157 etc.), being a range of match ids or certain dates. This filter is applied after the
+          division filter.
+        </p>
+        <p>In addition you can choose between two aggregation modes:</p>
+        <ul>
+          <li>
+            Sum: Default mode, the win ratio will be summed up showing the total win ratio up until
+            the specific match
+          </li>
+          <li>
+            Sliding window: Instead of a sum this shows the win ratio for all sets of
+            <i>n</i> consecutive games
+          </li>
+        </ul>
+        <p>
+          To open a specific match in your browser you can click the dot over data point in the
+          graph (the tooltip itself is not clickable due to technical issues with tippy.js)
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -42,14 +66,19 @@ const { stores } = storeToRefs(matchStore)
   height: 0;
 }
 
-.description > p,
-.collapsed:hover > .description > p {
+.description-section,
+.collapsed:hover > .description-section {
   background: var(--color-element-background);
   border: black 2px solid;
-  border-radius: 5px;
+  border-radius: 1em;
   padding: 0.5em;
   margin: 1em 1em 0 1em;
   max-width: 50em;
+}
+
+.description-section > p {
+  font-size: 0.9em;
+  margin: 0.5em;
 }
 
 .description,
