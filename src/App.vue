@@ -8,7 +8,7 @@ import CollapsableHeader from '@/CollapsableHeader.vue'
 import ConfigEditor from '@/editor/ConfigEditor.vue'
 
 const matchStore = useMatchStore()
-const { modificationCounter, stores } = storeToRefs(matchStore)
+const { modificationCounter, stores, editedConfig } = storeToRefs(matchStore)
 </script>
 
 <template>
@@ -19,9 +19,12 @@ const { modificationCounter, stores } = storeToRefs(matchStore)
   </header>
 
   <main
-    :class="{ 'fill-height': modificationCounter === 0, 'fit-content': modificationCounter !== 0 }"
+    :class="{
+      'fill-height': modificationCounter === 0 || stores.size === 0,
+      'fit-content': modificationCounter !== 0 && stores.size !== 0
+    }"
   >
-    <ConfigEditor />
+    <ConfigEditor v-if="editedConfig" />
     <div class="ratings">
       <Rating v-for="store in stores.values()" :key="store.coachName" :store="store" />
     </div>
