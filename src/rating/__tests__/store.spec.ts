@@ -343,9 +343,12 @@ describe('Graph Config', () => {
     expect(config.settings.maxId).toBe(0)
     expect(config.settings.minDate).toBeDefined()
     expect(config.settings.maxDate).toBeDefined()
-    expect(config.settings.countRange).toStrictEqual([0, 0])
-    expect(config.settings.idRange).toStrictEqual([0, 0])
-    expect(config.settings.dateRange.length).toBe(2)
+    expect(config.settings.lowerCount).toBe(0)
+    expect(config.settings.upperCount).toBe(0)
+    expect(config.settings.lowerId).toBe(0)
+    expect(config.settings.upperId).toBe(0)
+    expect(config.settings.lowerDate).toBeDefined()
+    expect(config.settings.upperDate).toBeDefined()
   })
 
   describe('toggleCategory', () => {
@@ -543,9 +546,7 @@ describe('Settings', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
       const valid = settings.validateUpdate(
-        new SettingsUpdate([5, 10], [7, 2], [], 1, Aggregation.SUM, Range.COUNT),
-        laterDate,
-        earlierDate,
+        new SettingsUpdate(5, 10, 7, 2, laterDate, earlierDate, 1, Aggregation.SUM, Range.COUNT),
         errorMessage
       )
 
@@ -557,9 +558,7 @@ describe('Settings', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
       const valid = settings.validateUpdate(
-        new SettingsUpdate([5, 10], [2, 7], [], 1, Aggregation.SUM, Range.DATE),
-        laterDate,
-        earlierDate,
+        new SettingsUpdate(5, 10, 2, 7, laterDate, earlierDate, 1, Aggregation.SUM, Range.DATE),
         errorMessage
       )
 
@@ -571,9 +570,7 @@ describe('Settings', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
       const valid = settings.validateUpdate(
-        new SettingsUpdate([10, 5], [2, 7], [], 1, Aggregation.SUM, Range.COUNT),
-        earlierDate,
-        laterDate,
+        new SettingsUpdate(10, 5, 2, 7, earlierDate, laterDate, 1, Aggregation.SUM, Range.COUNT),
         errorMessage
       )
 
@@ -585,9 +582,7 @@ describe('Settings', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
       const valid = settings.validateUpdate(
-        new SettingsUpdate([5, 10], [7, 2], [], 1, Aggregation.SUM, Range.ID),
-        earlierDate,
-        laterDate,
+        new SettingsUpdate(5, 10, 7, 2, earlierDate, laterDate, 1, Aggregation.SUM, Range.ID),
         errorMessage
       )
 
@@ -599,9 +594,7 @@ describe('Settings', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
       const valid = settings.validateUpdate(
-        new SettingsUpdate([5, 10], [2, 7], [], 1, Aggregation.SUM, Range.DATE),
-        tooLateDate,
-        tooLateDate,
+        new SettingsUpdate(5, 10, 2, 7, tooLateDate, tooLateDate, 1, Aggregation.SUM, Range.DATE),
         errorMessage
       )
 
@@ -613,9 +606,7 @@ describe('Settings', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
       const valid = settings.validateUpdate(
-        new SettingsUpdate([11, 11], [2, 7], [], 1, Aggregation.SUM, Range.COUNT),
-        earlierDate,
-        laterDate,
+        new SettingsUpdate(11, 11, 2, 7, earlierDate, laterDate, 1, Aggregation.SUM, Range.COUNT),
         errorMessage
       )
 
@@ -627,9 +618,7 @@ describe('Settings', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
       const valid = settings.validateUpdate(
-        new SettingsUpdate([5, 10], [20, 20], [], 1, Aggregation.SUM, Range.ID),
-        earlierDate,
-        laterDate,
+        new SettingsUpdate(5, 10, 20, 20, earlierDate, laterDate, 1, Aggregation.SUM, Range.ID),
         errorMessage
       )
 
@@ -641,9 +630,7 @@ describe('Settings', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
       const valid = settings.validateUpdate(
-        new SettingsUpdate([5, 10], [2, 7], [], 1, Aggregation.SUM, Range.DATE),
-        tooSoonDate,
-        tooSoonDate,
+        new SettingsUpdate(5, 10, 2, 7, tooSoonDate, tooSoonDate, 1, Aggregation.SUM, Range.DATE),
         errorMessage
       )
 
@@ -655,9 +642,7 @@ describe('Settings', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
       const valid = settings.validateUpdate(
-        new SettingsUpdate([0, 0], [2, 7], [], 1, Aggregation.SUM, Range.COUNT),
-        earlierDate,
-        laterDate,
+        new SettingsUpdate(0, 0, 2, 7, earlierDate, laterDate, 1, Aggregation.SUM, Range.COUNT),
         errorMessage
       )
 
@@ -669,9 +654,7 @@ describe('Settings', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
       const valid = settings.validateUpdate(
-        new SettingsUpdate([5, 10], [0, 0], [], 1, Aggregation.SUM, Range.ID),
-        earlierDate,
-        laterDate,
+        new SettingsUpdate(5, 10, 0, 0, earlierDate, laterDate, 1, Aggregation.SUM, Range.ID),
         errorMessage
       )
 
@@ -683,9 +666,7 @@ describe('Settings', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
       const valid = settings.validateUpdate(
-        new SettingsUpdate([0, 11], [2, 7], [], 1, Aggregation.SUM, Range.COUNT),
-        earlierDate,
-        laterDate,
+        new SettingsUpdate(0, 11, 2, 7, earlierDate, laterDate, 1, Aggregation.SUM, Range.COUNT),
         errorMessage
       )
 
@@ -697,9 +678,7 @@ describe('Settings', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
       const valid = settings.validateUpdate(
-        new SettingsUpdate([2, 5], [0, 20], [], 1, Aggregation.SUM, Range.ID),
-        earlierDate,
-        laterDate,
+        new SettingsUpdate(2, 5, 0, 20, earlierDate, laterDate, 1, Aggregation.SUM, Range.ID),
         errorMessage
       )
 
@@ -711,9 +690,7 @@ describe('Settings', () => {
       const matchStore = useMatchStore()
       const { errorMessage } = storeToRefs(matchStore)
       const valid = settings.validateUpdate(
-        new SettingsUpdate([2, 5], [2, 7], [], 1, Aggregation.SUM, Range.DATE),
-        tooSoonDate,
-        tooLateDate,
+        new SettingsUpdate(2, 5, 2, 7, tooSoonDate, tooLateDate, 1, Aggregation.SUM, Range.DATE),
         errorMessage
       )
 

@@ -7,10 +7,8 @@
       alt="Reset"
       :callback="
         () => {
-          // TODO
-          const oldConfig = editedConfig
-          editedConfig = undefined
-          editedConfig = oldConfig
+          editedConfig?.resetSettings()
+          editedConfig?.update()
         }
       "
     />
@@ -33,10 +31,10 @@
             id="countRange"
             name="ranges"
             value="count"
-            :checked="editedConfig?.settings.range == Range.COUNT"
+            :checked="settingsUpdate.range == Range.COUNT"
             @input="
               () => {
-                setRange(Range.COUNT)
+                settingsUpdate.range = Range.COUNT
               }
             "
           />
@@ -49,7 +47,7 @@
               id="fromCount"
               class="setting-input"
               type="number"
-              :value="editedConfig?.settings.countRange[0]"
+              v-model="settingsUpdate.lowerCount"
               min="1"
             />
           </div>
@@ -59,7 +57,7 @@
               id="toCount"
               class="setting-input"
               type="number"
-              :value="editedConfig?.settings.countRange[1]"
+              v-model="settingsUpdate.upperCount"
               min="1"
             />
           </div>
@@ -77,10 +75,10 @@
             id="idRange"
             name="ranges"
             value="id"
-            :checked="editedConfig?.settings.range == Range.ID"
+            :checked="settingsUpdate.range == Range.ID"
             @input="
               () => {
-                setRange(Range.ID)
+                settingsUpdate.range = Range.ID
               }
             "
           />
@@ -93,7 +91,7 @@
               id="fromId"
               class="setting-input"
               type="number"
-              :value="editedConfig?.settings.idRange[0]"
+              v-model="settingsUpdate.lowerId"
               min="1"
             />
           </div>
@@ -103,7 +101,7 @@
               id="toId"
               class="setting-input"
               type="number"
-              :value="editedConfig?.settings.idRange[1]"
+              v-model="settingsUpdate.upperId"
               min="1"
             />
           </div>
@@ -117,10 +115,10 @@
             id="dateRange"
             name="ranges"
             value="date"
-            :checked="editedConfig?.settings.range == Range.DATE"
+            :checked="settingsUpdate.range == Range.DATE"
             @input="
               () => {
-                setRange(Range.DATE)
+                settingsUpdate.range = Range.DATE
               }
             "
           />
@@ -133,7 +131,12 @@
               id="fromDate"
               class="setting-input"
               type="date"
-              :value="editedConfig?.settings.getStartDate()"
+              :value="startDate"
+              @input="(event: Event) => {
+                if (event.target) {
+                  settingsUpdate.lowerDate = createStartOfDayDate(createDate(event.target))
+                }
+              }"
             />
           </div>
           <label for="toId">to</label>
@@ -142,7 +145,12 @@
               id="toDate"
               class="setting-input"
               type="date"
-              :value="editedConfig?.settings.getEndDate()"
+              :value="endDate"
+              @input="(event: Event) => {
+                if (event.target) {
+                  settingsUpdate.upperDate = createEndOfDayDate(createDate(event.target))
+                }
+              }"
             />
           </div>
           <HelpIcon id="dateHelp" tooltip="Limits to games played within those dates" />
@@ -158,10 +166,10 @@
             class=""
             name="aggregation"
             value="sum"
-            :checked="editedConfig?.settings.aggregation == Aggregation.SUM"
+            :checked="settingsUpdate.aggregation == Aggregation.SUM"
             @input="
               () => {
-                setAggregation(Aggregation.SUM)
+                settingsUpdate.aggregation = Aggregation.SUM
               }
             "
           />
@@ -177,10 +185,10 @@
             class=""
             name="aggregation"
             value="window"
-            :checked="editedConfig?.settings.aggregation == Aggregation.WINDOW"
+            :checked="settingsUpdate.aggregation == Aggregation.WINDOW"
             @input="
               () => {
-                setAggregation(Aggregation.WINDOW)
+                settingsUpdate.aggregation = Aggregation.WINDOW
               }
             "
           />
@@ -192,7 +200,7 @@
             min="1"
             id="windowSize"
             class="setting-input"
-            :value="editedConfig?.settings.windowSize"
+            v-model="settingsUpdate.windowSize"
           />
         </div>
         <HelpIcon
@@ -207,45 +215,41 @@
 import { storeToRefs } from 'pinia'
 import { useMatchStore } from '@/pinia/store'
 import HelpIcon from '@/common/HelpIcon.vue'
-import { Aggregation, Range, SettingsUpdate } from '@/rating/store'
+import {
+  Aggregation,
+  createEndOfDayDate,
+  createStartOfDayDate,
+  htmlFormatDate,
+  Range
+} from '@/rating/store'
 import IconButton from '@/common/IconButton.vue'
 import applyIcon from '../../icons/applyIcon.png'
 import removeIcon from '../../icons/removeIcon.png'
 import resetIcon from '../../icons/resetIcon.png'
+import { computed } from 'vue'
 
 const { editedConfig, errorMessage } = storeToRefs(useMatchStore())
 
-let range = editedConfig.value?.settings.range || Range.COUNT
-let aggregation = editedConfig.value?.settings.aggregation || Aggregation.SUM
+const settingsUpdate = computed(() => {
+  return editedConfig.value?.settings.buildSettingsUpdate()!
+})
+
+const startDate = computed(() => {
+  return htmlFormatDate(settingsUpdate.value.lowerDate)
+})
+
+const endDate = computed(() => {
+  return htmlFormatDate(settingsUpdate.value.upperDate)
+})
 
 function update() {
-  if (editedConfig.value) {
-    const countRange = [
-      Number.parseInt((document.getElementById('fromCount') as HTMLInputElement).value),
-      Number.parseInt((document.getElementById('toCount') as HTMLInputElement).value)
-    ]
-    const idRange = [
-      Number.parseInt((document.getElementById('fromId') as HTMLInputElement).value),
-      Number.parseInt((document.getElementById('toId') as HTMLInputElement).value)
-    ]
-    const dateRange = [
-      (document.getElementById('fromDate') as HTMLInputElement).value,
-      (document.getElementById('toDate') as HTMLInputElement).value
-    ]
-    const size = Number.parseInt((document.getElementById('windowSize') as HTMLInputElement).value)
-    editedConfig.value.updateIfChanged(
-      new SettingsUpdate(countRange, idRange, dateRange, size, aggregation, range),
-      errorMessage
-    )
+  if (editedConfig.value && settingsUpdate) {
+    editedConfig.value.updateIfChanged(settingsUpdate.value, errorMessage)
   }
 }
 
-function setRange(newRange: Range) {
-  range = newRange
-}
-
-function setAggregation(newAggregation: Aggregation) {
-  aggregation = newAggregation
+function createDate(element: EventTarget): Date {
+  return new Date((element as HTMLInputElement).value)
 }
 </script>
 

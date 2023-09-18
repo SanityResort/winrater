@@ -123,8 +123,8 @@ export class GraphConfig extends MatchProvider {
     this.categoryMatches = []
     this.line = Plot.line()
     this.matchCounts = reactive(new Map<Category, number>(matchCounts))
-    const matchCount = this.providedMatches.length
     if (this.providedMatches && this.providedMatches.length > 0) {
+      const matchCount = this.providedMatches.length
       const minDate = createStartOfDayDate(this.providedMatches[0].dateTime)
       const maxDate = createEndOfDayDate(this.providedMatches[matchCount - 1].dateTime)
 
@@ -139,6 +139,24 @@ export class GraphConfig extends MatchProvider {
       this.settings = new Settings(0, 0, 0, new Date(), new Date())
     }
     this.update(UpdateDepth.ALL, false)
+  }
+
+  resetSettings() {
+    if (this.providedMatches && this.providedMatches.length > 0) {
+      const matchCount = this.providedMatches.length
+      const minDate = createStartOfDayDate(this.providedMatches[0].dateTime)
+      const maxDate = createEndOfDayDate(this.providedMatches[matchCount - 1].dateTime)
+
+      this.settings = new Settings(
+        matchCount,
+        this.providedMatches[0].id,
+        this.providedMatches[matchCount - 1].id,
+        minDate,
+        maxDate
+      )
+    } else {
+      this.settings = new Settings(0, 0, 0, new Date(), new Date())
+    }
   }
 
   toggleCategory(category: Category) {
@@ -164,7 +182,7 @@ export class GraphConfig extends MatchProvider {
     return this.color.hex()
   }
 
-  private update(depth: UpdateDepth = UpdateDepth.ALL, updateCounts: boolean = true) {
+  update(depth: UpdateDepth = UpdateDepth.ALL, updateCounts: boolean = true) {
     if (depth >= UpdateDepth.ALL) {
       this.categoryMatches = this.providedMatches.filter(
         (match) => this.categories.indexOf(match.category) > -1
@@ -249,41 +267,41 @@ export class GraphConfig extends MatchProvider {
   }
 
   updateIfChanged(settingsUpdate: SettingsUpdate, errorMessage: Ref<string>) {
-    const fromDate = createStartOfDayDate(new Date(settingsUpdate.dateUpdate[0]))
-    const toDate = createEndOfDayDate(new Date(settingsUpdate.dateUpdate[1]))
-
-    const isValid = this.settings.validateUpdate(settingsUpdate, fromDate, toDate, errorMessage)
+    const isValid = this.settings.validateUpdate(settingsUpdate, errorMessage)
 
     if (isValid) {
       let updateDepth = UpdateDepth.NONE
       if (
-        this.settings.aggregation != settingsUpdate.aggregationUpdate ||
-        (settingsUpdate.aggregationUpdate == Aggregation.WINDOW &&
-          this.settings.windowSize != settingsUpdate.windowUpdate)
+        this.settings.aggregation != settingsUpdate.aggregation ||
+        (settingsUpdate.aggregation == Aggregation.WINDOW &&
+          this.settings.windowSize != settingsUpdate.windowSize)
       ) {
         updateDepth = UpdateDepth.AGGREGATION
       }
-      if (this.settings.range != settingsUpdate.rangeUpdate) {
+      if (this.settings.range != settingsUpdate.range) {
         updateDepth = UpdateDepth.RANGE
       } else {
         if (
-          settingsUpdate.rangeUpdate == Range.COUNT &&
-          JSON.stringify(this.settings.countRange) != JSON.stringify(settingsUpdate.countUpdate)
+          settingsUpdate.range == Range.COUNT &&
+          (this.settings.lowerCount != settingsUpdate.lowerCount ||
+            this.settings.upperCount != settingsUpdate.upperCount)
         ) {
           updateDepth = UpdateDepth.RANGE
         } else if (
-          settingsUpdate.rangeUpdate == Range.ID &&
-          JSON.stringify(this.settings.idRange) != JSON.stringify(settingsUpdate.idUpdate)
+          settingsUpdate.range == Range.ID &&
+          (this.settings.lowerId != settingsUpdate.lowerId ||
+            this.settings.upperId != settingsUpdate.upperId)
         ) {
           updateDepth = UpdateDepth.RANGE
         } else if (
-          settingsUpdate.rangeUpdate == Range.DATE &&
-          JSON.stringify(this.settings.dateRange) != JSON.stringify([fromDate, toDate])
+          settingsUpdate.range == Range.DATE &&
+          (this.settings.lowerDate != settingsUpdate.lowerDate ||
+            this.settings.upperDate != settingsUpdate.upperDate)
         ) {
           updateDepth = UpdateDepth.RANGE
         }
       }
-      this.settings.update(settingsUpdate, fromDate, toDate)
+      this.settings.update(settingsUpdate)
       this.update(updateDepth)
     }
 
@@ -322,9 +340,12 @@ export class Settings {
   maxId: number
   minDate: Date
   maxDate: Date
-  countRange: number[]
-  idRange: number[]
-  dateRange: Date[]
+  lowerCount: number
+  upperCount: number
+  lowerId: number
+  upperId: number
+  lowerDate: Date
+  upperDate: Date
   windowSize: number
   range: Range
   aggregation: Aggregation
@@ -335,39 +356,36 @@ export class Settings {
     this.maxId = maxId
     this.minDate = minDate
     this.maxDate = maxDate
-    this.countRange = [Math.min(1, matchCount), matchCount]
-    this.idRange = [minId, maxId]
-    this.dateRange = [minDate, maxDate]
+    this.lowerCount = Math.min(1, this.matchCount)
+    this.upperCount = this.matchCount
+    this.lowerId = this.minId
+    this.upperId = this.maxId
+    this.lowerDate = this.minDate
+    this.upperDate = this.maxDate
     this.windowSize = 1
     this.range = Range.COUNT
     this.aggregation = Aggregation.SUM
   }
 
-  update(settingsUpdate: SettingsUpdate, fromDate: Date, toDate: Date) {
-    this.countRange = settingsUpdate.countUpdate
-    this.idRange = settingsUpdate.idUpdate
-    this.dateRange = [fromDate, toDate]
-    this.range = settingsUpdate.rangeUpdate
-    this.aggregation = settingsUpdate.aggregationUpdate
-    this.windowSize = settingsUpdate.windowUpdate
+  update(settingsUpdate: SettingsUpdate) {
+    this.lowerCount = settingsUpdate.lowerCount
+    this.upperCount = settingsUpdate.upperCount
+    this.lowerId = settingsUpdate.lowerId
+    this.upperId = settingsUpdate.upperId
+    this.lowerDate = settingsUpdate.lowerDate
+    this.upperDate = settingsUpdate.upperDate
+    this.range = settingsUpdate.range
+    this.aggregation = settingsUpdate.aggregation
+    this.windowSize = settingsUpdate.windowSize
   }
 
-  validateUpdate(
-    settingsUpdate: SettingsUpdate,
-    fromDate: Date,
-    toDate: Date,
-    errorMessage: Ref<string>
-  ) {
+  validateUpdate(settingsUpdate: SettingsUpdate, errorMessage: Ref<string>) {
     let isValid =
-      settingsUpdate.rangeUpdate != Range.COUNT ||
-      (this.checkOrder(
-        settingsUpdate.countUpdate[0],
-        settingsUpdate.countUpdate[1],
-        errorMessage
-      ) &&
-        this.checkLowerBound(settingsUpdate.countUpdate[1], 1, '1', errorMessage) &&
+      settingsUpdate.range != Range.COUNT ||
+      (this.checkOrder(settingsUpdate.lowerCount, settingsUpdate.upperCount, errorMessage) &&
+        this.checkLowerBound(settingsUpdate.upperCount, 1, '1', errorMessage) &&
         this.checkUpperBound(
-          settingsUpdate.countUpdate[0],
+          settingsUpdate.lowerCount,
           this.matchCount,
           this.matchCount.toString(),
           errorMessage
@@ -375,16 +393,16 @@ export class Settings {
 
     isValid =
       isValid &&
-      (settingsUpdate.rangeUpdate != Range.ID ||
-        (this.checkOrder(settingsUpdate.idUpdate[0], settingsUpdate.idUpdate[1], errorMessage) &&
+      (settingsUpdate.range != Range.ID ||
+        (this.checkOrder(settingsUpdate.lowerId, settingsUpdate.upperId, errorMessage) &&
           this.checkLowerBound(
-            settingsUpdate.idUpdate[1],
+            settingsUpdate.upperId,
             this.minId,
             this.minId.toString(),
             errorMessage
           ) &&
           this.checkUpperBound(
-            settingsUpdate.idUpdate[0],
+            settingsUpdate.lowerId,
             this.maxId,
             this.maxId.toString(),
             errorMessage
@@ -392,50 +410,60 @@ export class Settings {
 
     return (
       isValid &&
-      (settingsUpdate.rangeUpdate != Range.DATE ||
-        (this.checkOrder(fromDate, toDate, errorMessage) &&
+      (settingsUpdate.range != Range.DATE ||
+        (this.checkOrder(settingsUpdate.lowerDate, settingsUpdate.upperDate, errorMessage) &&
           this.checkLowerBound(
-            toDate,
+            settingsUpdate.upperDate,
             this.minDate,
-            this.minDate.toISOString().split('T')[0],
+            htmlFormatDate(this.minDate),
             errorMessage
           ) &&
           this.checkUpperBound(
-            fromDate,
+            settingsUpdate.lowerDate,
             this.maxDate,
-            this.maxDate.toISOString().split('T')[0],
+            htmlFormatDate(this.maxDate),
             errorMessage
           )))
     )
   }
 
   getStartDate(): string {
-    return this.dateToString(this.dateRange[0])
+    return htmlFormatDate(this.lowerDate)
   }
 
   getEndDate(): string {
-    return this.dateToString(this.dateRange[1])
+    return htmlFormatDate(this.upperDate)
   }
 
   isInRange(match: Match, index: number): boolean {
     switch (this.range) {
       case Range.COUNT:
-        return this.isInRangeInt(this.countRange, index)
+        return this.isInRangeInt(this.lowerCount, this.upperCount, index)
       case Range.ID:
-        return this.isInRangeInt(this.idRange, match.id)
+        return this.isInRangeInt(this.lowerId, this.upperId, match.id)
       case Range.DATE:
-        return this.isInRangeInt(this.dateRange, match.dateTime)
+        return this.isInRangeInt(this.lowerDate, this.upperDate, match.dateTime)
       default:
         return false
     }
   }
 
-  private isInRangeInt<T>(range: T[], value: T) {
-    return range[0] <= value && range[1] >= value
+  buildSettingsUpdate(): SettingsUpdate {
+    return new SettingsUpdate(
+      this.lowerCount,
+      this.upperCount,
+      this.lowerId,
+      this.upperId,
+      this.lowerDate,
+      this.upperDate,
+      this.windowSize,
+      this.aggregation,
+      this.range
+    )
   }
 
-  private dateToString(date: Date) {
-    return date.toISOString().split('T')[0]
+  private isInRangeInt<T>(lower: T, upper: T, value: T) {
+    return lower <= value && upper >= value
   }
 
   private checkOrder<T>(from: T, to: T, errorMessage: Ref<string>): boolean {
@@ -471,31 +499,40 @@ export class Settings {
 }
 
 export class SettingsUpdate {
-  countUpdate: number[]
-  idUpdate: number[]
-  dateUpdate: string[]
-  windowUpdate: number
-  aggregationUpdate: Aggregation
-  rangeUpdate: Range
+  lowerCount: number
+  upperCount: number
+  lowerId: number
+  upperId: number
+  lowerDate: Date
+  upperDate: Date
+  windowSize: number
+  aggregation: Aggregation
+  range: Range
 
   constructor(
-    countUpdate: number[],
-    idUpdate: number[],
-    dateUpdate: string[],
+    lowerCount: number,
+    upperCount: number,
+    lowerId: number,
+    upperId: number,
+    lowerDate: Date,
+    upperDate: Date,
     windowUpdate: number,
     aggregationUpdate: Aggregation,
     rangeUpdate: Range
   ) {
-    this.countUpdate = countUpdate
-    this.idUpdate = idUpdate
-    this.dateUpdate = dateUpdate
-    this.windowUpdate = windowUpdate
-    this.aggregationUpdate = aggregationUpdate
-    this.rangeUpdate = rangeUpdate
+    this.lowerCount = lowerCount
+    this.upperCount = upperCount
+    this.lowerId = lowerId
+    this.upperId = upperId
+    this.lowerDate = lowerDate
+    this.upperDate = upperDate
+    this.windowSize = windowUpdate
+    this.aggregation = aggregationUpdate
+    this.range = rangeUpdate
   }
 }
 
-function createEndOfDayDate(date: Date) {
+export function createEndOfDayDate(date: Date) {
   const maxDate = new Date(date)
   maxDate.setUTCHours(23)
   maxDate.setUTCMinutes(59)
@@ -504,13 +541,17 @@ function createEndOfDayDate(date: Date) {
   return maxDate
 }
 
-function createStartOfDayDate(date: Date) {
+export function createStartOfDayDate(date: Date) {
   const minDate = new Date(date)
   minDate.setUTCHours(0)
   minDate.setUTCMinutes(0)
   minDate.setUTCSeconds(0)
   minDate.setUTCMilliseconds(0)
   return minDate
+}
+
+export function htmlFormatDate(date: Date) {
+  return date.toISOString().split('T')[0]
 }
 
 export enum Range {
