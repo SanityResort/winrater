@@ -46,25 +46,29 @@
             <label for="countRange">Match Number</label>
           </div>
           <div class="range-data">
-            <label for="fromCount">from</label>
-            <div class="input-wrapper">
-              <input
-                id="fromCount"
-                class="setting-input"
-                type="number"
-                v-model="settingsUpdate.lowerCount"
-                min="1"
-              />
+            <div class="range-field">
+              <label for="fromCount">from</label>
+              <div class="input-wrapper">
+                <input
+                  id="fromCount"
+                  class="setting-input"
+                  type="number"
+                  v-model="settingsUpdate.lowerCount"
+                  min="1"
+                />
+              </div>
             </div>
-            <label for="toCount">to</label>
-            <div class="input-wrapper">
-              <input
-                id="toCount"
-                class="setting-input"
-                type="number"
-                v-model="settingsUpdate.upperCount"
-                min="1"
-              />
+            <div class="range-field">
+              <label for="toCount">to</label>
+              <div class="input-wrapper">
+                <input
+                  id="toCount"
+                  class="setting-input"
+                  type="number"
+                  v-model="settingsUpdate.upperCount"
+                  min="1"
+                />
+              </div>
             </div>
             <HelpIcon
               id="countHelp"
@@ -90,25 +94,29 @@
             <label for="idRange">Match Id</label>
           </div>
           <div class="range-data">
-            <label for="fromId">from</label>
-            <div class="input-wrapper">
-              <input
-                id="fromId"
-                class="setting-input"
-                type="number"
-                v-model="settingsUpdate.lowerId"
-                min="1"
-              />
+            <div class="range-field">
+              <label for="fromId">from</label>
+              <div class="input-wrapper">
+                <input
+                  id="fromId"
+                  class="setting-input"
+                  type="number"
+                  v-model="settingsUpdate.lowerId"
+                  min="1"
+                />
+              </div>
             </div>
-            <label for="toId">to</label>
-            <div class="input-wrapper">
-              <input
-                id="toId"
-                class="setting-input"
-                type="number"
-                v-model="settingsUpdate.upperId"
-                min="1"
-              />
+            <div class="range-field">
+              <label for="toId">to</label>
+              <div class="input-wrapper">
+                <input
+                  id="toId"
+                  class="setting-input"
+                  type="number"
+                  v-model="settingsUpdate.upperId"
+                  min="1"
+                />
+              </div>
             </div>
             <HelpIcon id="idHelp" tooltip="Limits to games with ids within given" />
           </div>
@@ -130,33 +138,37 @@
             <label for="dateRange">Date</label>
           </div>
           <div class="range-data">
-            <label for="fromId">from</label>
-            <div class="input-wrapper">
-              <input
-                id="fromDate"
-                class="setting-input"
-                type="date"
-                :value="startDate"
-                @input="(event: Event) => {
+            <div class="range-field">
+              <label for="fromId">from</label>
+              <div class="input-wrapper">
+                <input
+                  id="fromDate"
+                  class="setting-input"
+                  type="date"
+                  :value="startDate"
+                  @input="(event: Event) => {
                 if (event.target) {
                   settingsUpdate.lowerDate = createStartOfDayDate(createDate(event.target))
                 }
               }"
-              />
+                />
+              </div>
             </div>
-            <label for="toId">to</label>
-            <div class="input-wrapper">
-              <input
-                id="toDate"
-                class="setting-input"
-                type="date"
-                :value="endDate"
-                @input="(event: Event) => {
+            <div class="range-field">
+              <label for="toId">to</label>
+              <div class="input-wrapper">
+                <input
+                  id="toDate"
+                  class="setting-input"
+                  type="date"
+                  :value="endDate"
+                  @input="(event: Event) => {
                 if (event.target) {
                   settingsUpdate.upperDate = createEndOfDayDate(createDate(event.target))
                 }
               }"
-              />
+                />
+              </div>
             </div>
             <HelpIcon id="dateHelp" tooltip="Limits to games played within those dates" />
           </div>
@@ -302,8 +314,10 @@ function createDate(element: EventTarget): Date {
   width: 7em;
 }
 
-.range-data {
+.range-data,
+.range-field {
   display: flex;
+  flex-flow: row wrap;
   gap: 0.5em;
 }
 
