@@ -19,8 +19,9 @@
         </p>
         <p>
           For each coach multiple graph configs can be added. In each of these configs you can
-          filter games be the different divisions. With the orange edit button on a config a panel
-          opens allowing you to further customize the data set.
+          filter games be the different divisions. A config is assigned a random color which can be
+          changed with the color picker in the config header. With the orange edit button on a
+          config a panel opens allowing you to further customize the data set.
         </p>
       </div>
       <div class="description-section">
