@@ -71,13 +71,13 @@ const { stores } = storeToRefs(matchStore)
   background: var(--color-element-background);
   border: black 2px solid;
   border-radius: 1em;
+  font-size: 0.85em;
   padding: 0.5em;
   margin: 1em 1em 0 1em;
   max-width: 50em;
 }
 
 .description-section > p {
-  font-size: 0.9em;
   margin: 0.5em;
 }
 
